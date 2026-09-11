@@ -441,10 +441,7 @@ struct ContentView: View {
 
 // MARK: - Menu commands
 
-extension Notification.Name {
-    static let connectHeadphones = Notification.Name("com.sonybridge.connectHeadphones")
-    static let disconnectHeadphones = Notification.Name("com.sonybridge.disconnectHeadphones")
-}
+
 
 /// Headphone actions for the app menu (see SonyHeadphonesClientApp).
 /// Standard items (About, Services, Hide, Quit, Window) come from SwiftUI

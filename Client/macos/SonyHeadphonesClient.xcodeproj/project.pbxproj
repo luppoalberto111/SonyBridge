@@ -10,23 +10,21 @@
 		A87B328B259FAA8B00EA6551 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A87B328A259FAA8B00EA6551 /* Cocoa.framework */; };
 		A87B328E259FAB0E00EA6551 /* IOBluetoothUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */; };
 		A8A3D31E283EC38600148E80 /* Headphones.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8A3D31D283EC38600148E80 /* Headphones.cpp */; };
-
 		A8DC78EC2576923D00447738 /* MacOSBluetoothConnector.mm in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */; };
 		A8DC78F12576952E00447738 /* BluetoothWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78EF2576952E00447738 /* BluetoothWrapper.cpp */; };
 		A8DC78F52576953600447738 /* CommandSerializer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78F32576953600447738 /* CommandSerializer.cpp */; };
 		A8DC78FA2576954100447738 /* TimedMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78F92576954100447738 /* TimedMessageQueue.cpp */; };
 		A8DC78FF2576967D00447738 /* ByteMagic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8DC78FD2576967D00447738 /* ByteMagic.cpp */; };
 		A8DC790525769A6600447738 /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8DC790425769A6600447738 /* IOBluetooth.framework */; };
-
-
 		CC0000000000000000000001 /* HeadphonesBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000002 /* HeadphonesBridge.mm */; };
 		CC0000000000000000000004 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000005 /* ContentView.swift */; };
 		CC0000000000000000000006 /* HeadphonesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000007 /* HeadphonesModel.swift */; };
+		CC000000000000000000000A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000009 /* AppDelegate.swift */; };
 		CC000000000000000000000C /* HeadphonesState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000B /* HeadphonesState.swift */; };
 		CC000000000000000000000E /* HeadphonesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000D /* HeadphonesStore.swift */; };
 		CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000F /* SonyHeadphonesClientApp.swift */; };
-		CC000000000000000000000A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000009 /* AppDelegate.swift */; };
 		DD0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD0000000000000000000002 /* Assets.xcassets */; };
+		F7EAEFD03053FB3C00018001 /* NotificationName+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFCF3053FAFC00018001 /* NotificationName+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,8 +38,6 @@
 		A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SonyHeadphonesClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8DC78E72576923D00447738 /* MacOSBluetoothConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacOSBluetoothConnector.h; sourceTree = "<group>"; };
 		A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MacOSBluetoothConnector.mm; sourceTree = "<group>"; };
-
-
 		A8DC78EE2576950500447738 /* IBluetoothConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IBluetoothConnector.h; path = ../IBluetoothConnector.h; sourceTree = "<group>"; };
 		A8DC78EF2576952E00447738 /* BluetoothWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BluetoothWrapper.cpp; path = ../BluetoothWrapper.cpp; sourceTree = "<group>"; };
 		A8DC78F02576952E00447738 /* BluetoothWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothWrapper.h; path = ../BluetoothWrapper.h; sourceTree = "<group>"; };
@@ -53,18 +49,17 @@
 		A8DC78FD2576967D00447738 /* ByteMagic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ByteMagic.cpp; path = ../ByteMagic.cpp; sourceTree = "<group>"; };
 		A8DC78FE2576967D00447738 /* ByteMagic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ByteMagic.h; path = ../ByteMagic.h; sourceTree = "<group>"; };
 		A8DC790425769A6600447738 /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
-
-
 		CC0000000000000000000002 /* HeadphonesBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HeadphonesBridge.mm; sourceTree = "<group>"; };
 		CC0000000000000000000003 /* HeadphonesBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HeadphonesBridge.h; sourceTree = "<group>"; };
 		CC0000000000000000000005 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CC0000000000000000000007 /* HeadphonesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesModel.swift; sourceTree = "<group>"; };
+		CC0000000000000000000008 /* SonyHeadphonesClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SonyHeadphonesClient-Bridging-Header.h"; sourceTree = "<group>"; };
+		CC0000000000000000000009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CC000000000000000000000B /* HeadphonesState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesState.swift; sourceTree = "<group>"; };
 		CC000000000000000000000D /* HeadphonesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesStore.swift; sourceTree = "<group>"; };
 		CC000000000000000000000F /* SonyHeadphonesClientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonyHeadphonesClientApp.swift; sourceTree = "<group>"; };
-		CC0000000000000000000008 /* SonyHeadphonesClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SonyHeadphonesClient-Bridging-Header.h"; sourceTree = "<group>"; };
-		CC0000000000000000000009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F7EAEFCF3053FAFC00018001 /* NotificationName+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationName+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,11 +79,11 @@
 		A8DC78BB25757BF300447738 = {
 			isa = PBXGroup;
 			children = (
+				F7EAEFCE3053FAF000018001 /* Extensions */,
 				A863B14925A11DF500101F3B /* SonyHeadphonesClient.entitlements */,
 				A87B327A259F69BA00EA6551 /* Constants.h */,
 				A8DC78E72576923D00447738 /* MacOSBluetoothConnector.h */,
 				A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */,
-
 				A8DC78E32576922700447738 /* info.plist */,
 				A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */,
 				A8DC78EE2576950500447738 /* IBluetoothConnector.h */,
@@ -104,7 +99,6 @@
 				A8A3D31D283EC38600148E80 /* Headphones.cpp */,
 				A8A3D31C283EC38500148E80 /* Headphones.h */,
 				CC0000000000000000000009 /* AppDelegate.swift */,
-
 				CC0000000000000000000003 /* HeadphonesBridge.h */,
 				CC0000000000000000000002 /* HeadphonesBridge.mm */,
 				CC0000000000000000000005 /* ContentView.swift */,
@@ -126,6 +120,14 @@
 				A8DC790425769A6600447738 /* IOBluetooth.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F7EAEFCE3053FAF000018001 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				F7EAEFCF3053FAFC00018001 /* NotificationName+Extensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -184,7 +186,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-
 				DD0000000000000000000001 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,9 +198,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A8A3D31E283EC38600148E80 /* Headphones.cpp in Sources */,
-
 				A8DC78EC2576923D00447738 /* MacOSBluetoothConnector.mm in Sources */,
-
 				A8DC78F12576952E00447738 /* BluetoothWrapper.cpp in Sources */,
 				A8DC78FA2576954100447738 /* TimedMessageQueue.cpp in Sources */,
 				A8DC78F52576953600447738 /* CommandSerializer.cpp in Sources */,
@@ -209,6 +208,7 @@
 				CC0000000000000000000004 /* ContentView.swift in Sources */,
 				CC0000000000000000000006 /* HeadphonesModel.swift in Sources */,
 				CC000000000000000000000C /* HeadphonesState.swift in Sources */,
+				F7EAEFD03053FB3C00018001 /* NotificationName+Extensions.swift in Sources */,
 				CC000000000000000000000E /* HeadphonesStore.swift in Sources */,
 				CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */,
 			);
