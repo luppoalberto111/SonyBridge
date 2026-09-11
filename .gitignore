@@ -530,3 +530,26 @@ Client/imgui.ini
 
 # linux build
 Client/linux/sonyheadphonesclient.build/
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Environment / Secrets
+.env
+.env.*
+*.pem
+*.mobileprovision
+*.p12
