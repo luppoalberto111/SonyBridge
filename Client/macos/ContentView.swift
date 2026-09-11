@@ -438,11 +438,3 @@ struct ContentView: View {
         }
     }
 }
-
-// Factory so the Obj-C++ ViewController can instantiate the SwiftUI hierarchy.
-@available(macOS 11.0, *)
-@objc final class HeadphonesUIFactory: NSObject {
-    @objc static func makeViewController() -> NSViewController {
-        return NSHostingController(rootView: ContentView())
-    }
-}
