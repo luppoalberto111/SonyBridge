@@ -19,7 +19,7 @@ final class MainScreenViewModel: ObservableObject {
     /// snapshot replacements never reset it behind the view's back.
     @Published var showAbout = false
 
-    private let model = HeadphonesModel()
+    private let model = HeadphonesClient()
     private var pollTimer: Timer?
     private var dynamicTimer: Timer?
 

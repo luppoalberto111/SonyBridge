@@ -1,9 +1,3 @@
-//
-//  HeadphonesBridge.h
-//  Pure Objective-C interface over the C++ BluetoothWrapper/Headphones core so SwiftUI can drive it
-//  through the bridging header. No C++ types leak into this header.
-//
-
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN

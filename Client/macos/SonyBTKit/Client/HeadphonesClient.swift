@@ -1,19 +1,9 @@
-//
-//  HeadphonesModel.swift
-//  Actor: the single serial owner of the Obj-C++ HeadphonesBridge.
-//
-
 import Foundation
-
-// The bridge funnels every command through its own internal serial queue and
-// only ever touches its C++ core from there, so sharing it with the actor is
-// sound. It cannot be marked Sendable in Obj-C, hence the unchecked conformance.
-extension HeadphonesBridge: @unchecked Sendable {}
 
 /// Presents the native picker on the main thread by awaiting the bridge's
 /// synthesized async overload from the main actor.
 
-actor HeadphonesModel {
+actor HeadphonesClient {
     private let bridge = HeadphonesBridge()
     private var state = HeadphonesState()
 
@@ -33,7 +23,7 @@ actor HeadphonesModel {
         let (ok, error) = await scanAndConnectOnMain(bridge)
         state.connecting = false
         if ok {
-            syncFromBridge()
+            state = state.synced(with: bridge)
         } else if let error {
             state.errorMessage = error
         }
@@ -66,25 +56,7 @@ actor HeadphonesModel {
     /// Runs the init handshake (once) then reads battery + equalizer.
     func refreshStatus() async -> HeadphonesState {
         await bridge.refreshStatus()
-        state.batteryLevel = bridge.batteryLevel
-        state.batteryCharging = bridge.batteryCharging
-        state.hasDualBattery = bridge.hasDualBattery
-        state.batteryLeft = bridge.batteryLeft
-        state.batteryRight = bridge.batteryRight
-        state.batteryCase = bridge.batteryCase
-        state.eqPreset = bridge.eqPreset
-        state.clearBass = bridge.clearBass
-        state.dsee = bridge.dsee
-        state.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
-        state.hasAutoPowerOff = bridge.hasAutoPowerOff
-        state.autoPowerOff = bridge.autoPowerOff
-        state.firmware = bridge.firmware ?? ""
-        state.codec = bridge.codec ?? ""
-        state.hasSpeakToChat = bridge.hasSpeakToChat
-        state.speakToChat = bridge.speakToChat
-        state.hasAdaptiveVolume = bridge.hasAdaptiveVolume
-        state.adaptiveVolume = bridge.adaptiveVolume
-        return state
+        return state.updated(with: bridge)
     }
 
     /// Re-reads the fast-changing state (ambient/NC, level, EQ, DSEE) so
@@ -199,25 +171,10 @@ actor HeadphonesModel {
         state.errorMessage = nil
         let (ok, error) = await bridge.applyMode(mode, level: level, focusVoice: focusVoice)
         if ok {
-            syncFromBridge()
+            state = state.synced(with: bridge)
         } else if let error {
             state.errorMessage = error
         }
         return state
-    }
-
-    private func syncFromBridge() {
-        state.connected = bridge.connected
-        state.deviceName = bridge.deviceName ?? ""
-        state.deviceMac = bridge.deviceMac ?? ""
-        state.protocolVersion = bridge.protocolVersionString ?? ""
-        state.supportsVpt = bridge.supportsVpt
-        state.supportsEqualizer = bridge.supportsEqualizer
-        state.maxAmbientLevel = bridge.maxAmbientLevel
-        state.mode = bridge.mode
-        let level = bridge.ambientLevel
-        if level > 0 { state.ambientLevel = level }
-        state.focusOnVoice = bridge.focusOnVoice
-        state.focusOnVoiceAvailable = bridge.focusOnVoiceAvailable
     }
 }

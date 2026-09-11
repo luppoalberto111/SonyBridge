@@ -44,3 +44,45 @@ struct HeadphonesState: Sendable {
 
     var errorMessage: String?
 }
+
+extension HeadphonesState {
+    func updated(with bridge: HeadphonesBridge) -> Self {
+        var updated = self
+        updated.batteryLevel = bridge.batteryLevel
+        updated.batteryCharging = bridge.batteryCharging
+        updated.hasDualBattery = bridge.hasDualBattery
+        updated.batteryLeft = bridge.batteryLeft
+        updated.batteryRight = bridge.batteryRight
+        updated.batteryCase = bridge.batteryCase
+        updated.eqPreset = bridge.eqPreset
+        updated.clearBass = bridge.clearBass
+        updated.dsee = bridge.dsee
+        updated.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
+        updated.hasAutoPowerOff = bridge.hasAutoPowerOff
+        updated.autoPowerOff = bridge.autoPowerOff
+        updated.firmware = bridge.firmware ?? ""
+        updated.codec = bridge.codec ?? ""
+        updated.hasSpeakToChat = bridge.hasSpeakToChat
+        updated.speakToChat = bridge.speakToChat
+        updated.hasAdaptiveVolume = bridge.hasAdaptiveVolume
+        updated.adaptiveVolume = bridge.adaptiveVolume
+        return updated
+    }
+    
+    func synced(with bridge: HeadphonesBridge) -> Self {
+        var updated = self
+        updated.connected = bridge.connected
+        updated.deviceName = bridge.deviceName ?? ""
+        updated.deviceMac = bridge.deviceMac ?? ""
+        updated.protocolVersion = bridge.protocolVersionString ?? ""
+        updated.supportsVpt = bridge.supportsVpt
+        updated.supportsEqualizer = bridge.supportsEqualizer
+        updated.maxAmbientLevel = bridge.maxAmbientLevel
+        updated.mode = bridge.mode
+        let level = bridge.ambientLevel
+        if level > 0 { updated.ambientLevel = level }
+        updated.focusOnVoice = bridge.focusOnVoice
+        updated.focusOnVoiceAvailable = bridge.focusOnVoiceAvailable
+        return updated
+    }
+}

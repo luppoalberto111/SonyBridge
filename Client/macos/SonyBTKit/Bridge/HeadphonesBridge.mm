@@ -1,9 +1,3 @@
-//
-//  HeadphonesBridge.mm
-//  Obj-C++ implementation owning the C++ core. Serializes device commands
-//  on its own queue and reports back on the main thread.
-//
-
 #import "HeadphonesBridge.h"
 #import <IOBluetoothUI/IOBluetoothUI.h>
 #import <IOBluetooth/IOBluetooth.h>
