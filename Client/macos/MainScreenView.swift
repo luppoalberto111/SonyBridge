@@ -153,37 +153,27 @@ struct MainScreenView: View {
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(.white)
             HStack(spacing: 0) {
-                modeButton(.noiseCanceling, "speaker.slash.fill", "Noise\nCanceling")
-                modeButton(.ambientSound, "wind", "Ambient\nSound")
-                modeButton(.off, "circle", "Off")
+                ModeButton(
+                    mode: .noiseCanceling,
+                    isSelected: model.state.mode == .noiseCanceling,
+                    setMode: model.setMode
+                )
+                ModeButton(
+                    mode: .ambientSound,
+                    isSelected: model.state.mode == .ambientSound,
+                    setMode: model.setMode
+                )
+                ModeButton(
+                    mode: .off,
+                    isSelected: model.state.mode == .off,
+                    setMode: model.setMode
+                )
             }
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.card)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-    }
-
-    private func modeButton(_ mode: SHCAmbientMode, _ symbol: String, _ label: String) -> some View {
-        let selected = model.state.mode == mode
-        return Button(action: { model.setMode(mode) }) {
-            VStack(spacing: 8) {
-                ZStack {
-                    Circle()
-                        .fill(selected ? Theme.accent : Theme.cardHi)
-                        .frame(width: 58, height: 58)
-                    Image(systemName: symbol)
-                        .font(.system(size: 22, weight: .medium))
-                        .foregroundColor(selected ? .white : Theme.secondary)
-                }
-                Text(label)
-                    .font(.system(size: 11, weight: .medium))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(selected ? .white : Theme.secondary)
-            }
-            .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.plain)
     }
 
     private var ambientLevelCard: some View {
@@ -225,12 +215,6 @@ struct MainScreenView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
-    private let eqPresets: [(String, Int)] = [
-        ("Off", 0x00), ("Bright", 0x10), ("Excited", 0x11),
-        ("Mellow", 0x12), ("Relaxed", 0x13), ("Vocal", 0x14),
-        ("Treble", 0x15), ("Bass", 0x16), ("Speech", 0x17),
-        ("Manual", 0xA0)
-    ]
     private let eqBandLabels = ["400", "1k", "2.5k", "6.3k", "16k"]
 
     private var equalizerCard: some View {
@@ -239,9 +223,7 @@ struct MainScreenView: View {
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(.white)
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                ForEach(eqPresets, id: \.1) { preset in
-                    eqChip(preset.0, preset.1)
-                }
+                ForEach(EqPreset.allCases, content: eqChip)
             }
             if model.state.eqPreset == 0xA0 {
                 Divider().background(Theme.cardHi)
@@ -291,10 +273,10 @@ struct MainScreenView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
-    private func eqChip(_ name: String, _ code: Int) -> some View {
-        let selected = model.state.eqPreset == code
-        return Button(action: { model.setEqualizer(code) }) {
-            Text(name)
+    private func eqChip(_ preset: EqPreset) -> some View {
+        let selected = model.state.eqPreset == preset.rawValue
+        return Button(action: { model.setEqualizer(preset.rawValue) }) {
+            Text(preset.name)
                 .font(.system(size: 12, weight: .medium))
                 .foregroundColor(selected ? .white : Theme.secondary)
                 .frame(maxWidth: .infinity)
@@ -403,6 +385,38 @@ struct MainScreenView: View {
         case ...15: return "battery.0"
         case ...50: return "battery.25"
         default: return "battery.100"
+        }
+    }
+}
+
+enum EqPreset: Int, CaseIterable, Identifiable {
+    case off = 0x00
+    case bright = 0x10
+    case excited = 0x11
+    case mellow = 0x12
+    case relaxed = 0x13
+    case vocal = 0x14
+    case treble = 0x15
+    case bass = 0x16
+    case speech = 0x17
+    case manual = 0xA0
+    
+    var id: Int {
+        rawValue
+    }
+    
+    var name: String {
+        switch self {
+            case .off: "Off"
+            case .bright: "Bright"
+            case .excited: "Excited"
+            case .mellow: "Mellow"
+            case .relaxed: "Relaxed"
+            case .vocal: "Vocal"
+            case .treble: "Treble"
+            case .bass: "Bass"
+            case .speech: "Speech"
+            case .manual: "Manual"
         }
     }
 }

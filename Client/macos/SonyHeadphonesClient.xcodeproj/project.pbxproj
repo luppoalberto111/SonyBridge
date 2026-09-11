@@ -17,6 +17,8 @@
 		F7EAEFD23053FBB600018001 /* HeadphonesCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */; };
 		F7EAEFDB30541E4D00018001 /* DisconnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */; };
 		F7EAEFDD30541E5F00018001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDC30541E5E00018001 /* Theme.swift */; };
+		F7EAEFDF30541F4700018001 /* ConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDE30541F4400018001 /* ConnectedView.swift */; };
+		F7EAEFE130541F9E00018001 /* ModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFE030541F9B00018001 /* ModeButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 		F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesCommands.swift; sourceTree = "<group>"; };
 		F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedView.swift; sourceTree = "<group>"; };
 		F7EAEFDC30541E5E00018001 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		F7EAEFDE30541F4400018001 /* ConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedView.swift; sourceTree = "<group>"; };
+		F7EAEFE030541F9B00018001 /* ModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +84,8 @@
 		F7EAEFD930541DEA00018001 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F7EAEFE030541F9B00018001 /* ModeButton.swift */,
+				F7EAEFDE30541F4400018001 /* ConnectedView.swift */,
 				F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */,
 			);
 			path = Views;
@@ -161,7 +167,9 @@
 				CC000000000000000000000A /* AppDelegate.swift in Sources */,
 				CC0000000000000000000004 /* MainScreenView.swift in Sources */,
 				F7EAEFDB30541E4D00018001 /* DisconnectedView.swift in Sources */,
+				F7EAEFDF30541F4700018001 /* ConnectedView.swift in Sources */,
 				CC000000000000000000000E /* MainScreenViewModel.swift in Sources */,
+				F7EAEFE130541F9E00018001 /* ModeButton.swift in Sources */,
 				CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */,
 				F7EAEFDD30541E5F00018001 /* Theme.swift in Sources */,
 			);

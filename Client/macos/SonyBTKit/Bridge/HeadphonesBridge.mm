@@ -215,9 +215,18 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
             hp->requestDsee();
         } catch (std::exception &exc) {}
         dispatch_async(dispatch_get_main_queue(), ^{ completion(); });
+    });
+}
 
-        // ...then the optional-feature probes, which can each take a couple seconds to time out on a
-        // device that doesn't support them. Update the UI again once they've settled.
+// Optional-feature probes, split out of refreshStatus so each method honors
+// the single-completion contract async callers require: refreshStatus fires
+// once for the fast reads, this fires once for the slow probes.
+- (void)probeCapabilitiesWithCompletion:(void (^)(void))completion {
+    if (!_hp || !self.connected) { completion(); return; }
+    // Probes use v2 opcodes - v1 devices were never probed, keep it that way.
+    if (_bt->getProtocolVersion() != SonyProtocolVersion::V2) { completion(); return; }
+    Headphones *hp = _hp.get();
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         try { hp->probeCapabilities(); } catch (std::exception &exc) {}
         dispatch_async(dispatch_get_main_queue(), ^{ completion(); });
     });

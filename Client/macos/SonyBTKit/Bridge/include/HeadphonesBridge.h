@@ -63,6 +63,11 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 // Runs the init handshake (once) then reads battery + equalizer on a background thread; completion on main.
 - (void)refreshStatusWithCompletion:(void (^)(void))completion;
 
+// Runs the slow optional-feature probes (each can take seconds to time out on
+// unsupported devices) on a background thread; completion on main. Call after
+// refreshStatus so the UI can update in two stages. Fires exactly once.
+- (void)probeCapabilitiesWithCompletion:(void (^)(void))completion;
+
 // Pushes an equalizer preset (raw EQ_PRESET byte) to the device; completion on main.
 - (void)setEqualizerPreset:(NSInteger)preset completion:(void (^)(BOOL ok, NSString * _Nullable error))completion;
 

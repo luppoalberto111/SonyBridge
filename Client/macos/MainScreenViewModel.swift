@@ -54,6 +54,7 @@ final class MainScreenViewModel: ObservableObject {
     func refreshStatus() {
         Task {
             state = await model.refreshStatus()
+            state = await model.probeCapabilities()
         }
     }
 

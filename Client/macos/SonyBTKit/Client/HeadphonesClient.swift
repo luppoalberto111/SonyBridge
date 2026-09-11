@@ -62,6 +62,13 @@ public actor HeadphonesClient {
         return state.updated(with: bridge)
     }
 
+    /// Runs the slow optional-feature probes; call after refreshStatus so the
+    /// UI updates in two stages (fast values first, capabilities once settled).
+    public func probeCapabilities() async -> HeadphonesState {
+        await bridge.probeCapabilities()
+        return state.updated(with: bridge)
+    }
+
     /// Re-reads the fast-changing state (ambient/NC, level, EQ, DSEE) so
     /// changes made with the headphone's own button show up in the app.
     public func refreshDynamic() async -> HeadphonesState {
