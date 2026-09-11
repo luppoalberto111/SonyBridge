@@ -18,6 +18,19 @@ final class HeadphonesStore: ObservableObject {
     private let model = HeadphonesModel()
     private var pollTimer: Timer?
     private var dynamicTimer: Timer?
+    private var menuObservers: [NSObjectProtocol] = []
+
+    init() {
+        let center = NotificationCenter.default
+        menuObservers = [
+            center.addObserver(forName: .connectHeadphones, object: nil, queue: .main) { [weak self] _ in
+                Task { @MainActor [weak self] in self?.connect() }
+            },
+            center.addObserver(forName: .disconnectHeadphones, object: nil, queue: .main) { [weak self] _ in
+                Task { @MainActor [weak self] in self?.disconnect() }
+            },
+        ]
+    }
 
     func connect() {
         state.connecting = true

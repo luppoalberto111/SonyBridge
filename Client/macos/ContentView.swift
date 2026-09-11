@@ -28,7 +28,7 @@ struct ContentView: View {
                 disconnectedView
             }
         }
-        .frame(minWidth: 360, minHeight: 500)
+        .frame(minWidth: 360, maxWidth: 560, minHeight: 500, maxHeight: 900)
     }
 
     // MARK: - Disconnected
@@ -435,6 +435,32 @@ struct ContentView: View {
         case ...15: return "battery.0"
         case ...50: return "battery.25"
         default: return "battery.100"
+        }
+    }
+}
+
+// MARK: - Menu commands
+
+extension Notification.Name {
+    static let connectHeadphones = Notification.Name("com.sonybridge.connectHeadphones")
+    static let disconnectHeadphones = Notification.Name("com.sonybridge.disconnectHeadphones")
+}
+
+/// Headphone actions for the app menu (see SonyHeadphonesClientApp).
+/// Standard items (About, Services, Hide, Quit, Window) come from SwiftUI
+/// automatically; only these need custom wiring, via notifications so the
+/// Scene-level commands stay decoupled from the view's store.
+struct HeadphonesCommands: Commands {
+    var body: some Commands {
+        CommandMenu("Headphones") {
+            Button("Connect to Headphones") {
+                NotificationCenter.default.post(name: .connectHeadphones, object: nil)
+            }
+            .keyboardShortcut("k", modifiers: .command)
+            Button("Disconnect") {
+                NotificationCenter.default.post(name: .disconnectHeadphones, object: nil)
+            }
+            .keyboardShortcut("d", modifiers: [.command, .shift])
         }
     }
 }

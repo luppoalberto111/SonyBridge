@@ -24,6 +24,7 @@
 		CC0000000000000000000006 /* HeadphonesModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000007 /* HeadphonesModel.swift */; };
 		CC000000000000000000000C /* HeadphonesState.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000B /* HeadphonesState.swift */; };
 		CC000000000000000000000E /* HeadphonesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000D /* HeadphonesStore.swift */; };
+		CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000F /* SonyHeadphonesClientApp.swift */; };
 		CC000000000000000000000A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000009 /* AppDelegate.swift */; };
 		DD0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD0000000000000000000002 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -60,6 +61,7 @@
 		CC0000000000000000000007 /* HeadphonesModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesModel.swift; sourceTree = "<group>"; };
 		CC000000000000000000000B /* HeadphonesState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesState.swift; sourceTree = "<group>"; };
 		CC000000000000000000000D /* HeadphonesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesStore.swift; sourceTree = "<group>"; };
+		CC000000000000000000000F /* SonyHeadphonesClientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonyHeadphonesClientApp.swift; sourceTree = "<group>"; };
 		CC0000000000000000000008 /* SonyHeadphonesClient-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SonyHeadphonesClient-Bridging-Header.h"; sourceTree = "<group>"; };
 		CC0000000000000000000009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 				CC0000000000000000000007 /* HeadphonesModel.swift */,
 				CC000000000000000000000B /* HeadphonesState.swift */,
 				CC000000000000000000000D /* HeadphonesStore.swift */,
+				CC000000000000000000000F /* SonyHeadphonesClientApp.swift */,
 				CC0000000000000000000008 /* SonyHeadphonesClient-Bridging-Header.h */,
 				DD0000000000000000000002 /* Assets.xcassets */,
 				A8DC790325769A6600447738 /* Frameworks */,
@@ -207,6 +210,7 @@
 				CC0000000000000000000006 /* HeadphonesModel.swift in Sources */,
 				CC000000000000000000000C /* HeadphonesState.swift in Sources */,
 				CC000000000000000000000E /* HeadphonesStore.swift in Sources */,
+				CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
