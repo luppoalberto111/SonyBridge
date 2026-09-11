@@ -6,11 +6,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "AppDelegate.h"
-
-BluetoothWrapper bt = (BluetoothWrapper)nil;
-Headphones* headphones;
-NSStatusItem* statusItem;
 
 @interface ViewController : NSViewController
 @property (weak, nonatomic) IBOutlet NSTextField *connectedLabel;

@@ -16,13 +16,13 @@ private enum Theme {
 
 @available(macOS 11.0, *)
 struct ContentView: View {
-    @StateObject private var model = HeadphonesModel()
+    @StateObject private var model = HeadphonesStore()
     @State private var showAbout = false
 
     var body: some View {
         ZStack {
             Theme.bg.ignoresSafeArea()
-            if model.connected {
+            if model.state.connected {
                 connectedView
             } else {
                 disconnectedView
@@ -42,7 +42,7 @@ struct ContentView: View {
             Text("No headphones connected")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundColor(Theme.secondary)
-            if let error = model.errorMessage {
+            if let error = model.state.errorMessage {
                 Text(error)
                     .font(.system(size: 12))
                     .foregroundColor(.red.opacity(0.9))
@@ -50,7 +50,7 @@ struct ContentView: View {
                     .padding(.horizontal, 32)
             }
             Button(action: model.connect) {
-                Text(model.connecting ? "Connecting…" : "Connect headphones")
+                Text(model.state.connecting ? "Connecting…" : "Connect headphones")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -59,7 +59,7 @@ struct ContentView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             .buttonStyle(PlainButtonStyle())
-            .disabled(model.connecting)
+            .disabled(model.state.connecting)
             .padding(.horizontal, 40)
             Spacer()
         }
@@ -72,17 +72,17 @@ struct ContentView: View {
             VStack(spacing: 16) {
                 deviceHero
                 ambientCard
-                if model.mode == .ambientSound {
+                if model.state.mode == .ambientSound {
                     ambientLevelCard
                 }
-                if model.supportsEqualizer {
+                if model.state.supportsEqualizer {
                     equalizerCard
                     dseeCard
                 }
-                if model.hasAdaptiveVolume || model.hasSpeakToChat || model.hasAutoPowerOff {
+                if model.state.hasAdaptiveVolume || model.state.hasSpeakToChat || model.state.hasAutoPowerOff {
                     settingsCard
                 }
-                if let error = model.errorMessage {
+                if let error = model.state.errorMessage {
                     Text(error)
                         .font(.system(size: 12))
                         .foregroundColor(.red.opacity(0.9))
@@ -143,23 +143,23 @@ struct ContentView: View {
                 }
             }
 
-            Text(model.deviceName)
+            Text(model.state.deviceName)
                 .font(.system(size: 24, weight: .bold))
                 .foregroundColor(.white)
 
             HStack(spacing: 7) {
-                if model.hasDualBattery {
+                if model.state.hasDualBattery {
                     Image(systemName: "battery.100")
                         .font(.system(size: 13))
                         .foregroundColor(Theme.accent)
-                    Text("L \(model.batteryLeft)%  R \(model.batteryRight)%")
+                    Text("L \(model.state.batteryLeft)%  R \(model.state.batteryRight)%")
                         .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(Theme.secondary)
-                } else if model.batteryLevel >= 0 {
-                    Image(systemName: model.batteryCharging ? "bolt.fill" : batterySymbol(model.batteryLevel))
+                } else if model.state.batteryLevel >= 0 {
+                    Image(systemName: model.state.batteryCharging ? "bolt.fill" : batterySymbol(model.state.batteryLevel))
                         .font(.system(size: 13))
-                        .foregroundColor(model.batteryLevel <= 20 ? .red.opacity(0.9) : Theme.accent)
-                    Text("\(model.batteryLevel)%")
+                        .foregroundColor(model.state.batteryLevel <= 20 ? .red.opacity(0.9) : Theme.accent)
+                    Text("\(model.state.batteryLevel)%")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(Theme.secondary)
                 } else {
@@ -168,9 +168,9 @@ struct ContentView: View {
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(Theme.secondary)
                 }
-                if !model.codec.isEmpty {
+                if !model.state.codec.isEmpty {
                     Text("·").foregroundColor(Theme.secondary)
-                    Text(model.codec)
+                    Text(model.state.codec)
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundColor(Theme.secondary)
                 }
@@ -197,7 +197,7 @@ struct ContentView: View {
     }
 
     private func modeButton(_ mode: SHCAmbientMode, _ symbol: String, _ label: String) -> some View {
-        let selected = model.mode == mode
+        let selected = model.state.mode == mode
         return Button(action: { model.setMode(mode) }) {
             VStack(spacing: 8) {
                 ZStack {
@@ -225,23 +225,23 @@ struct ContentView: View {
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(Theme.secondary)
                 Spacer()
-                Text("\(model.ambientLevel)")
+                Text("\(model.state.ambientLevel)")
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                     .foregroundColor(Theme.accent)
             }
             Slider(
                 value: Binding(
-                    get: { Double(model.ambientLevel) },
+                    get: { Double(model.state.ambientLevel) },
                     set: { model.setLevel(Int($0.rounded())) }
                 ),
-                in: 1...Double(model.maxAmbientLevel),
+                in: 1...Double(model.state.maxAmbientLevel),
                 step: 1
             )
             .accentColor(Theme.accent)
 
-            if model.focusOnVoiceAvailable {
+            if model.state.focusOnVoiceAvailable {
                 Toggle(isOn: Binding(
-                    get: { model.focusOnVoice },
+                    get: { model.state.focusOnVoice },
                     set: { model.setFocusOnVoice($0) }
                 )) {
                     Text("Focus on Voice")
@@ -275,18 +275,18 @@ struct ContentView: View {
                     eqChip(preset.0, preset.1)
                 }
             }
-            if model.eqPreset == 0xA0 {
+            if model.state.eqPreset == 0xA0 {
                 Divider().background(Theme.cardHi)
                 ForEach(0..<5, id: \.self) { i in
                     eqBandRow(eqBandLabels[i], value: Binding(
-                        get: { Double(model.eqBands[i]) },
-                        set: { model.eqBands[i] = Int($0.rounded()); model.applyCustomEq() }
-                    ), display: model.eqBands[i])
+                        get: { Double(model.state.eqBands[i]) },
+                        set: { model.state.eqBands[i] = Int($0.rounded()); model.applyCustomEq() }
+                    ), display: model.state.eqBands[i])
                 }
                 eqBandRow("Bass", value: Binding(
-                    get: { Double(model.clearBass) },
-                    set: { model.clearBass = Int($0.rounded()); model.applyCustomEq() }
-                ), display: model.clearBass, accent: true)
+                    get: { Double(model.state.clearBass) },
+                    set: { model.state.clearBass = Int($0.rounded()); model.applyCustomEq() }
+                ), display: model.state.clearBass, accent: true)
             }
         }
         .padding(18)
@@ -310,7 +310,7 @@ struct ContentView: View {
     }
 
     private var dseeCard: some View {
-        Toggle(isOn: Binding(get: { model.dsee }, set: { model.setDsee($0) })) {
+        Toggle(isOn: Binding(get: { model.state.dsee }, set: { model.setDsee($0) })) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("DSEE").font(.system(size: 14, weight: .semibold)).foregroundColor(.white)
                 Text("Upscale compressed audio").font(.system(size: 11)).foregroundColor(Theme.secondary)
@@ -324,7 +324,7 @@ struct ContentView: View {
     }
 
     private func eqChip(_ name: String, _ code: Int) -> some View {
-        let selected = model.eqPreset == code
+        let selected = model.state.eqPreset == code
         return Button(action: { model.setEqualizer(code) }) {
             Text(name)
                 .font(.system(size: 12, weight: .medium))
@@ -344,15 +344,15 @@ struct ContentView: View {
             Text("Settings")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(.white)
-            if model.hasAdaptiveVolume {
+            if model.state.hasAdaptiveVolume {
                 settingToggle("Adaptive Volume", "Auto-adjust volume by surroundings",
-                              on: model.adaptiveVolume) { model.setAdaptiveVolume($0) }
+                              on: model.state.adaptiveVolume) { model.setAdaptiveVolume($0) }
             }
-            if model.hasSpeakToChat {
+            if model.state.hasSpeakToChat {
                 settingToggle("Speak-to-Chat", "Pause music when you talk",
-                              on: model.speakToChat) { model.setSpeakToChat($0) }
+                              on: model.state.speakToChat) { model.setSpeakToChat($0) }
             }
-            if model.hasAutoPowerOff {
+            if model.state.hasAutoPowerOff {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Auto Power-Off").font(.system(size: 14, weight: .semibold)).foregroundColor(.white)
@@ -360,7 +360,7 @@ struct ContentView: View {
                     }
                     Spacer()
                     Picker("", selection: Binding(
-                        get: { model.autoPowerOff },
+                        get: { model.state.autoPowerOff },
                         set: { model.setAutoPowerOff($0) }
                     )) {
                         ForEach(0..<apoOptions.count, id: \.self) { i in Text(apoOptions[i]).tag(i) }
@@ -390,21 +390,21 @@ struct ContentView: View {
     // ⋯ About / device info popover.
     private var aboutView: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(model.deviceName)
+            Text(model.state.deviceName)
                 .font(.system(size: 15, weight: .bold))
                 .foregroundColor(.white)
                 .padding(.bottom, 10)
-            aboutRow("Status", model.connected ? "Connected" : "Disconnected")
-            if model.hasDualBattery {
-                aboutRow("Battery L / R", "\(model.batteryLeft)% / \(model.batteryRight)%")
-                if model.batteryCase >= 0 { aboutRow("Case", "\(model.batteryCase)%") }
-            } else if model.batteryLevel >= 0 {
-                aboutRow("Battery", "\(model.batteryLevel)%\(model.batteryCharging ? " (charging)" : "")")
+            aboutRow("Status", model.state.connected ? "Connected" : "Disconnected")
+            if model.state.hasDualBattery {
+                aboutRow("Battery L / R", "\(model.state.batteryLeft)% / \(model.state.batteryRight)%")
+                if model.state.batteryCase >= 0 { aboutRow("Case", "\(model.state.batteryCase)%") }
+            } else if model.state.batteryLevel >= 0 {
+                aboutRow("Battery", "\(model.state.batteryLevel)%\(model.state.batteryCharging ? " (charging)" : "")")
             }
-            if !model.codec.isEmpty { aboutRow("Codec", model.codec) }
-            if !model.firmware.isEmpty { aboutRow("Firmware", model.firmware) }
-            if !model.protocolVersion.isEmpty { aboutRow("Protocol", model.protocolVersion) }
-            if !model.deviceMac.isEmpty { aboutRow("Bluetooth", model.deviceMac) }
+            if !model.state.codec.isEmpty { aboutRow("Codec", model.state.codec) }
+            if !model.state.firmware.isEmpty { aboutRow("Firmware", model.state.firmware) }
+            if !model.state.protocolVersion.isEmpty { aboutRow("Protocol", model.state.protocolVersion) }
+            if !model.state.deviceMac.isEmpty { aboutRow("Bluetooth", model.state.deviceMac) }
             Divider().background(Theme.cardHi).padding(.vertical, 10)
             Text("SonyBridge · not affiliated with Sony")
                 .font(.system(size: 10))
@@ -426,7 +426,7 @@ struct ContentView: View {
 
     // Matches the connected device name to a bundled product image (e.g. "WH-CH720N" -> "wh-ch720n").
     private func deviceImage() -> NSImage? {
-        let slug = model.deviceName.lowercased().replacingOccurrences(of: " ", with: "-")
+        let slug = model.state.deviceName.lowercased().replacingOccurrences(of: " ", with: "-")
         return NSImage(named: slug)
     }
 

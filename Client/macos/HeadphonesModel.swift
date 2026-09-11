@@ -1,227 +1,299 @@
 //
 //  HeadphonesModel.swift
-//  Observable view model wrapping the Obj-C++ HeadphonesBridge for SwiftUI.
+//  Actor: the single serial owner of the Obj-C++ HeadphonesBridge.
 //
 
 import Foundation
-import Combine
 
-final class HeadphonesModel: ObservableObject {
+// The bridge funnels every command through its own internal serial queue and
+// only ever touches its C++ core from there, so sharing it with the actor is
+// sound. It cannot be marked Sendable in Obj-C, hence the unchecked conformance.
+extension HeadphonesBridge: @unchecked Sendable {}
+
+/// Serial owner of the bridge. All bridge completion handlers are wrapped in
+/// continuations; bridge values are snapshotted inside the handler (whatever
+/// thread it runs on) and merged into actor state after the await, so no
+/// isolated state ever escapes. Every method returns an immutable
+/// `HeadphonesState` snapshot for the store to publish.
+actor HeadphonesModel {
     private let bridge = HeadphonesBridge()
+    private var state = HeadphonesState()
 
-    @Published var connected = false
-    @Published var connecting = false
-    @Published var deviceName = ""
-    @Published var supportsVpt = false
-    @Published var maxAmbientLevel = 20
+    var snapshot: HeadphonesState { state }
 
-    @Published var mode: SHCAmbientMode = .off
-    @Published var ambientLevel = 10
-    @Published var focusOnVoice = false
-    @Published var focusOnVoiceAvailable = false
+    // MARK: Connection
 
-    @Published var batteryLevel = -1
-    @Published var batteryCharging = false
-    @Published var hasDualBattery = false
-    @Published var batteryLeft = -1
-    @Published var batteryRight = -1
-    @Published var batteryCase = -1
-    @Published var eqPreset = 0
-    @Published var supportsEqualizer = false
-    @Published var eqBands = [0, 0, 0, 0, 0]
-    @Published var clearBass = 0
-    @Published var dsee = false
-
-    @Published var hasAutoPowerOff = false
-    @Published var autoPowerOff = 0
-    @Published var firmware = ""
-    @Published var codec = ""
-    @Published var hasSpeakToChat = false
-    @Published var speakToChat = false
-    @Published var hasAdaptiveVolume = false
-    @Published var adaptiveVolume = false
-    @Published var deviceMac = ""
-    @Published var protocolVersion = ""
-
-    @Published var errorMessage: String?
-
-    private var pollTimer: Timer?
-    private var dynamicTimer: Timer?
-
-    func connect() {
-        connecting = true
-        errorMessage = nil
-        // Defer so SwiftUI can render the "Connecting…" state before the modal picker blocks the main thread.
-        DispatchQueue.main.async {
-            self.bridge.scanAndConnect { ok, error in
-                self.connecting = false
-                if ok {
-                    self.syncFromBridge()
-                    self.startWatchingConnection()
-                    self.refreshStatus()
-                    self.startDynamicPolling()
-                } else if let error = error {
-                    self.errorMessage = error
+    func connect() async -> HeadphonesState {
+        state.connecting = true
+        state.errorMessage = nil
+        let bridge = self.bridge
+        // The native picker must run on the main thread and blocks it while
+        // open. Dispatching async (rather than sync) lets the store's
+        // "Connecting…" state paint before the modal appears.
+        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                bridge.scanAndConnect { ok, error in
+                    continuation.resume(returning: (ok, error))
                 }
             }
         }
-    }
-
-    func refreshStatus() {
-        bridge.refreshStatus {
-            self.batteryLevel = self.bridge.batteryLevel
-            self.batteryCharging = self.bridge.batteryCharging
-            self.hasDualBattery = self.bridge.hasDualBattery
-            self.batteryLeft = self.bridge.batteryLeft
-            self.batteryRight = self.bridge.batteryRight
-            self.batteryCase = self.bridge.batteryCase
-            self.eqPreset = self.bridge.eqPreset
-            self.clearBass = self.bridge.clearBass
-            self.dsee = self.bridge.dsee
-            self.eqBands = (0..<5).map { self.bridge.equalizerBand(at: $0) }
-            self.hasAutoPowerOff = self.bridge.hasAutoPowerOff
-            self.autoPowerOff = self.bridge.autoPowerOff
-            self.firmware = self.bridge.firmware ?? ""
-            self.codec = self.bridge.codec ?? ""
-            self.hasSpeakToChat = self.bridge.hasSpeakToChat
-            self.speakToChat = self.bridge.speakToChat
-            self.hasAdaptiveVolume = self.bridge.hasAdaptiveVolume
-            self.adaptiveVolume = self.bridge.adaptiveVolume
+        state.connecting = false
+        if outcome.ok {
+            syncFromBridge()
+        } else if let error = outcome.error {
+            state.errorMessage = error
         }
+        return state
     }
 
-    func setAutoPowerOff(_ index: Int) {
-        autoPowerOff = index
-        errorMessage = nil
-        bridge.setAutoPowerOff(index) { ok, error in if !ok, let e = error { self.errorMessage = e } }
+    func disconnect() async -> HeadphonesState {
+        let bridge = self.bridge
+        await MainActor.run { bridge.disconnect() }
+        state.connected = false
+        state.deviceName = ""
+        return state
     }
 
-    func setSpeakToChat(_ on: Bool) {
-        speakToChat = on
-        errorMessage = nil
-        bridge.setSpeakToChat(on) { ok, error in if !ok, let e = error { self.errorMessage = e } }
+    /// Timer-driven watchdog: the headset can drop RFCOMM on its own
+    /// (idle power-save), so the UI must not show a stale "Connected".
+    func pollConnection() async -> HeadphonesState {
+        let bridge = self.bridge
+        let connected = await MainActor.run { bridge.connected }
+        if state.connected && !connected {
+            state.connected = false
+            state.deviceName = ""
+            state.errorMessage = "Headphones disconnected."
+        }
+        return state
     }
 
-    func setAdaptiveVolume(_ on: Bool) {
-        adaptiveVolume = on
-        errorMessage = nil
-        bridge.setAdaptiveVolume(on) { ok, error in if !ok, let e = error { self.errorMessage = e } }
-    }
+    // MARK: Reads
 
-    // Poll the button-changeable state so the app stays in sync when you use the headphone's own controls.
-    private func startDynamicPolling() {
-        stopDynamicPolling()
-        dynamicTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in
-            guard let self = self, self.connected else { return }
-            self.bridge.refreshDynamic {
-                self.mode = self.bridge.mode
-                let level = self.bridge.ambientLevel
-                if level > 0 { self.ambientLevel = level }
-                self.eqPreset = self.bridge.eqPreset
-                self.clearBass = self.bridge.clearBass
-                self.dsee = self.bridge.dsee
-                self.eqBands = (0..<5).map { self.bridge.equalizerBand(at: $0) }
+    /// Runs the init handshake (once) then reads battery + equalizer.
+    func refreshStatus() async -> HeadphonesState {
+        let bridge = self.bridge
+        let fresh: HeadphonesState = await withCheckedContinuation { continuation in
+            bridge.refreshStatus {
+                var s = HeadphonesState()
+                s.batteryLevel = bridge.batteryLevel
+                s.batteryCharging = bridge.batteryCharging
+                s.hasDualBattery = bridge.hasDualBattery
+                s.batteryLeft = bridge.batteryLeft
+                s.batteryRight = bridge.batteryRight
+                s.batteryCase = bridge.batteryCase
+                s.eqPreset = bridge.eqPreset
+                s.clearBass = bridge.clearBass
+                s.dsee = bridge.dsee
+                s.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
+                s.hasAutoPowerOff = bridge.hasAutoPowerOff
+                s.autoPowerOff = bridge.autoPowerOff
+                s.firmware = bridge.firmware ?? ""
+                s.codec = bridge.codec ?? ""
+                s.hasSpeakToChat = bridge.hasSpeakToChat
+                s.speakToChat = bridge.speakToChat
+                s.hasAdaptiveVolume = bridge.hasAdaptiveVolume
+                s.adaptiveVolume = bridge.adaptiveVolume
+                continuation.resume(returning: s)
             }
         }
+        state.batteryLevel = fresh.batteryLevel
+        state.batteryCharging = fresh.batteryCharging
+        state.hasDualBattery = fresh.hasDualBattery
+        state.batteryLeft = fresh.batteryLeft
+        state.batteryRight = fresh.batteryRight
+        state.batteryCase = fresh.batteryCase
+        state.eqPreset = fresh.eqPreset
+        state.clearBass = fresh.clearBass
+        state.dsee = fresh.dsee
+        state.eqBands = fresh.eqBands
+        state.hasAutoPowerOff = fresh.hasAutoPowerOff
+        state.autoPowerOff = fresh.autoPowerOff
+        state.firmware = fresh.firmware
+        state.codec = fresh.codec
+        state.hasSpeakToChat = fresh.hasSpeakToChat
+        state.speakToChat = fresh.speakToChat
+        state.hasAdaptiveVolume = fresh.hasAdaptiveVolume
+        state.adaptiveVolume = fresh.adaptiveVolume
+        return state
     }
 
-    private func stopDynamicPolling() {
-        dynamicTimer?.invalidate()
-        dynamicTimer = nil
-    }
-
-    func setEqualizer(_ preset: Int) {
-        eqPreset = preset
-        errorMessage = nil
-        bridge.setEqualizerPreset(preset) { ok, error in
-            if !ok, let error = error { self.errorMessage = error }
-        }
-    }
-
-    // Manual EQ (preset byte 0xA0 = 160). Called as the user drags a band or clear-bass slider.
-    func applyCustomEq() {
-        eqPreset = 0xA0
-        errorMessage = nil
-        bridge.setCustomEqualizerBass(clearBass, bands: eqBands.map { NSNumber(value: $0) }) { ok, error in
-            if !ok, let error = error { self.errorMessage = error }
-        }
-    }
-
-    func setDsee(_ on: Bool) {
-        dsee = on
-        errorMessage = nil
-        bridge.setDsee(on) { ok, error in
-            if !ok, let error = error { self.errorMessage = error }
-        }
-    }
-
-    func disconnect() {
-        stopWatchingConnection()
-        stopDynamicPolling()
-        bridge.disconnect()
-        connected = false
-        deviceName = ""
-    }
-
-    // The headset can drop the RFCOMM link on its own (idle power-save). Poll so the UI reflects reality
-    // instead of showing a stale "Connected" state.
-    private func startWatchingConnection() {
-        stopWatchingConnection()
-        pollTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { [weak self] _ in
-            guard let self = self else { return }
-            if self.connected && !self.bridge.connected {
-                self.connected = false
-                self.deviceName = ""
-                self.errorMessage = "Headphones disconnected."
-                self.stopWatchingConnection()
-                self.stopDynamicPolling()
+    /// Re-reads the fast-changing state (ambient/NC, level, EQ, DSEE) so
+    /// changes made with the headphone's own button show up in the app.
+    func refreshDynamic() async -> HeadphonesState {
+        guard state.connected else { return state }
+        let bridge = self.bridge
+        let fresh: HeadphonesState = await withCheckedContinuation { continuation in
+            bridge.refreshDynamic {
+                var s = HeadphonesState()
+                s.mode = bridge.mode
+                s.ambientLevel = bridge.ambientLevel
+                s.eqPreset = bridge.eqPreset
+                s.clearBass = bridge.clearBass
+                s.dsee = bridge.dsee
+                s.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
+                continuation.resume(returning: s)
             }
         }
+        state.mode = fresh.mode
+        if fresh.ambientLevel > 0 { state.ambientLevel = fresh.ambientLevel }
+        state.eqPreset = fresh.eqPreset
+        state.clearBass = fresh.clearBass
+        state.dsee = fresh.dsee
+        state.eqBands = fresh.eqBands
+        return state
     }
 
-    private func stopWatchingConnection() {
-        pollTimer?.invalidate()
-        pollTimer = nil
+    // MARK: Ambient sound control
+
+    func setMode(_ newMode: SHCAmbientMode) async -> HeadphonesState {
+        state.mode = newMode
+        return await pushAmbient()
     }
 
-    func setMode(_ newMode: SHCAmbientMode) {
-        mode = newMode
-        pushState()
+    func setLevel(_ level: Int) async -> HeadphonesState {
+        state.ambientLevel = level
+        if state.mode == .ambientSound {
+            return await pushAmbient()
+        }
+        return state
     }
 
-    func setLevel(_ level: Int) {
-        ambientLevel = level
-        if mode == .ambientSound { pushState() }
+    func setFocusOnVoice(_ on: Bool) async -> HeadphonesState {
+        state.focusOnVoice = on
+        return await pushAmbient()
     }
 
-    func setFocusOnVoice(_ on: Bool) {
-        focusOnVoice = on
-        pushState()
-    }
+    // MARK: Equalizer / DSEE
 
-    private func pushState() {
-        errorMessage = nil
-        bridge.applyMode(mode, level: ambientLevel, focusVoice: focusOnVoice) { ok, error in
-            if ok {
-                self.syncFromBridge()
-            } else if let error = error {
-                self.errorMessage = error
+    func setEqualizer(_ preset: Int) async -> HeadphonesState {
+        state.eqPreset = preset
+        state.errorMessage = nil
+        let bridge = self.bridge
+        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
+            bridge.setEqualizerPreset(preset) { ok, error in
+                continuation.resume(returning: (ok, error))
             }
         }
+        if !outcome.ok, let error = outcome.error {
+            state.errorMessage = error
+        }
+        return state
+    }
+
+    /// Manual EQ (preset byte 0xA0 = 160).
+    func setCustomEq(bass: Int, bands: [Int]) async -> HeadphonesState {
+        state.eqPreset = 0xA0
+        state.clearBass = bass
+        state.eqBands = bands
+        state.errorMessage = nil
+        let bridge = self.bridge
+        let numbers = bands.map { NSNumber(value: $0) }
+        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
+            bridge.setCustomEqualizerBass(bass, bands: numbers) { ok, error in
+                continuation.resume(returning: (ok, error))
+            }
+        }
+        if !outcome.ok, let error = outcome.error {
+            state.errorMessage = error
+        }
+        return state
+    }
+
+    func setDsee(_ on: Bool) async -> HeadphonesState {
+        state.dsee = on
+        state.errorMessage = nil
+        let bridge = self.bridge
+        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
+            bridge.setDsee(on) { ok, error in
+                continuation.resume(returning: (ok, error))
+            }
+        }
+        if !outcome.ok, let error = outcome.error {
+            state.errorMessage = error
+        }
+        return state
+    }
+
+    // MARK: Optional features
+
+    func setAutoPowerOff(_ index: Int) async -> HeadphonesState {
+        state.autoPowerOff = index
+        state.errorMessage = nil
+        let bridge = self.bridge
+        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
+            bridge.setAutoPowerOff(index) { ok, error in
+                continuation.resume(returning: (ok, error))
+            }
+        }
+        if !outcome.ok, let error = outcome.error {
+            state.errorMessage = error
+        }
+        return state
+    }
+
+    func setSpeakToChat(_ on: Bool) async -> HeadphonesState {
+        state.speakToChat = on
+        state.errorMessage = nil
+        let bridge = self.bridge
+        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
+            bridge.setSpeakToChat(on) { ok, error in
+                continuation.resume(returning: (ok, error))
+            }
+        }
+        if !outcome.ok, let error = outcome.error {
+            state.errorMessage = error
+        }
+        return state
+    }
+
+    func setAdaptiveVolume(_ on: Bool) async -> HeadphonesState {
+        state.adaptiveVolume = on
+        state.errorMessage = nil
+        let bridge = self.bridge
+        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
+            bridge.setAdaptiveVolume(on) { ok, error in
+                continuation.resume(returning: (ok, error))
+            }
+        }
+        if !outcome.ok, let error = outcome.error {
+            state.errorMessage = error
+        }
+        return state
+    }
+
+    // MARK: Private helpers (actor-isolated)
+
+    private func pushAmbient() async -> HeadphonesState {
+        let bridge = self.bridge
+        let mode = state.mode
+        let level = state.ambientLevel
+        let focusVoice = state.focusOnVoice
+        state.errorMessage = nil
+        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
+            bridge.applyMode(mode, level: level, focusVoice: focusVoice) { ok, error in
+                continuation.resume(returning: (ok, error))
+            }
+        }
+        if outcome.ok {
+            syncFromBridge()
+        } else if let error = outcome.error {
+            state.errorMessage = error
+        }
+        return state
     }
 
     private func syncFromBridge() {
-        connected = bridge.connected
-        deviceName = bridge.deviceName ?? ""
-        deviceMac = bridge.deviceMac ?? ""
-        protocolVersion = bridge.protocolVersionString ?? ""
-        supportsVpt = bridge.supportsVpt
-        supportsEqualizer = bridge.supportsEqualizer
-        maxAmbientLevel = bridge.maxAmbientLevel
-        mode = bridge.mode
+        state.connected = bridge.connected
+        state.deviceName = bridge.deviceName ?? ""
+        state.deviceMac = bridge.deviceMac ?? ""
+        state.protocolVersion = bridge.protocolVersionString ?? ""
+        state.supportsVpt = bridge.supportsVpt
+        state.supportsEqualizer = bridge.supportsEqualizer
+        state.maxAmbientLevel = bridge.maxAmbientLevel
+        state.mode = bridge.mode
         let level = bridge.ambientLevel
-        if level > 0 { ambientLevel = level }
-        focusOnVoice = bridge.focusOnVoice
-        focusOnVoiceAvailable = bridge.focusOnVoiceAvailable
+        if level > 0 { state.ambientLevel = level }
+        state.focusOnVoice = bridge.focusOnVoice
+        state.focusOnVoiceAvailable = bridge.focusOnVoiceAvailable
     }
 }
