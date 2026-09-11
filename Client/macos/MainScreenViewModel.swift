@@ -12,8 +12,12 @@ import Combine
 /// update it optimistically for a responsive UI and then replace it with the
 /// actor's authoritative snapshot.
 @MainActor
-final class HeadphonesStore: ObservableObject {
+final class MainScreenViewModel: ObservableObject {
     @Published var state = HeadphonesState()
+
+    /// Transient UI state. Intentionally outside `HeadphonesState` so actor
+    /// snapshot replacements never reset it behind the view's back.
+    @Published var showAbout = false
 
     private let model = HeadphonesModel()
     private var pollTimer: Timer?

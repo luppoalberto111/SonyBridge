@@ -11,7 +11,7 @@ struct SonyHeadphonesClientApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainScreenView()
                 .preferredColorScheme(.dark)
         }
         .windowStyle(.hiddenTitleBar)

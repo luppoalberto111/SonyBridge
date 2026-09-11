@@ -15,9 +15,8 @@ private enum Theme {
 }
 
 @available(macOS 11.0, *)
-struct ContentView: View {
-    @StateObject private var model = HeadphonesStore()
-    @State private var showAbout = false
+struct MainScreenView: View {
+    @StateObject private var model = MainScreenViewModel()
 
     var body: some View {
         ZStack {
@@ -96,7 +95,7 @@ struct ContentView: View {
         VStack(spacing: 12) {
             HStack(spacing: 10) {
                 Spacer()
-                Button(action: { showAbout = true }) {
+                Button(action: { model.showAbout = true }) {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundColor(Theme.secondary)
@@ -105,7 +104,7 @@ struct ContentView: View {
                         .clipShape(Circle())
                 }
                 .buttonStyle(PlainButtonStyle())
-                .popover(isPresented: $showAbout, arrowEdge: .bottom) { aboutView }
+                .popover(isPresented: $model.showAbout, arrowEdge: .bottom) { aboutView }
                 Button(action: model.disconnect) {
                     Image(systemName: "power")
                         .font(.system(size: 14, weight: .semibold))
@@ -435,29 +434,6 @@ struct ContentView: View {
         case ...15: return "battery.0"
         case ...50: return "battery.25"
         default: return "battery.100"
-        }
-    }
-}
-
-// MARK: - Menu commands
-
-
-
-/// Headphone actions for the app menu (see SonyHeadphonesClientApp).
-/// Standard items (About, Services, Hide, Quit, Window) come from SwiftUI
-/// automatically; only these need custom wiring, via notifications so the
-/// Scene-level commands stay decoupled from the view's store.
-struct HeadphonesCommands: Commands {
-    var body: some Commands {
-        CommandMenu("Headphones") {
-            Button("Connect to Headphones") {
-                NotificationCenter.default.post(name: .connectHeadphones, object: nil)
-            }
-            .keyboardShortcut("k", modifiers: .command)
-            Button("Disconnect") {
-                NotificationCenter.default.post(name: .disconnectHeadphones, object: nil)
-            }
-            .keyboardShortcut("d", modifiers: [.command, .shift])
         }
     }
 }
