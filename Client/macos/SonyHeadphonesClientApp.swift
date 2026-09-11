@@ -8,10 +8,12 @@ import SwiftUI
 @main
 struct SonyHeadphonesClientApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
+    let viewModel = MainScreenViewModel()
 
     var body: some Scene {
         WindowGroup {
-            MainScreenView()
+            MainScreenView(viewModel: viewModel)
                 .preferredColorScheme(.dark)
         }
         .windowStyle(.hiddenTitleBar)
@@ -19,7 +21,10 @@ struct SonyHeadphonesClientApp: App {
         .defaultSize(width: 380, height: 560)
         .defaultPosition(.center)
         .commands {
-            HeadphonesCommands()
+            HeadphonesCommands(
+                connectClosure: { viewModel.connect() },
+                disconnectClosure: { viewModel.disconnect() }
+            )
         }
     }
 }
