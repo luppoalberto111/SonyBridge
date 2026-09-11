@@ -24,32 +24,30 @@
 		CC000000000000000000000E /* MainScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000D /* MainScreenViewModel.swift */; };
 		CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000F /* SonyHeadphonesClientApp.swift */; };
 		DD0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD0000000000000000000002 /* Assets.xcassets */; };
-
 		F7EAEFD23053FBB600018001 /* HeadphonesCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A863B14925A11DF500101F3B /* SonyHeadphonesClient.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SonyHeadphonesClient.entitlements; sourceTree = "<group>"; };
-		A87B327A259F69BA00EA6551 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = Constants.h; sourceTree = "<group>"; };
+		A87B327A259F69BA00EA6551 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 		A87B328A259FAA8B00EA6551 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetoothUI.framework; path = System/Library/Frameworks/IOBluetoothUI.framework; sourceTree = SDKROOT; };
-		A8A3D31C283EC38500148E80 /* Headphones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Headphones.h; path = Headphones.h; sourceTree = "<group>"; };
-		A8A3D31D283EC38600148E80 /* Headphones.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Headphones.cpp; path = Headphones.cpp; sourceTree = "<group>"; };
+		A8A3D31C283EC38500148E80 /* Headphones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Headphones.h; sourceTree = "<group>"; };
+		A8A3D31D283EC38600148E80 /* Headphones.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Headphones.cpp; sourceTree = "<group>"; };
 		A8DC78E32576922700447738 /* info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
 		A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SonyHeadphonesClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8DC78E72576923D00447738 /* MacOSBluetoothConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacOSBluetoothConnector.h; sourceTree = "<group>"; };
 		A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MacOSBluetoothConnector.mm; sourceTree = "<group>"; };
-		A8DC78EE2576950500447738 /* IBluetoothConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IBluetoothConnector.h; path = IBluetoothConnector.h; sourceTree = "<group>"; };
-		A8DC78EF2576952E00447738 /* BluetoothWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BluetoothWrapper.cpp; path = BluetoothWrapper.cpp; sourceTree = "<group>"; };
-		A8DC78F02576952E00447738 /* BluetoothWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BluetoothWrapper.h; path = BluetoothWrapper.h; sourceTree = "<group>"; };
-		A8DC78F32576953600447738 /* CommandSerializer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CommandSerializer.cpp; path = CommandSerializer.cpp; sourceTree = "<group>"; };
-		A8DC78F42576953600447738 /* CommandSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommandSerializer.h; path = CommandSerializer.h; sourceTree = "<group>"; };
-		A8DC78F72576954100447738 /* TimedMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimedMessageQueue.h; path = TimedMessageQueue.h; sourceTree = "<group>"; };
-		A8DC78F82576954100447738 /* SingleInstanceFuture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleInstanceFuture.h; path = SingleInstanceFuture.h; sourceTree = "<group>"; };
-		A8DC78F92576954100447738 /* TimedMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TimedMessageQueue.cpp; path = TimedMessageQueue.cpp; sourceTree = "<group>"; };
-		A8DC78FD2576967D00447738 /* ByteMagic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ByteMagic.cpp; path = ByteMagic.cpp; sourceTree = "<group>"; };
-		A8DC78FE2576967D00447738 /* ByteMagic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ByteMagic.h; path = ByteMagic.h; sourceTree = "<group>"; };
-		CC0000000000000000000011 /* Exceptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exceptions.h; sourceTree = "<group>"; };
+		A8DC78EE2576950500447738 /* IBluetoothConnector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IBluetoothConnector.h; sourceTree = "<group>"; };
+		A8DC78EF2576952E00447738 /* BluetoothWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BluetoothWrapper.cpp; sourceTree = "<group>"; };
+		A8DC78F02576952E00447738 /* BluetoothWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BluetoothWrapper.h; sourceTree = "<group>"; };
+		A8DC78F32576953600447738 /* CommandSerializer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CommandSerializer.cpp; sourceTree = "<group>"; };
+		A8DC78F42576953600447738 /* CommandSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommandSerializer.h; sourceTree = "<group>"; };
+		A8DC78F72576954100447738 /* TimedMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimedMessageQueue.h; sourceTree = "<group>"; };
+		A8DC78F82576954100447738 /* SingleInstanceFuture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleInstanceFuture.h; sourceTree = "<group>"; };
+		A8DC78F92576954100447738 /* TimedMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimedMessageQueue.cpp; sourceTree = "<group>"; };
+		A8DC78FD2576967D00447738 /* ByteMagic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ByteMagic.cpp; sourceTree = "<group>"; };
+		A8DC78FE2576967D00447738 /* ByteMagic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ByteMagic.h; sourceTree = "<group>"; };
 		A8DC790425769A6600447738 /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
 		CC0000000000000000000002 /* HeadphonesBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HeadphonesBridge.mm; sourceTree = "<group>"; };
 		CC0000000000000000000003 /* HeadphonesBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HeadphonesBridge.h; sourceTree = "<group>"; };
@@ -60,8 +58,8 @@
 		CC000000000000000000000B /* HeadphonesState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesState.swift; sourceTree = "<group>"; };
 		CC000000000000000000000D /* MainScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewModel.swift; sourceTree = "<group>"; };
 		CC000000000000000000000F /* SonyHeadphonesClientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonyHeadphonesClientApp.swift; sourceTree = "<group>"; };
+		CC0000000000000000000011 /* Exceptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Exceptions.h; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-
 		F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesCommands.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,10 +85,8 @@
 				A8DC78E82576923D00447738 /* MacOSBluetoothConnector.mm */,
 				A8DC78E32576922700447738 /* info.plist */,
 				A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */,
-				EE0000000000000000000001 /* SonyBluetooth */,
+				EE0000000000000000000001 /* SonyBTKit */,
 				CC0000000000000000000009 /* AppDelegate.swift */,
-				CC0000000000000000000003 /* HeadphonesBridge.h */,
-				CC0000000000000000000002 /* HeadphonesBridge.mm */,
 				CC0000000000000000000005 /* MainScreenView.swift */,
 				CC0000000000000000000007 /* HeadphonesModel.swift */,
 				F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */,
@@ -103,7 +99,26 @@
 			);
 			sourceTree = "<group>";
 		};
-		EE0000000000000000000001 /* SonyBluetooth */ = {
+		A8DC790325769A6600447738 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */,
+				A87B328A259FAA8B00EA6551 /* Cocoa.framework */,
+				A8DC790425769A6600447738 /* IOBluetooth.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		EE0000000000000000000001 /* SonyBTKit */ = {
+			isa = PBXGroup;
+			children = (
+				F7EAEFD4305412C400018001 /* Bridge */,
+				F7EAEFD3305412A100018001 /* Core */,
+			);
+			path = SonyBTKit;
+			sourceTree = "<group>";
+		};
+		F7EAEFD3305412A100018001 /* Core */ = {
 			isa = PBXGroup;
 			children = (
 				A87B327A259F69BA00EA6551 /* Constants.h */,
@@ -121,17 +136,16 @@
 				A8A3D31D283EC38600148E80 /* Headphones.cpp */,
 				A8A3D31C283EC38500148E80 /* Headphones.h */,
 			);
-			path = SonyBluetooth;
+			path = Core;
 			sourceTree = "<group>";
 		};
-		A8DC790325769A6600447738 /* Frameworks */ = {
+		F7EAEFD4305412C400018001 /* Bridge */ = {
 			isa = PBXGroup;
 			children = (
-				A87B328D259FAB0E00EA6551 /* IOBluetoothUI.framework */,
-				A87B328A259FAA8B00EA6551 /* Cocoa.framework */,
-				A8DC790425769A6600447738 /* IOBluetooth.framework */,
+				CC0000000000000000000003 /* HeadphonesBridge.h */,
+				CC0000000000000000000002 /* HeadphonesBridge.mm */,
 			);
-			name = Frameworks;
+			path = Bridge;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -214,7 +228,6 @@
 				CC0000000000000000000004 /* MainScreenView.swift in Sources */,
 				CC0000000000000000000006 /* HeadphonesModel.swift in Sources */,
 				CC000000000000000000000C /* HeadphonesState.swift in Sources */,
-
 				CC000000000000000000000E /* MainScreenViewModel.swift in Sources */,
 				CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */,
 			);
@@ -353,8 +366,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/SonyBluetooth";
+				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -385,8 +398,8 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
-				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/SonyBluetooth";
+				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
