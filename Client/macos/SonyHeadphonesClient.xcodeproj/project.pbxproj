@@ -366,7 +366,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/SonyBluetooth";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/SonyBTKit";
 				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -398,7 +398,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/SonyBluetooth";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/SonyBTKit";
 				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

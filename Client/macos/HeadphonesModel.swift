@@ -10,30 +10,31 @@ import Foundation
 // sound. It cannot be marked Sendable in Obj-C, hence the unchecked conformance.
 extension HeadphonesBridge: @unchecked Sendable {}
 
+/// Presents the native picker on the main thread by awaiting the bridge's
+/// synthesized async overload from the main actor.
+
 actor HeadphonesModel {
     private let bridge = HeadphonesBridge()
     private var state = HeadphonesState()
 
     // MARK: Connection
 
+    @MainActor
+    private func scanAndConnectOnMain(_ bridge: HeadphonesBridge) async -> (Bool, String?) {
+        await bridge.scanAndConnect()
+    }
+
     func connect() async -> HeadphonesState {
         state.connecting = true
         state.errorMessage = nil
-        let bridge = self.bridge
         // The native picker must run on the main thread and blocks it while
-        // open. Dispatching async (rather than sync) lets the store's
+        // open; hopping to the main actor also lets the store's
         // "Connecting…" state paint before the modal appears.
-        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
-            DispatchQueue.main.async {
-                bridge.scanAndConnect { ok, error in
-                    continuation.resume(returning: (ok, error))
-                }
-            }
-        }
+        let (ok, error) = await scanAndConnectOnMain(bridge)
         state.connecting = false
-        if outcome.ok {
+        if ok {
             syncFromBridge()
-        } else if let error = outcome.error {
+        } else if let error {
             state.errorMessage = error
         }
         return state
@@ -64,49 +65,25 @@ actor HeadphonesModel {
 
     /// Runs the init handshake (once) then reads battery + equalizer.
     func refreshStatus() async -> HeadphonesState {
-        let bridge = self.bridge
-        let fresh: HeadphonesState = await withCheckedContinuation { continuation in
-            bridge.refreshStatus {
-                var s = HeadphonesState()
-                s.batteryLevel = bridge.batteryLevel
-                s.batteryCharging = bridge.batteryCharging
-                s.hasDualBattery = bridge.hasDualBattery
-                s.batteryLeft = bridge.batteryLeft
-                s.batteryRight = bridge.batteryRight
-                s.batteryCase = bridge.batteryCase
-                s.eqPreset = bridge.eqPreset
-                s.clearBass = bridge.clearBass
-                s.dsee = bridge.dsee
-                s.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
-                s.hasAutoPowerOff = bridge.hasAutoPowerOff
-                s.autoPowerOff = bridge.autoPowerOff
-                s.firmware = bridge.firmware ?? ""
-                s.codec = bridge.codec ?? ""
-                s.hasSpeakToChat = bridge.hasSpeakToChat
-                s.speakToChat = bridge.speakToChat
-                s.hasAdaptiveVolume = bridge.hasAdaptiveVolume
-                s.adaptiveVolume = bridge.adaptiveVolume
-                continuation.resume(returning: s)
-            }
-        }
-        state.batteryLevel = fresh.batteryLevel
-        state.batteryCharging = fresh.batteryCharging
-        state.hasDualBattery = fresh.hasDualBattery
-        state.batteryLeft = fresh.batteryLeft
-        state.batteryRight = fresh.batteryRight
-        state.batteryCase = fresh.batteryCase
-        state.eqPreset = fresh.eqPreset
-        state.clearBass = fresh.clearBass
-        state.dsee = fresh.dsee
-        state.eqBands = fresh.eqBands
-        state.hasAutoPowerOff = fresh.hasAutoPowerOff
-        state.autoPowerOff = fresh.autoPowerOff
-        state.firmware = fresh.firmware
-        state.codec = fresh.codec
-        state.hasSpeakToChat = fresh.hasSpeakToChat
-        state.speakToChat = fresh.speakToChat
-        state.hasAdaptiveVolume = fresh.hasAdaptiveVolume
-        state.adaptiveVolume = fresh.adaptiveVolume
+        await bridge.refreshStatus()
+        state.batteryLevel = bridge.batteryLevel
+        state.batteryCharging = bridge.batteryCharging
+        state.hasDualBattery = bridge.hasDualBattery
+        state.batteryLeft = bridge.batteryLeft
+        state.batteryRight = bridge.batteryRight
+        state.batteryCase = bridge.batteryCase
+        state.eqPreset = bridge.eqPreset
+        state.clearBass = bridge.clearBass
+        state.dsee = bridge.dsee
+        state.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
+        state.hasAutoPowerOff = bridge.hasAutoPowerOff
+        state.autoPowerOff = bridge.autoPowerOff
+        state.firmware = bridge.firmware ?? ""
+        state.codec = bridge.codec ?? ""
+        state.hasSpeakToChat = bridge.hasSpeakToChat
+        state.speakToChat = bridge.speakToChat
+        state.hasAdaptiveVolume = bridge.hasAdaptiveVolume
+        state.adaptiveVolume = bridge.adaptiveVolume
         return state
     }
 
@@ -114,25 +91,14 @@ actor HeadphonesModel {
     /// changes made with the headphone's own button show up in the app.
     func refreshDynamic() async -> HeadphonesState {
         guard state.connected else { return state }
-        let bridge = self.bridge
-        let fresh: HeadphonesState = await withCheckedContinuation { continuation in
-            bridge.refreshDynamic {
-                var s = HeadphonesState()
-                s.mode = bridge.mode
-                s.ambientLevel = bridge.ambientLevel
-                s.eqPreset = bridge.eqPreset
-                s.clearBass = bridge.clearBass
-                s.dsee = bridge.dsee
-                s.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
-                continuation.resume(returning: s)
-            }
-        }
-        state.mode = fresh.mode
-        if fresh.ambientLevel > 0 { state.ambientLevel = fresh.ambientLevel }
-        state.eqPreset = fresh.eqPreset
-        state.clearBass = fresh.clearBass
-        state.dsee = fresh.dsee
-        state.eqBands = fresh.eqBands
+        await bridge.refreshDynamic()
+        state.mode = bridge.mode
+        let level = bridge.ambientLevel
+        if level > 0 { state.ambientLevel = level }
+        state.eqPreset = bridge.eqPreset
+        state.clearBass = bridge.clearBass
+        state.dsee = bridge.dsee
+        state.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
         return state
     }
 
@@ -161,13 +127,8 @@ actor HeadphonesModel {
     func setEqualizer(_ preset: Int) async -> HeadphonesState {
         state.eqPreset = preset
         state.errorMessage = nil
-        let bridge = self.bridge
-        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
-            bridge.setEqualizerPreset(preset) { ok, error in
-                continuation.resume(returning: (ok, error))
-            }
-        }
-        if !outcome.ok, let error = outcome.error {
+        let (ok, error) = await bridge.setEqualizerPreset(preset)
+        if !ok, let error {
             state.errorMessage = error
         }
         return state
@@ -179,14 +140,9 @@ actor HeadphonesModel {
         state.clearBass = bass
         state.eqBands = bands
         state.errorMessage = nil
-        let bridge = self.bridge
         let numbers = bands.map { NSNumber(value: $0) }
-        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
-            bridge.setCustomEqualizerBass(bass, bands: numbers) { ok, error in
-                continuation.resume(returning: (ok, error))
-            }
-        }
-        if !outcome.ok, let error = outcome.error {
+        let (ok, error) = await bridge.setCustomEqualizerBass(bass, bands: numbers)
+        if !ok, let error {
             state.errorMessage = error
         }
         return state
@@ -195,13 +151,8 @@ actor HeadphonesModel {
     func setDsee(_ on: Bool) async -> HeadphonesState {
         state.dsee = on
         state.errorMessage = nil
-        let bridge = self.bridge
-        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
-            bridge.setDsee(on) { ok, error in
-                continuation.resume(returning: (ok, error))
-            }
-        }
-        if !outcome.ok, let error = outcome.error {
+        let (ok, error) = await bridge.setDsee(on)
+        if !ok, let error {
             state.errorMessage = error
         }
         return state
@@ -212,13 +163,8 @@ actor HeadphonesModel {
     func setAutoPowerOff(_ index: Int) async -> HeadphonesState {
         state.autoPowerOff = index
         state.errorMessage = nil
-        let bridge = self.bridge
-        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
-            bridge.setAutoPowerOff(index) { ok, error in
-                continuation.resume(returning: (ok, error))
-            }
-        }
-        if !outcome.ok, let error = outcome.error {
+        let (ok, error) = await bridge.setAutoPowerOff(index)
+        if !ok, let error {
             state.errorMessage = error
         }
         return state
@@ -227,13 +173,8 @@ actor HeadphonesModel {
     func setSpeakToChat(_ on: Bool) async -> HeadphonesState {
         state.speakToChat = on
         state.errorMessage = nil
-        let bridge = self.bridge
-        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
-            bridge.setSpeakToChat(on) { ok, error in
-                continuation.resume(returning: (ok, error))
-            }
-        }
-        if !outcome.ok, let error = outcome.error {
+        let (ok, error) = await bridge.setSpeakToChat(on)
+        if !ok, let error {
             state.errorMessage = error
         }
         return state
@@ -242,13 +183,8 @@ actor HeadphonesModel {
     func setAdaptiveVolume(_ on: Bool) async -> HeadphonesState {
         state.adaptiveVolume = on
         state.errorMessage = nil
-        let bridge = self.bridge
-        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
-            bridge.setAdaptiveVolume(on) { ok, error in
-                continuation.resume(returning: (ok, error))
-            }
-        }
-        if !outcome.ok, let error = outcome.error {
+        let (ok, error) = await bridge.setAdaptiveVolume(on)
+        if !ok, let error {
             state.errorMessage = error
         }
         return state
@@ -257,19 +193,14 @@ actor HeadphonesModel {
     // MARK: Private helpers (actor-isolated)
 
     private func pushAmbient() async -> HeadphonesState {
-        let bridge = self.bridge
         let mode = state.mode
         let level = state.ambientLevel
         let focusVoice = state.focusOnVoice
         state.errorMessage = nil
-        let outcome: (ok: Bool, error: String?) = await withCheckedContinuation { continuation in
-            bridge.applyMode(mode, level: level, focusVoice: focusVoice) { ok, error in
-                continuation.resume(returning: (ok, error))
-            }
-        }
-        if outcome.ok {
+        let (ok, error) = await bridge.applyMode(mode, level: level, focusVoice: focusVoice)
+        if ok {
             syncFromBridge()
-        } else if let error = outcome.error {
+        } else if let error {
             state.errorMessage = error
         }
         return state
