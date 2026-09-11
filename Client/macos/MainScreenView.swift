@@ -5,14 +5,9 @@
 
 import SwiftUI
 import AppKit
+import Bridge
 
-private enum Theme {
-    static let bg = Color(red: 0.07, green: 0.07, blue: 0.086)
-    static let card = Color(red: 0.13, green: 0.13, blue: 0.16)
-    static let cardHi = Color(red: 0.20, green: 0.20, blue: 0.24)
-    static let accent = Color(red: 0.62, green: 0.62, blue: 0.96)
-    static let secondary = Color(white: 0.62)
-}
+
 
 @available(macOS 11.0, *)
 struct MainScreenView: View {
@@ -28,44 +23,14 @@ struct MainScreenView: View {
             if model.state.connected {
                 connectedView
             } else {
-                disconnectedView
+                DisconnectedView(
+                    connecting: model.state.connecting,
+                    errorMessage: model.state.errorMessage,
+                    connectAction: model.connect
+                )
             }
         }
         .frame(minWidth: 360, maxWidth: 560, minHeight: 500, maxHeight: 900)
-    }
-
-    // MARK: - Disconnected
-
-    private var disconnectedView: some View {
-        VStack(spacing: 24) {
-            Spacer()
-            Image(systemName: "headphones")
-                .font(.system(size: 64, weight: .thin))
-                .foregroundColor(Theme.secondary)
-            Text("No headphones connected")
-                .font(.system(size: 15, weight: .medium))
-                .foregroundColor(Theme.secondary)
-            if let error = model.state.errorMessage {
-                Text(error)
-                    .font(.system(size: 12))
-                    .foregroundColor(.red.opacity(0.9))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
-            }
-            Button(action: model.connect) {
-                Text(model.state.connecting ? "Connecting…" : "Connect headphones")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(Theme.accent)
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-            }
-            .buttonStyle(PlainButtonStyle())
-            .disabled(model.state.connecting)
-            .padding(.horizontal, 40)
-            Spacer()
-        }
     }
 
     // MARK: - Connected

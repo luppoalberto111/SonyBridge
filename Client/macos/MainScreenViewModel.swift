@@ -6,6 +6,8 @@
 
 import Foundation
 import Combine
+import Client
+import Bridge
 
 /// Thin `@MainActor` facade over the actor. It holds a single `@Published`
 /// `HeadphonesState` that views read (`model.state.connected`, …); intents

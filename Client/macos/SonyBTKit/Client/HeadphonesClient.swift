@@ -1,9 +1,12 @@
 import Foundation
+import Bridge
 
 /// Presents the native picker on the main thread by awaiting the bridge's
 /// synthesized async overload from the main actor.
 
-actor HeadphonesClient {
+public actor HeadphonesClient {
+    public init() {}
+
     private let bridge = HeadphonesBridge()
     private var state = HeadphonesState()
 
@@ -14,7 +17,7 @@ actor HeadphonesClient {
         await bridge.scanAndConnect()
     }
 
-    func connect() async -> HeadphonesState {
+    public func connect() async -> HeadphonesState {
         state.connecting = true
         state.errorMessage = nil
         // The native picker must run on the main thread and blocks it while
@@ -30,7 +33,7 @@ actor HeadphonesClient {
         return state
     }
 
-    func disconnect() async -> HeadphonesState {
+    public func disconnect() async -> HeadphonesState {
         let bridge = self.bridge
         await MainActor.run { bridge.disconnect() }
         state.connected = false
@@ -40,7 +43,7 @@ actor HeadphonesClient {
 
     /// Timer-driven watchdog: the headset can drop RFCOMM on its own
     /// (idle power-save), so the UI must not show a stale "Connected".
-    func pollConnection() async -> HeadphonesState {
+    public func pollConnection() async -> HeadphonesState {
         let bridge = self.bridge
         let connected = await MainActor.run { bridge.connected }
         if state.connected && !connected {
@@ -54,14 +57,14 @@ actor HeadphonesClient {
     // MARK: Reads
 
     /// Runs the init handshake (once) then reads battery + equalizer.
-    func refreshStatus() async -> HeadphonesState {
+    public func refreshStatus() async -> HeadphonesState {
         await bridge.refreshStatus()
         return state.updated(with: bridge)
     }
 
     /// Re-reads the fast-changing state (ambient/NC, level, EQ, DSEE) so
     /// changes made with the headphone's own button show up in the app.
-    func refreshDynamic() async -> HeadphonesState {
+    public func refreshDynamic() async -> HeadphonesState {
         guard state.connected else { return state }
         await bridge.refreshDynamic()
         state.mode = bridge.mode
@@ -76,12 +79,12 @@ actor HeadphonesClient {
 
     // MARK: Ambient sound control
 
-    func setMode(_ newMode: SHCAmbientMode) async -> HeadphonesState {
+    public func setMode(_ newMode: SHCAmbientMode) async -> HeadphonesState {
         state.mode = newMode
         return await pushAmbient()
     }
 
-    func setLevel(_ level: Int) async -> HeadphonesState {
+    public func setLevel(_ level: Int) async -> HeadphonesState {
         state.ambientLevel = level
         if state.mode == .ambientSound {
             return await pushAmbient()
@@ -89,14 +92,14 @@ actor HeadphonesClient {
         return state
     }
 
-    func setFocusOnVoice(_ on: Bool) async -> HeadphonesState {
+    public func setFocusOnVoice(_ on: Bool) async -> HeadphonesState {
         state.focusOnVoice = on
         return await pushAmbient()
     }
 
     // MARK: Equalizer / DSEE
 
-    func setEqualizer(_ preset: Int) async -> HeadphonesState {
+    public func setEqualizer(_ preset: Int) async -> HeadphonesState {
         state.eqPreset = preset
         state.errorMessage = nil
         let (ok, error) = await bridge.setEqualizerPreset(preset)
@@ -107,7 +110,7 @@ actor HeadphonesClient {
     }
 
     /// Manual EQ (preset byte 0xA0 = 160).
-    func setCustomEq(bass: Int, bands: [Int]) async -> HeadphonesState {
+    public func setCustomEq(bass: Int, bands: [Int]) async -> HeadphonesState {
         state.eqPreset = 0xA0
         state.clearBass = bass
         state.eqBands = bands
@@ -120,7 +123,7 @@ actor HeadphonesClient {
         return state
     }
 
-    func setDsee(_ on: Bool) async -> HeadphonesState {
+    public func setDsee(_ on: Bool) async -> HeadphonesState {
         state.dsee = on
         state.errorMessage = nil
         let (ok, error) = await bridge.setDsee(on)
@@ -132,7 +135,7 @@ actor HeadphonesClient {
 
     // MARK: Optional features
 
-    func setAutoPowerOff(_ index: Int) async -> HeadphonesState {
+    public func setAutoPowerOff(_ index: Int) async -> HeadphonesState {
         state.autoPowerOff = index
         state.errorMessage = nil
         let (ok, error) = await bridge.setAutoPowerOff(index)
@@ -142,7 +145,7 @@ actor HeadphonesClient {
         return state
     }
 
-    func setSpeakToChat(_ on: Bool) async -> HeadphonesState {
+    public func setSpeakToChat(_ on: Bool) async -> HeadphonesState {
         state.speakToChat = on
         state.errorMessage = nil
         let (ok, error) = await bridge.setSpeakToChat(on)
@@ -152,7 +155,7 @@ actor HeadphonesClient {
         return state
     }
 
-    func setAdaptiveVolume(_ on: Bool) async -> HeadphonesState {
+    public func setAdaptiveVolume(_ on: Bool) async -> HeadphonesState {
         state.adaptiveVolume = on
         state.errorMessage = nil
         let (ok, error) = await bridge.setAdaptiveVolume(on)
