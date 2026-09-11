@@ -10,16 +10,9 @@ import Foundation
 // sound. It cannot be marked Sendable in Obj-C, hence the unchecked conformance.
 extension HeadphonesBridge: @unchecked Sendable {}
 
-/// Serial owner of the bridge. All bridge completion handlers are wrapped in
-/// continuations; bridge values are snapshotted inside the handler (whatever
-/// thread it runs on) and merged into actor state after the await, so no
-/// isolated state ever escapes. Every method returns an immutable
-/// `HeadphonesState` snapshot for the store to publish.
 actor HeadphonesModel {
     private let bridge = HeadphonesBridge()
     private var state = HeadphonesState()
-
-    var snapshot: HeadphonesState { state }
 
     // MARK: Connection
 

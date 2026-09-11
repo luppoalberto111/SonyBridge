@@ -12,8 +12,8 @@
 #include "MacOSBluetoothConnector.h"
 #include "BluetoothWrapper.h"
 #include "Headphones.h"
-// RecoverableException comes in transitively via BluetoothWrapper.h -> IBluetoothConnector.h -> Exceptions.h.
-// (Exceptions.h isn't a project file reference, so it can't be #included directly from this directory.)
+// RecoverableException comes in transitively via BluetoothWrapper.h -> IBluetoothConnector.h -> Exceptions.h
+// (all vendored under SonyBluetooth/, which is on the header search path).
 
 @implementation HeadphonesBridge {
     std::unique_ptr<BluetoothWrapper> _bt;

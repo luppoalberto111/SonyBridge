@@ -1,6 +1,6 @@
 #pragma once
 #include <stdio.h>
-#include "../IBluetoothConnector.h"
+#include "IBluetoothConnector.h"
 #include "IOBluetooth/IOBluetooth.h"
 #include "Constants.h"
 #include <thread>
