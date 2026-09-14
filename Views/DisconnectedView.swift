@@ -2,10 +2,9 @@ import SwiftUI
 
 struct DisconnectedView: View {
     let connecting: Bool
-    var errorMessage: String? = nil
+    var errorMessage: String?
     var connectAction: () -> Void = {}
-    
-    
+
     var body: some View {
         VStack(spacing: 24) {
             Spacer()

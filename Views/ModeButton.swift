@@ -1,12 +1,14 @@
-import SwiftUI
 import Bridge
+import SwiftUI
+
+// MARK: - ModeButton
 
 struct ModeButton: View {
     let mode: SHCAmbientMode
     let isSelected: Bool
-    
+
     var setMode: (SHCAmbientMode) -> Void = { _ in }
-    
+
     var body: some View {
         Button(action: { setMode(mode) }) {
             VStack(spacing: 8) {
@@ -43,11 +45,17 @@ extension SHCAmbientMode {
                 ""
         }
     }
-    
+
     var label: String {
         switch self {
-            case .noiseCanceling: String(localized: "AmbientMode.noiseCanceling", defaultValue: "Noise\nCanceling")
-            case .ambientSound: String(localized: "AmbientMode.ambientSound", defaultValue: "Ambient\nSound")
+            case .noiseCanceling: String(
+                    localized: "AmbientMode.noiseCanceling",
+                    defaultValue: "Noise\nCanceling"
+                )
+            case .ambientSound: String(
+                    localized: "AmbientMode.ambientSound",
+                    defaultValue: "Ambient\nSound"
+                )
             case .off: String(localized: "AmbientMode.off", defaultValue: "Off")
             @unknown default:
                 ""

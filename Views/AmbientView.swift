@@ -1,5 +1,5 @@
-import SwiftUI
 import Bridge
+import SwiftUI
 
 struct AmbientView: View {
     struct Model {
@@ -70,7 +70,7 @@ struct AmbientView: View {
                     get: { Double(model.ambientLevel) },
                     set: { setLevel(Int($0.rounded())) }
                 ),
-                in: 1...Double(model.maxAmbientLevel),
+                in: 1 ... Double(model.maxAmbientLevel),
                 step: 1
             )
             .accentColor(Theme.accent)

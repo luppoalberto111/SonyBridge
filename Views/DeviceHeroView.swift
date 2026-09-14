@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: - DeviceHeroView
+
 struct DeviceHeroView: View {
     struct Model {
         let deviceName: String
@@ -15,7 +17,8 @@ struct DeviceHeroView: View {
 
     let model: Model
 
-    @Binding var showAbout: Bool
+    @Binding
+    var showAbout: Bool
     var disconnect: () -> Void = {}
 
     var body: some View {
@@ -52,8 +55,13 @@ struct DeviceHeroView: View {
                 Circle()
                     .fill(
                         RadialGradient(
-                            gradient: Gradient(colors: [Theme.accent.opacity(0.22), Theme.accent.opacity(0.0)]),
-                            center: .center, startRadius: 4, endRadius: 104
+                            gradient: Gradient(colors: [
+                                Theme.accent.opacity(0.22),
+                                Theme.accent.opacity(0.0)
+                            ]),
+                            center: .center,
+                            startRadius: 4,
+                            endRadius: 104
                         )
                     )
                     .frame(width: 210, height: 210)
@@ -62,7 +70,7 @@ struct DeviceHeroView: View {
                     // Background-removed product cutout floating on the dark UI.
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .scaledToFit()
                         .frame(width: 190, height: 190)
                 } else {
                     Image(systemName: "headphones")
@@ -81,14 +89,20 @@ struct DeviceHeroView: View {
                         .font(.system(size: 13))
                         .foregroundColor(Theme.accent)
                     Text(String(
-                        format: String(localized: "DeviceHeroView.batteryDual.value", defaultValue: "L %@  R %@"),
-                        model.batteryLeft.percentFormatted, model.batteryRight.percentFormatted))
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundColor(Theme.secondary)
+                        format: String(
+                            localized: "DeviceHeroView.batteryDual.value",
+                            defaultValue: "L %@  R %@"
+                        ),
+                        model.batteryLeft.percentFormatted,
+                        model.batteryRight.percentFormatted
+                    ))
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(Theme.secondary)
                 } else if model.batteryLevel >= 0 {
                     model.batteryImage
                         .font(.system(size: 13))
-                        .foregroundColor(model.batteryLevel <= 20 ? .red.opacity(0.9) : Theme.accent)
+                        .foregroundColor(model.batteryLevel <= 20 ? .red.opacity(0.9) : Theme
+                            .accent)
                     Text(model.batteryLevel.percentFormatted)
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(Theme.secondary)

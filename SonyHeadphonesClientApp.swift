@@ -5,10 +5,10 @@
 
 import SwiftUI
 
-@main
-struct SonyHeadphonesClientApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+@main struct SonyHeadphonesClientApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self)
+    var appDelegate
+
     let viewModel = MainScreenViewModel()
 
     var body: some Scene {

@@ -1,5 +1,5 @@
-import Foundation
 import Bridge
+import Foundation
 
 /// In-memory test double for ``HeadphonesClientProtocol``.
 ///

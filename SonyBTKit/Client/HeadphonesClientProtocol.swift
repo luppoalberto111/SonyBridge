@@ -1,5 +1,5 @@
-import Foundation
 import Bridge
+import Foundation
 
 /// Public interface of the headphones client actor.
 ///

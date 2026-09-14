@@ -18,21 +18,33 @@ struct EqualizerView: View {
             Text("EqualizerView.title")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(.white)
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+            LazyVGrid(
+                columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())],
+                spacing: 10
+            ) {
                 ForEach(EqPreset.allCases, content: eqChip)
             }
             if model.eqPreset == EqPreset.manual.rawValue {
                 Divider().background(Theme.cardHi)
                 ForEach(EqBand.allCases) { band in
-                    eqBandRow(band.label, value: Binding(
-                        get: { Double(model.eqBands[band.rawValue]) },
-                        set: { setBand(band.rawValue, Int($0.rounded())) }
-                    ), display: model.eqBands[band.rawValue])
+                    eqBandRow(
+                        band.label,
+                        value: Binding(
+                            get: { Double(model.eqBands[band.rawValue]) },
+                            set: { setBand(band.rawValue, Int($0.rounded())) }
+                        ),
+                        display: model.eqBands[band.rawValue]
+                    )
                 }
-                eqBandRow(String(localized: "EqualizerView.clearBass", defaultValue: "Bass"), value: Binding(
-                    get: { Double(model.clearBass) },
-                    set: { setClearBass(Int($0.rounded())) }
-                ), display: model.clearBass, accent: true)
+                eqBandRow(
+                    String(localized: "EqualizerView.clearBass", defaultValue: "Bass"),
+                    value: Binding(
+                        get: { Double(model.clearBass) },
+                        set: { setClearBass(Int($0.rounded())) }
+                    ),
+                    display: model.clearBass,
+                    accent: true
+                )
             }
         }
         .padding(18)
@@ -41,13 +53,18 @@ struct EqualizerView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
-    private func eqBandRow(_ label: String, value: Binding<Double>, display: Int, accent: Bool = false) -> some View {
+    private func eqBandRow(
+        _ label: String,
+        value: Binding<Double>,
+        display: Int,
+        accent: Bool = false
+    ) -> some View {
         HStack(spacing: 10) {
             Text(label)
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(accent ? Theme.accent : Theme.secondary)
                 .frame(width: 34, alignment: .leading)
-            Slider(value: value, in: -10...10, step: 1).accentColor(Theme.accent)
+            Slider(value: value, in: -10 ... 10, step: 1).accentColor(Theme.accent)
             Text("\(display > 0 ? "+" : "")\(display)")
                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
                 .foregroundColor(.white)

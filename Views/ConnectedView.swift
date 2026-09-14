@@ -1,11 +1,14 @@
-import SwiftUI
 import Bridge
 import Client
+import SwiftUI
+
+// MARK: - ConnectedView
 
 struct ConnectedView: View {
     let state: HeadphonesState
 
-    @Binding var showAbout: Bool
+    @Binding
+    var showAbout: Bool
 
     var disconnect: () -> Void = {}
     var setMode: (SHCAmbientMode) -> Void = { _ in }

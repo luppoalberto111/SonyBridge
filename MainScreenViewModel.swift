@@ -4,27 +4,28 @@
 //  for SwiftUI.
 //
 
-import Foundation
-import Combine
-import Client
 import Bridge
+import Client
+import Combine
 import Dependencies
+import Foundation
 
 /// Thin `@MainActor` facade over the actor. It holds a single `@Published`
 /// `HeadphonesState` that views read (`headphonesClient.state.connected`, …); intents
 /// update it optimistically for a responsive UI and then replace it with the
 /// actor's authoritative snapshot.
-@MainActor
-final class MainScreenViewModel: ObservableObject {
-    @Published var state = HeadphonesState()
+@MainActor final class MainScreenViewModel: ObservableObject {
+    @Published
+    var state = HeadphonesState()
 
     /// Transient UI state. Intentionally outside `HeadphonesState` so actor
     /// snapshot replacements never reset it behind the view's back.
-    @Published var showAbout = false
+    @Published
+    var showAbout = false
 
     private var pollTimer: Timer?
     private var dynamicTimer: Timer?
-    
+
     @Dependency(\.headphonesClient)
     private var headphonesClient
 

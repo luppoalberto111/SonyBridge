@@ -11,11 +11,11 @@ enum EqPreset: Int, CaseIterable, Identifiable {
     case bass = 0x16
     case speech = 0x17
     case manual = 0xA0
-    
+
     var id: Int {
         rawValue
     }
-    
+
     var name: String {
         switch self {
             case .off: String(localized: "EqPreset.off", defaultValue: "Off")

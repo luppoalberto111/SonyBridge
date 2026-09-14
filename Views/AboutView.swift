@@ -24,26 +24,48 @@ struct AboutView: View {
                 .font(.system(size: 15, weight: .bold))
                 .foregroundColor(.white)
                 .padding(.bottom, 10)
-            aboutRow("AboutView.row.status", model.connected
-                ? String(localized: "AboutView.status.connected", defaultValue: "Connected")
-                : String(localized: "AboutView.status.disconnected", defaultValue: "Disconnected"))
+            aboutRow(
+                "AboutView.row.status",
+                model.connected
+                    ? String(localized: "AboutView.status.connected", defaultValue: "Connected")
+                    : String(
+                        localized: "AboutView.status.disconnected",
+                        defaultValue: "Disconnected"
+                    )
+            )
             if model.hasDualBattery {
-                aboutRow("AboutView.row.batteryDual", String(
-                    format: String(localized: "AboutView.batteryDual.value", defaultValue: "%@ / %@"),
-                    model.batteryLeft.percentFormatted, model.batteryRight.percentFormatted))
+                aboutRow(
+                    "AboutView.row.batteryDual",
+                    String(
+                        format: String(
+                            localized: "AboutView.batteryDual.value",
+                            defaultValue: "%@ / %@"
+                        ),
+                        model.batteryLeft.percentFormatted,
+                        model.batteryRight.percentFormatted
+                    )
+                )
                 if model.batteryCase >= 0 {
                     aboutRow("AboutView.row.batteryCase", model.batteryCase.percentFormatted)
                 }
             } else if model.batteryLevel >= 0 {
                 let chargingSuffix = model.batteryCharging
-                    ? String(localized: "AboutView.batterySingle.chargingSuffix", defaultValue: " (charging)")
+                    ? String(
+                        localized: "AboutView.batterySingle.chargingSuffix",
+                        defaultValue: " (charging)"
+                    )
                     : ""
-                aboutRow("AboutView.row.batterySingle",
-                    model.batteryLevel.percentFormatted + chargingSuffix)
+                aboutRow(
+                    "AboutView.row.batterySingle",
+                    model.batteryLevel.percentFormatted + chargingSuffix
+                )
             }
             if !model.codec.isEmpty { aboutRow("AboutView.row.codec", model.codec) }
             if !model.firmware.isEmpty { aboutRow("AboutView.row.firmware", model.firmware) }
-            if !model.protocolVersion.isEmpty { aboutRow("AboutView.row.protocol", model.protocolVersion) }
+            if !model.protocolVersion.isEmpty { aboutRow(
+                "AboutView.row.protocol",
+                model.protocolVersion
+            ) }
             if !model.deviceMac.isEmpty { aboutRow("AboutView.row.bluetooth", model.deviceMac) }
             Divider().background(Theme.cardHi).padding(.vertical, 10)
             Text("AboutView.disclaimer")

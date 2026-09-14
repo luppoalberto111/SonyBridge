@@ -10,12 +10,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+    func applicationShouldHandleReopen(
+        _ sender: NSApplication,
+        hasVisibleWindows flag: Bool
+    ) -> Bool {
         if flag {
             return false
         }
-        sender.windows.first(where: { $0.canBecomeMain })?.makeKeyAndOrderFront(self)
-        
+        sender.windows.first(where: \.canBecomeMain)?.makeKeyAndOrderFront(self)
+
         return true
     }
 }

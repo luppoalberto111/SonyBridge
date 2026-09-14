@@ -1,5 +1,5 @@
-import Foundation
 import Bridge
+import Foundation
 
 /// Presents the native picker on the main thread by awaiting the bridge's
 /// synthesized async overload from the main actor.
@@ -34,7 +34,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     }
 
     public func disconnect() async -> HeadphonesState {
-        let bridge = self.bridge
+        let bridge = bridge
         await MainActor.run { bridge.disconnect() }
         state.connected = false
         state.deviceName = ""
@@ -44,9 +44,9 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     /// Timer-driven watchdog: the headset can drop RFCOMM on its own
     /// (idle power-save), so the UI must not show a stale "Connected".
     public func pollConnection() async -> HeadphonesState {
-        let bridge = self.bridge
+        let bridge = bridge
         let connected = await MainActor.run { bridge.connected }
-        if state.connected && !connected {
+        if state.connected, !connected {
             state.connected = false
             state.deviceName = ""
             state.errorMessage = "Headphones disconnected."
@@ -80,7 +80,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
         state.eqPreset = bridge.eqPreset
         state.clearBass = bridge.clearBass
         state.dsee = bridge.dsee
-        state.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
+        state.eqBands = (0 ..< 5).map { bridge.equalizerBand(at: $0) }
         return state
     }
 

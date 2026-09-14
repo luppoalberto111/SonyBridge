@@ -1,8 +1,8 @@
 import SwiftUI
 
-@available(macOS 11.0, *)
 struct MainScreenView: View {
-    @StateObject private var model: MainScreenViewModel
+    @StateObject
+    private var model: MainScreenViewModel
 
     init(viewModel: MainScreenViewModel) {
         _model = StateObject(wrappedValue: viewModel)

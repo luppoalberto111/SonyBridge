@@ -1,7 +1,9 @@
-import Foundation
-import Bridge
 import AppKit
+import Bridge
+import Foundation
 import SwiftUI
+
+// MARK: - HeadphonesState
 
 /// Everything SwiftUI renders. A value type so it can hop between the actor
 /// and the MainActor store without data races.
@@ -56,7 +58,7 @@ extension HeadphonesState {
         updated.eqPreset = bridge.eqPreset
         updated.clearBass = bridge.clearBass
         updated.dsee = bridge.dsee
-        updated.eqBands = (0..<5).map { bridge.equalizerBand(at: $0) }
+        updated.eqBands = (0 ..< 5).map { bridge.equalizerBand(at: $0) }
         updated.hasAutoPowerOff = bridge.hasAutoPowerOff
         updated.autoPowerOff = bridge.autoPowerOff
         updated.firmware = bridge.firmware ?? ""
@@ -67,7 +69,7 @@ extension HeadphonesState {
         updated.adaptiveVolume = bridge.adaptiveVolume
         return updated
     }
-    
+
     func synced(with bridge: HeadphonesBridge) -> Self {
         var updated = self
         updated.connected = bridge.connected
@@ -84,24 +86,26 @@ extension HeadphonesState {
         updated.focusOnVoiceAvailable = bridge.focusOnVoiceAvailable
         return updated
     }
-    
+
     public var deviceImage: Image? {
         let name = deviceName.lowercased().replacingOccurrences(of: " ", with: "-")
         guard NSImage(named: name) != nil else { return nil }
         return Image(name)
     }
-    
+
     public var batteryState: BatteryState {
         .init(rawValue: batteryLevel, isCharging: batteryCharging)
     }
 }
+
+// MARK: - BatteryState
 
 public enum BatteryState: Hashable {
     case empty
     case half
     case full
     case charging
-    
+
     init(rawValue: Int, isCharging: Bool) {
         if isCharging {
             self = .charging
@@ -116,7 +120,7 @@ public enum BatteryState: Hashable {
                 .full
         }
     }
-    
+
     public var image: Image {
         let imageName = switch self {
             case .empty:

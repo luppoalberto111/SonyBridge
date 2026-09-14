@@ -12,7 +12,8 @@ struct DseeView: View {
     var body: some View {
         Toggle(isOn: Binding(get: { model.dsee }, set: { setDsee($0) })) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("DseeView.title").font(.system(size: 14, weight: .semibold)).foregroundColor(.white)
+                Text("DseeView.title").font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
                 Text("DseeView.subtitle").font(.system(size: 11)).foregroundColor(Theme.secondary)
             }
         }
