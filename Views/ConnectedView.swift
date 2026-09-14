@@ -14,14 +14,14 @@ import SwiftUI
 @Reducer struct ConnectedReducer {
     @ObservableState struct State: Equatable {
         var headphones: HeadphonesState
-        var showAbout = false
+        var deviceHero = DeviceHeroReducer.State()
     }
 
     enum Action {
+        case deviceHero(DeviceHeroReducer.Action)
         case task
         case refreshStatusRequested
         case snapshotReceived(HeadphonesState)
-        case showAboutChanged(Bool)
         case disconnectButtonTapped
         case setMode(SHCAmbientMode)
         case setLevel(Int)
@@ -54,6 +54,12 @@ import SwiftUI
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
+                case .deviceHero(.delegate(.disconnectRequested)):
+                    return disconnectEffect()
+
+                case .deviceHero:
+                    return .none
+
                 case .task:
                     return .merge(startPolling(), .send(.refreshStatusRequested))
 
@@ -65,21 +71,11 @@ import SwiftUI
 
                 case let .snapshotReceived(snap):
                     state.headphones = snap
-                    return .none
-
-                case let .showAboutChanged(show):
-                    state.showAbout = show
+                    state.deviceHero.headphones = snap
                     return .none
 
                 case .disconnectButtonTapped:
-                    return .merge(
-                        .cancel(id: CancelID.dynamicPolling),
-                        .cancel(id: CancelID.watchConnection),
-                        .run { send in
-                            _ = await client.disconnect()
-                            await send(.delegate(.didDisconnect))
-                        }
-                    )
+                    return disconnectEffect()
 
                 case let .setMode(mode):
                     state.headphones.mode = mode
@@ -159,6 +155,7 @@ import SwiftUI
 
                 case let .dynamicTickResponse(snap):
                     state.headphones = snap
+                    state.deviceHero.headphones = snap
                     return .none
 
                 case .watchTick:
@@ -168,6 +165,7 @@ import SwiftUI
 
                 case let .watchTickResponse(snap):
                     state.headphones = snap
+                    state.deviceHero.headphones = snap
                     if snap.connected {
                         return .none
                     }
@@ -181,6 +179,21 @@ import SwiftUI
                     return .none
             }
         }
+
+        Scope(state: \.deviceHero, action: \.deviceHero) {
+            DeviceHeroReducer()
+        }
+    }
+
+    private func disconnectEffect() -> Effect<Action> {
+        .merge(
+            .cancel(id: CancelID.dynamicPolling),
+            .cancel(id: CancelID.watchConnection),
+            .run { send in
+                _ = await client.disconnect()
+                await send(.delegate(.didDisconnect))
+            }
+        )
     }
 
     /// Manual EQ (preset byte 0xA0 = 160). Called as the user drags a band or clear-bass slider.
@@ -228,12 +241,8 @@ struct ConnectedView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 16) {
                 DeviceHeroView(
-                    model: store.headphones.deviceHeroModel,
-                    showAbout: Binding(
-                        get: { store.showAbout },
-                        set: { store.send(.showAboutChanged($0)) }
-                    )
-                ) { store.send(.disconnectButtonTapped) }
+                    store: store.scope(state: \.deviceHero, action: \.deviceHero)
+                )
                 AmbientView(
                     model: store.headphones.ambientModel,
                     setMode: { store.send(.setMode($0)) },
@@ -290,7 +299,12 @@ private func previewState() -> HeadphonesState {
 
 #Preview {
     ConnectedView(
-        store: Store(initialState: ConnectedReducer.State(headphones: previewState())) {
+        store: Store(
+            initialState: ConnectedReducer.State(
+                headphones: previewState(),
+                deviceHero: DeviceHeroReducer.State(headphones: previewState())
+            )
+        ) {
             ConnectedReducer()
         }
     )

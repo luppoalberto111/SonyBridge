@@ -1,8 +1,53 @@
+import Client
+import ComposableArchitecture
 import SwiftUI
+
+// MARK: - DeviceHeroReducer
+
+/// Device hero feature: owns the About popover presentation state and
+/// forwards the disconnect tap to the parent via `delegate`.
+///
+/// Display data lives in `headphones` (synced from the parent's snapshots)
+/// and is mapped through the existing `deviceHeroModel` extension, so no
+/// image or formatting logic is duplicated here.
+@Reducer struct DeviceHeroReducer {
+    @ObservableState struct State: Equatable {
+        var headphones = HeadphonesState()
+        var showAbout = false
+    }
+
+    enum Action {
+        case showAboutChanged(Bool)
+        case disconnectTapped
+        case delegate(Delegate)
+    }
+
+    enum Delegate {
+        case disconnectRequested
+    }
+
+    var body: some ReducerOf<Self> {
+        Reduce { state, action in
+            switch action {
+                case let .showAboutChanged(show):
+                    state.showAbout = show
+                    return .none
+
+                case .disconnectTapped:
+                    return .send(.delegate(.disconnectRequested))
+
+                case .delegate:
+                    return .none
+            }
+        }
+    }
+}
 
 // MARK: - DeviceHeroView
 
 struct DeviceHeroView: View {
+    /// Render bundle derived from `HeadphonesState` (see `deviceHeroModel`).
+    /// Separate from `DeviceHeroReducer.State`, which owns behavior state.
     struct Model {
         let deviceName: String
         let deviceImage: Image?
@@ -15,17 +60,14 @@ struct DeviceHeroView: View {
         let about: AboutView.Model
     }
 
-    let model: Model
-
-    @Binding
-    var showAbout: Bool
-    var disconnect: () -> Void = {}
+    let store: StoreOf<DeviceHeroReducer>
 
     var body: some View {
+        let model = store.headphones.deviceHeroModel
         VStack(spacing: 12) {
             HStack(spacing: 10) {
                 Spacer()
-                Button(action: { showAbout = true }) {
+                Button(action: { store.send(.showAboutChanged(true)) }) {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundColor(Theme.secondary)
@@ -34,10 +76,16 @@ struct DeviceHeroView: View {
                         .clipShape(Circle())
                 }
                 .buttonStyle(PlainButtonStyle())
-                .popover(isPresented: $showAbout, arrowEdge: .bottom) {
+                .popover(
+                    isPresented: Binding(
+                        get: { store.showAbout },
+                        set: { store.send(.showAboutChanged($0)) }
+                    ),
+                    arrowEdge: .bottom
+                ) {
                     AboutView(model: model.about)
                 }
-                Button(action: disconnect) {
+                Button(action: { store.send(.disconnectTapped) }) {
                     Image(systemName: "power")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(Theme.secondary)
@@ -59,9 +107,7 @@ struct DeviceHeroView: View {
                                 Theme.accent.opacity(0.22),
                                 Theme.accent.opacity(0.0)
                             ]),
-                            center: .center,
-                            startRadius: 4,
-                            endRadius: 104
+                            center: .center, startRadius: 4, endRadius: 104
                         )
                     )
                     .frame(width: 210, height: 210)
@@ -70,7 +116,7 @@ struct DeviceHeroView: View {
                     // Background-removed product cutout floating on the dark UI.
                     image
                         .resizable()
-                        .scaledToFit()
+                        .aspectRatio(contentMode: .fit)
                         .frame(width: 190, height: 190)
                 } else {
                     Image(systemName: "headphones")
@@ -124,53 +170,38 @@ struct DeviceHeroView: View {
     }
 }
 
-private func aboutPreviewModel() -> AboutView.Model {
-    .init(
-        deviceName: "WH-1000XM5",
-        connected: true,
-        hasDualBattery: false,
-        batteryLeft: -1,
-        batteryRight: -1,
-        batteryCase: -1,
-        batteryLevel: 80,
-        batteryCharging: false,
-        codec: "LDAC",
-        firmware: "2.0.0",
-        protocolVersion: "v2",
-        deviceMac: "AA:BB:CC:DD:EE:FF"
-    )
+private func previewHeadphones() -> HeadphonesState {
+    var state = HeadphonesState()
+    state.connected = true
+    state.deviceName = "WH-1000XM5"
+    state.batteryLevel = 80
+    state.codec = "LDAC"
+    state.firmware = "2.0.0"
+    state.protocolVersion = "v2"
+    state.deviceMac = "AA:BB:CC:DD:EE:FF"
+    return state
 }
 
 #Preview {
     DeviceHeroView(
-        model: .init(
-            deviceName: "WH-1000XM5",
-            deviceImage: nil,
-            hasDualBattery: false,
-            batteryLeft: -1,
-            batteryRight: -1,
-            batteryLevel: 80,
-            batteryImage: Image(systemName: "battery.100"),
-            codec: "LDAC",
-            about: aboutPreviewModel()
-        ),
-        showAbout: .constant(false)
+        store: Store(initialState: DeviceHeroReducer.State(headphones: previewHeadphones())) {
+            DeviceHeroReducer()
+        }
     )
 }
 
 #Preview {
-    DeviceHeroView(
-        model: .init(
-            deviceName: "WF-1000XM5",
-            deviceImage: nil,
-            hasDualBattery: true,
-            batteryLeft: 80,
-            batteryRight: 75,
-            batteryLevel: -1,
-            batteryImage: Image(systemName: "battery.100"),
-            codec: "",
-            about: aboutPreviewModel()
-        ),
-        showAbout: .constant(false)
+    var dual = previewHeadphones()
+    dual.deviceName = "WF-1000XM5"
+    dual.hasDualBattery = true
+    dual.batteryLeft = 80
+    dual.batteryRight = 75
+    dual.batteryCase = 50
+    dual.batteryLevel = -1
+    dual.codec = ""
+    return DeviceHeroView(
+        store: Store(initialState: DeviceHeroReducer.State(headphones: dual)) {
+            DeviceHeroReducer()
+        }
     )
 }
