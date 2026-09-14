@@ -1,25 +1,75 @@
 import Bridge
+import Client
+import ComposableArchitecture
 import SwiftUI
 
-struct AmbientView: View {
-    struct Model {
-        let mode: SHCAmbientMode
-        let ambientLevel: Int
-        let maxAmbientLevel: Int
-        let focusOnVoice: Bool
-        let focusOnVoiceAvailable: Bool
+// MARK: - AmbientReducer
+
+/// Ambient-sound feature: owns the mode/level/voice-focus display slice.
+///
+/// Setter taps are reported to the parent via `delegate` — the parent runs
+/// the effects against `HeadphonesClient` and syncs fresh snapshots back.
+@Reducer struct AmbientReducer {
+    @ObservableState struct State: Equatable {
+        var mode: SHCAmbientMode = .off
+        var ambientLevel = 10
+        var maxAmbientLevel = 20
+        var focusOnVoice = false
+        var focusOnVoiceAvailable = false
+
+        mutating func sync(from headphones: HeadphonesState) {
+            mode = headphones.mode
+            ambientLevel = headphones.ambientLevel
+            maxAmbientLevel = headphones.maxAmbientLevel
+            focusOnVoice = headphones.focusOnVoice
+            focusOnVoiceAvailable = headphones.focusOnVoiceAvailable
+        }
     }
 
-    let model: Model
+    enum Action {
+        case setMode(SHCAmbientMode)
+        case setLevel(Int)
+        case setFocusOnVoice(Bool)
+        case delegate(Delegate)
+    }
 
-    var setMode: (SHCAmbientMode) -> Void = { _ in }
-    var setLevel: (Int) -> Void = { _ in }
-    var setFocusOnVoice: (Bool) -> Void = { _ in }
+    enum Delegate {
+        case setMode(SHCAmbientMode)
+        case setLevel(Int)
+        case setFocusOnVoice(Bool)
+    }
+
+    var body: some ReducerOf<Self> {
+        Reduce { state, action in
+            switch action {
+                case let .setMode(mode):
+                    state.mode = mode
+                    return .send(.delegate(.setMode(mode)))
+
+                case let .setLevel(level):
+                    state.ambientLevel = level
+                    return .send(.delegate(.setLevel(level)))
+
+                case let .setFocusOnVoice(on):
+                    state.focusOnVoice = on
+                    return .send(.delegate(.setFocusOnVoice(on)))
+
+                case .delegate:
+                    return .none
+            }
+        }
+    }
+}
+
+// MARK: - AmbientView
+
+struct AmbientView: View {
+    let store: StoreOf<AmbientReducer>
 
     var body: some View {
         VStack(spacing: 16) {
             modeCard
-            if model.mode == .ambientSound {
+            if store.mode == .ambientSound {
                 levelCard
             }
         }
@@ -33,18 +83,18 @@ struct AmbientView: View {
             HStack(spacing: 0) {
                 ModeButton(
                     mode: .noiseCanceling,
-                    isSelected: model.mode == .noiseCanceling,
-                    setMode: setMode
+                    isSelected: store.mode == .noiseCanceling,
+                    setMode: { store.send(.setMode($0)) }
                 )
                 ModeButton(
                     mode: .ambientSound,
-                    isSelected: model.mode == .ambientSound,
-                    setMode: setMode
+                    isSelected: store.mode == .ambientSound,
+                    setMode: { store.send(.setMode($0)) }
                 )
                 ModeButton(
                     mode: .off,
-                    isSelected: model.mode == .off,
-                    setMode: setMode
+                    isSelected: store.mode == .off,
+                    setMode: { store.send(.setMode($0)) }
                 )
             }
         }
@@ -61,24 +111,24 @@ struct AmbientView: View {
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(Theme.secondary)
                 Spacer()
-                Text("\(model.ambientLevel)")
+                Text("\(store.ambientLevel)")
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                     .foregroundColor(Theme.accent)
             }
             Slider(
                 value: Binding(
-                    get: { Double(model.ambientLevel) },
-                    set: { setLevel(Int($0.rounded())) }
+                    get: { Double(store.ambientLevel) },
+                    set: { store.send(.setLevel(Int($0.rounded()))) }
                 ),
-                in: 1 ... Double(model.maxAmbientLevel),
+                in: 1 ... Double(store.maxAmbientLevel),
                 step: 1
             )
             .accentColor(Theme.accent)
 
-            if model.focusOnVoiceAvailable {
+            if store.focusOnVoiceAvailable {
                 Toggle(isOn: Binding(
-                    get: { model.focusOnVoice },
-                    set: { setFocusOnVoice($0) }
+                    get: { store.focusOnVoice },
+                    set: { store.send(.setFocusOnVoice($0)) }
                 )) {
                     Text("AmbientView.levelCard.focusOnVoice")
                         .font(.system(size: 13, weight: .medium))
@@ -96,24 +146,32 @@ struct AmbientView: View {
 
 #Preview {
     AmbientView(
-        model: .init(
-            mode: .ambientSound,
-            ambientLevel: 10,
-            maxAmbientLevel: 20,
-            focusOnVoice: false,
-            focusOnVoiceAvailable: true
-        )
+        store: Store(
+            initialState: AmbientReducer.State(
+                mode: .ambientSound,
+                ambientLevel: 10,
+                maxAmbientLevel: 20,
+                focusOnVoice: false,
+                focusOnVoiceAvailable: true
+            )
+        ) {
+            AmbientReducer()
+        }
     )
 }
 
 #Preview {
     AmbientView(
-        model: .init(
-            mode: .noiseCanceling,
-            ambientLevel: 10,
-            maxAmbientLevel: 20,
-            focusOnVoice: false,
-            focusOnVoiceAvailable: false
-        )
+        store: Store(
+            initialState: AmbientReducer.State(
+                mode: .noiseCanceling,
+                ambientLevel: 10,
+                maxAmbientLevel: 20,
+                focusOnVoice: false,
+                focusOnVoiceAvailable: false
+            )
+        ) {
+            AmbientReducer()
+        }
     )
 }

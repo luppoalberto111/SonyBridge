@@ -18,16 +18,6 @@ extension HeadphonesState {
         )
     }
 
-    var ambientModel: AmbientView.Model {
-        .init(
-            mode: mode,
-            ambientLevel: ambientLevel,
-            maxAmbientLevel: maxAmbientLevel,
-            focusOnVoice: focusOnVoice,
-            focusOnVoiceAvailable: focusOnVoiceAvailable
-        )
-    }
-
     var settingsModel: SettingsView.Model {
         .init(
             hasAdaptiveVolume: hasAdaptiveVolume,

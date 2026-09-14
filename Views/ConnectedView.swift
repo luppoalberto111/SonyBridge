@@ -15,10 +15,12 @@ import SwiftUI
     @ObservableState struct State: Equatable {
         var headphones: HeadphonesState
         var deviceHero = DeviceHeroReducer.State()
+        var ambient = AmbientReducer.State()
     }
 
     enum Action {
         case deviceHero(DeviceHeroReducer.Action)
+        case ambient(AmbientReducer.Action)
         case task
         case refreshStatusRequested
         case snapshotReceived(HeadphonesState)
@@ -60,6 +62,18 @@ import SwiftUI
                 case .deviceHero:
                     return .none
 
+                case let .ambient(.delegate(.setMode(mode))):
+                    return .send(.setMode(mode))
+
+                case let .ambient(.delegate(.setLevel(level))):
+                    return .send(.setLevel(level))
+
+                case let .ambient(.delegate(.setFocusOnVoice(on))):
+                    return .send(.setFocusOnVoice(on))
+
+                case .ambient:
+                    return .none
+
                 case .task:
                     return .merge(startPolling(), .send(.refreshStatusRequested))
 
@@ -72,6 +86,7 @@ import SwiftUI
                 case let .snapshotReceived(snap):
                     state.headphones = snap
                     state.deviceHero.headphones = snap
+                    state.ambient.sync(from: snap)
                     return .none
 
                 case .disconnectButtonTapped:
@@ -156,6 +171,7 @@ import SwiftUI
                 case let .dynamicTickResponse(snap):
                     state.headphones = snap
                     state.deviceHero.headphones = snap
+                    state.ambient.sync(from: snap)
                     return .none
 
                 case .watchTick:
@@ -166,6 +182,7 @@ import SwiftUI
                 case let .watchTickResponse(snap):
                     state.headphones = snap
                     state.deviceHero.headphones = snap
+                    state.ambient.sync(from: snap)
                     if snap.connected {
                         return .none
                     }
@@ -182,6 +199,9 @@ import SwiftUI
 
         Scope(state: \.deviceHero, action: \.deviceHero) {
             DeviceHeroReducer()
+        }
+        Scope(state: \.ambient, action: \.ambient) {
+            AmbientReducer()
         }
     }
 
@@ -244,10 +264,7 @@ struct ConnectedView: View {
                     store: store.scope(state: \.deviceHero, action: \.deviceHero)
                 )
                 AmbientView(
-                    model: store.headphones.ambientModel,
-                    setMode: { store.send(.setMode($0)) },
-                    setLevel: { store.send(.setLevel($0)) },
-                    setFocusOnVoice: { store.send(.setFocusOnVoice($0)) }
+                    store: store.scope(state: \.ambient, action: \.ambient)
                 )
                 if store.headphones.supportsEqualizer {
                     EqualizerView(
