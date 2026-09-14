@@ -1,0 +1,567 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "AboutView.batteryDual.value" : {
+      "comment" : "AboutView: left/right battery value, e.g. 80% / 75%",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ / %@"
+          }
+        }
+      }
+    },
+    "AboutView.batterySingle.chargingSuffix" : {
+      "comment" : "AboutView: suffix appended to the battery value while charging",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " (charging)"
+          }
+        }
+      }
+    },
+    "AboutView.disclaimer" : {
+      "comment" : "AboutView: footer disclaimer",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SonyBridge · not affiliated with Sony"
+          }
+        }
+      }
+    },
+    "AboutView.row.batteryCase" : {
+      "comment" : "AboutView: charging-case battery row label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Case"
+          }
+        }
+      }
+    },
+    "AboutView.row.batteryDual" : {
+      "comment" : "AboutView: left/right battery row label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery L / R"
+          }
+        }
+      }
+    },
+    "AboutView.row.batterySingle" : {
+      "comment" : "AboutView: single battery row label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery"
+          }
+        }
+      }
+    },
+    "AboutView.row.bluetooth" : {
+      "comment" : "AboutView: bluetooth address row label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bluetooth"
+          }
+        }
+      }
+    },
+    "AboutView.row.codec" : {
+      "comment" : "AboutView: audio codec row label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Codec"
+          }
+        }
+      }
+    },
+    "AboutView.row.firmware" : {
+      "comment" : "AboutView: firmware version row label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Firmware"
+          }
+        }
+      }
+    },
+    "AboutView.row.protocol" : {
+      "comment" : "AboutView: protocol version row label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protocol"
+          }
+        }
+      }
+    },
+    "AboutView.row.status" : {
+      "comment" : "AboutView: connection status row label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Status"
+          }
+        }
+      }
+    },
+    "AboutView.status.connected" : {
+      "comment" : "AboutView: connected status value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connected"
+          }
+        }
+      }
+    },
+    "AboutView.status.disconnected" : {
+      "comment" : "AboutView: disconnected status value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disconnected"
+          }
+        }
+      }
+    },
+    "AmbientMode.ambientSound" : {
+      "comment" : "ModeButton: ambient sound mode label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ambient\nSound"
+          }
+        }
+      }
+    },
+    "AmbientMode.noiseCanceling" : {
+      "comment" : "ModeButton: noise canceling mode label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noise\nCanceling"
+          }
+        }
+      }
+    },
+    "AmbientMode.off" : {
+      "comment" : "ModeButton: mode off label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "AmbientView.levelCard.focusOnVoice" : {
+      "comment" : "AmbientView: focus on voice toggle label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Focus on Voice"
+          }
+        }
+      }
+    },
+    "AmbientView.levelCard.title" : {
+      "comment" : "AmbientView: ambient sound level card title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ambient Sound Level"
+          }
+        }
+      }
+    },
+    "AmbientView.modeCard.title" : {
+      "comment" : "AmbientView: sound mode card title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ambient Sound Control"
+          }
+        }
+      }
+    },
+    "AutoPowerOff.fiveMinutes" : {
+      "comment" : "SettingsView: auto power-off after 5 minutes",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 min"
+          }
+        }
+      }
+    },
+    "AutoPowerOff.off" : {
+      "comment" : "SettingsView: auto power-off disabled",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "AutoPowerOff.oneHour" : {
+      "comment" : "SettingsView: auto power-off after 1 hour",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 hour"
+          }
+        }
+      }
+    },
+    "AutoPowerOff.thirtyMinutes" : {
+      "comment" : "SettingsView: auto power-off after 30 minutes",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "30 min"
+          }
+        }
+      }
+    },
+    "AutoPowerOff.threeHours" : {
+      "comment" : "SettingsView: auto power-off after 3 hours",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 hours"
+          }
+        }
+      }
+    },
+    "AutoPowerOff.whenTakenOff" : {
+      "comment" : "SettingsView: auto power-off when headphones are taken off",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When taken off"
+          }
+        }
+      }
+    },
+    "DeviceHeroView.batteryDual.value" : {
+      "comment" : "DeviceHeroView: left/right battery text, e.g. L 80%  R 75%",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L %@  R %@"
+          }
+        }
+      }
+    },
+    "DeviceHeroView.status.connected" : {
+      "comment" : "DeviceHeroView: connected status text",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connected"
+          }
+        }
+      }
+    },
+    "DisconnectedView.connect" : {
+      "comment" : "DisconnectedView: connect button title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect headphones"
+          }
+        }
+      }
+    },
+    "DisconnectedView.connecting" : {
+      "comment" : "DisconnectedView: connect button title while connecting",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connecting…"
+          }
+        }
+      }
+    },
+    "DisconnectedView.title" : {
+      "comment" : "DisconnectedView: empty-state title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No headphones connected"
+          }
+        }
+      }
+    },
+    "DseeView.subtitle" : {
+      "comment" : "DseeView: feature description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Upscale compressed audio"
+          }
+        }
+      }
+    },
+    "DseeView.title" : {
+      "comment" : "DseeView: card title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "DSEE"
+          }
+        }
+      }
+    },
+    "EqPreset.bass" : {
+      "comment" : "EqualizerView: bass preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bass"
+          }
+        }
+      }
+    },
+    "EqPreset.bright" : {
+      "comment" : "EqualizerView: bright preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bright"
+          }
+        }
+      }
+    },
+    "EqPreset.excited" : {
+      "comment" : "EqualizerView: excited preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excited"
+          }
+        }
+      }
+    },
+    "EqPreset.manual" : {
+      "comment" : "EqualizerView: manual preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manual"
+          }
+        }
+      }
+    },
+    "EqPreset.mellow" : {
+      "comment" : "EqualizerView: mellow preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mellow"
+          }
+        }
+      }
+    },
+    "EqPreset.off" : {
+      "comment" : "EqualizerView: equalizer off preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "EqPreset.relaxed" : {
+      "comment" : "EqualizerView: relaxed preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Relaxed"
+          }
+        }
+      }
+    },
+    "EqPreset.speech" : {
+      "comment" : "EqualizerView: speech preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speech"
+          }
+        }
+      }
+    },
+    "EqPreset.treble" : {
+      "comment" : "EqualizerView: treble preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Treble"
+          }
+        }
+      }
+    },
+    "EqPreset.vocal" : {
+      "comment" : "EqualizerView: vocal preset",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vocal"
+          }
+        }
+      }
+    },
+    "EqualizerView.clearBass" : {
+      "comment" : "EqualizerView: clear bass slider label",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bass"
+          }
+        }
+      }
+    },
+    "EqualizerView.title" : {
+      "comment" : "EqualizerView: card title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Equalizer"
+          }
+        }
+      }
+    },
+    "SettingsView.adaptiveVolume.subtitle" : {
+      "comment" : "SettingsView: adaptive volume description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto-adjust volume by surroundings"
+          }
+        }
+      }
+    },
+    "SettingsView.adaptiveVolume.title" : {
+      "comment" : "SettingsView: adaptive volume row title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adaptive Volume"
+          }
+        }
+      }
+    },
+    "SettingsView.autoPowerOff.subtitle" : {
+      "comment" : "SettingsView: auto power-off description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Turn off when idle"
+          }
+        }
+      }
+    },
+    "SettingsView.autoPowerOff.title" : {
+      "comment" : "SettingsView: auto power-off row title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto Power-Off"
+          }
+        }
+      }
+    },
+    "SettingsView.speakToChat.subtitle" : {
+      "comment" : "SettingsView: speak-to-chat description",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause music when you talk"
+          }
+        }
+      }
+    },
+    "SettingsView.speakToChat.title" : {
+      "comment" : "SettingsView: speak-to-chat row title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speak-to-Chat"
+          }
+        }
+      }
+    },
+    "SettingsView.title" : {
+      "comment" : "SettingsView: card title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

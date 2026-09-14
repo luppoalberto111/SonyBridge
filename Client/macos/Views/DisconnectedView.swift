@@ -12,7 +12,7 @@ struct DisconnectedView: View {
             Image(systemName: "headphones")
                 .font(.system(size: 64, weight: .thin))
                 .foregroundColor(Theme.secondary)
-            Text("No headphones connected")
+            Text("DisconnectedView.title")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundColor(Theme.secondary)
             if let errorMessage {
@@ -23,7 +23,7 @@ struct DisconnectedView: View {
                     .padding(.horizontal, 32)
             }
             Button(action: connectAction) {
-                Text(connecting ? "Connecting…" : "Connect headphones")
+                Text(connecting ? "DisconnectedView.connecting" : "DisconnectedView.connect")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)

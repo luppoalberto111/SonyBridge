@@ -543,6 +543,7 @@ xcuserdata/
 *.xccheckout
 DerivedData/
 build/
+.build/
 *.ipa
 *.dSYM.zip
 *.dSYM

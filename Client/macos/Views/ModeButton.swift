@@ -46,9 +46,9 @@ extension SHCAmbientMode {
     
     var label: String {
         switch self {
-            case .noiseCanceling: "Noise\nCanceling"
-            case .ambientSound: "Ambient\nSound"
-            case .off: "Off"
+            case .noiseCanceling: String(localized: "AmbientMode.noiseCanceling", defaultValue: "Noise\nCanceling")
+            case .ambientSound: String(localized: "AmbientMode.ambientSound", defaultValue: "Ambient\nSound")
+            case .off: String(localized: "AmbientMode.off", defaultValue: "Off")
             @unknown default:
                 ""
         }

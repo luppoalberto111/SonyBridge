@@ -100,6 +100,17 @@ final class MainScreenViewModel: ObservableObject {
         }
     }
 
+    func setBand(_ index: Int, value: Int) {
+        guard state.eqBands.indices.contains(index) else { return }
+        state.eqBands[index] = value
+        applyCustomEq()
+    }
+
+    func setClearBass(_ value: Int) {
+        state.clearBass = value
+        applyCustomEq()
+    }
+
     func setDsee(_ on: Bool) {
         state.dsee = on
         state.errorMessage = nil
@@ -108,11 +119,11 @@ final class MainScreenViewModel: ObservableObject {
         }
     }
 
-    func setAutoPowerOff(_ index: Int) {
-        state.autoPowerOff = index
+    func setAutoPowerOff(_ option: AutoPowerOffOption) {
+        state.autoPowerOff = option.rawValue
         state.errorMessage = nil
         Task {
-            state = await model.setAutoPowerOff(index)
+            state = await model.setAutoPowerOff(option.rawValue)
         }
     }
 

@@ -1,10 +1,7 @@
-//
-//  HeadphonesState.swift
-//  Immutable snapshot of everything SwiftUI renders.
-//
-
 import Foundation
 import Bridge
+import AppKit
+import SwiftUI
 
 /// Everything SwiftUI renders. A value type so it can hop between the actor
 /// and the MainActor store without data races.
@@ -86,5 +83,51 @@ extension HeadphonesState {
         updated.focusOnVoice = bridge.focusOnVoice
         updated.focusOnVoiceAvailable = bridge.focusOnVoiceAvailable
         return updated
+    }
+    
+    public var deviceImage: Image? {
+        let name = deviceName.lowercased().replacingOccurrences(of: " ", with: "-")
+        guard NSImage(named: name) != nil else { return nil }
+        return Image(name)
+    }
+    
+    public var batteryState: BatteryState {
+        .init(rawValue: batteryLevel, isCharging: batteryCharging)
+    }
+}
+
+public enum BatteryState: Hashable {
+    case empty
+    case half
+    case full
+    case charging
+    
+    init(rawValue: Int, isCharging: Bool) {
+        if isCharging {
+            self = .charging
+            return
+        }
+        self = switch rawValue {
+            case ...15:
+                .empty
+            case ...50:
+                .half
+            default:
+                .full
+        }
+    }
+    
+    public var image: Image {
+        let imageName = switch self {
+            case .empty:
+                "battery.0"
+            case .half:
+                "battery.25"
+            case .full:
+                "battery.100"
+            case .charging:
+                "bolt.fill"
+        }
+        return .init(imageName)
     }
 }
