@@ -4,7 +4,7 @@ import Bridge
 /// Presents the native picker on the main thread by awaiting the bridge's
 /// synthesized async overload from the main actor.
 
-public actor HeadphonesClient {
+public actor HeadphonesClient: HeadphonesClientProtocol {
     public init() {}
 
     private let bridge = HeadphonesBridge()

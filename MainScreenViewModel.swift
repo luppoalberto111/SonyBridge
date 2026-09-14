@@ -8,9 +8,10 @@ import Foundation
 import Combine
 import Client
 import Bridge
+import Dependencies
 
 /// Thin `@MainActor` facade over the actor. It holds a single `@Published`
-/// `HeadphonesState` that views read (`model.state.connected`, …); intents
+/// `HeadphonesState` that views read (`headphonesClient.state.connected`, …); intents
 /// update it optimistically for a responsive UI and then replace it with the
 /// actor's authoritative snapshot.
 @MainActor
@@ -21,9 +22,11 @@ final class MainScreenViewModel: ObservableObject {
     /// snapshot replacements never reset it behind the view's back.
     @Published var showAbout = false
 
-    private let model = HeadphonesClient()
     private var pollTimer: Timer?
     private var dynamicTimer: Timer?
+    
+    @Dependency(\.headphonesClient)
+    private var headphonesClient
 
     func connect() {
         state.connecting = true
@@ -31,7 +34,7 @@ final class MainScreenViewModel: ObservableObject {
         Task {
             // Let "Connecting…" paint before the modal picker blocks the main thread.
             await Task.yield()
-            let snap = await model.connect()
+            let snap = await headphonesClient.connect()
             state = snap
             if snap.connected {
                 startWatchingConnection()
@@ -47,14 +50,14 @@ final class MainScreenViewModel: ObservableObject {
         state.connected = false
         state.deviceName = ""
         Task {
-            state = await model.disconnect()
+            state = await headphonesClient.disconnect()
         }
     }
 
     func refreshStatus() {
         Task {
-            state = await model.refreshStatus()
-            state = await model.probeCapabilities()
+            state = await headphonesClient.refreshStatus()
+            state = await headphonesClient.probeCapabilities()
         }
     }
 
@@ -62,14 +65,14 @@ final class MainScreenViewModel: ObservableObject {
         state.mode = newMode
         state.errorMessage = nil
         Task {
-            state = await model.setMode(newMode)
+            state = await headphonesClient.setMode(newMode)
         }
     }
 
     func setLevel(_ level: Int) {
         state.ambientLevel = level
         Task {
-            state = await model.setLevel(level)
+            state = await headphonesClient.setLevel(level)
         }
     }
 
@@ -77,7 +80,7 @@ final class MainScreenViewModel: ObservableObject {
         state.focusOnVoice = on
         state.errorMessage = nil
         Task {
-            state = await model.setFocusOnVoice(on)
+            state = await headphonesClient.setFocusOnVoice(on)
         }
     }
 
@@ -85,7 +88,7 @@ final class MainScreenViewModel: ObservableObject {
         state.eqPreset = preset
         state.errorMessage = nil
         Task {
-            state = await model.setEqualizer(preset)
+            state = await headphonesClient.setEqualizer(preset)
         }
     }
 
@@ -96,7 +99,7 @@ final class MainScreenViewModel: ObservableObject {
         let bass = state.clearBass
         let bands = state.eqBands
         Task {
-            state = await model.setCustomEq(bass: bass, bands: bands)
+            state = await headphonesClient.setCustomEq(bass: bass, bands: bands)
         }
     }
 
@@ -115,7 +118,7 @@ final class MainScreenViewModel: ObservableObject {
         state.dsee = on
         state.errorMessage = nil
         Task {
-            state = await model.setDsee(on)
+            state = await headphonesClient.setDsee(on)
         }
     }
 
@@ -123,7 +126,7 @@ final class MainScreenViewModel: ObservableObject {
         state.autoPowerOff = option.rawValue
         state.errorMessage = nil
         Task {
-            state = await model.setAutoPowerOff(option.rawValue)
+            state = await headphonesClient.setAutoPowerOff(option.rawValue)
         }
     }
 
@@ -131,7 +134,7 @@ final class MainScreenViewModel: ObservableObject {
         state.speakToChat = on
         state.errorMessage = nil
         Task {
-            state = await model.setSpeakToChat(on)
+            state = await headphonesClient.setSpeakToChat(on)
         }
     }
 
@@ -139,7 +142,7 @@ final class MainScreenViewModel: ObservableObject {
         state.adaptiveVolume = on
         state.errorMessage = nil
         Task {
-            state = await model.setAdaptiveVolume(on)
+            state = await headphonesClient.setAdaptiveVolume(on)
         }
     }
 
@@ -160,7 +163,7 @@ final class MainScreenViewModel: ObservableObject {
     }
 
     private func dynamicTick() async {
-        state = await model.refreshDynamic()
+        state = await headphonesClient.refreshDynamic()
     }
 
     private func startWatchingConnection() {
@@ -176,7 +179,7 @@ final class MainScreenViewModel: ObservableObject {
     }
 
     private func watchConnectionTick() async {
-        let snap = await model.pollConnection()
+        let snap = await headphonesClient.pollConnection()
         state = snap
         if !snap.connected {
             stopWatchingConnection()

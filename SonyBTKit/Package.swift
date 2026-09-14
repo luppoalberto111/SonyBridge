@@ -7,6 +7,9 @@ let package = Package(
     products: [
         .library(name: "SonyBTKit", targets: ["Client"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.17.1"),
+    ],
     targets: [
         // Cross-platform C++ core (protocol, transport framing, models).
         .target(name: "Core", path: "Core"),
@@ -23,7 +26,11 @@ let package = Package(
         // Swift façade: observable state + serial actor owning the bridge.
         .target(
             name: "Client",
-            dependencies: ["Bridge"],
+            dependencies: [
+                "Bridge",
+                .product(name: "Dependencies", package: "swift-dependencies"),
+                .product(name: "DependenciesMacros", package: "swift-dependencies"),
+            ],
             path: "Client"
         ),
     ],
