@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Everything SwiftUI renders. A value type so it can hop between the actor
 /// and the MainActor store without data races.
-public struct HeadphonesState: Sendable {
+public struct HeadphonesState: Sendable, Equatable {
     public init() {}
     public var connected = false
     public var connecting = false

@@ -98,7 +98,7 @@ open SonyHeadphonesClient.xcodeproj
 
 Then ⌘R.
 
-The app target is SwiftUI (`MainScreenView` + `MainScreenViewModel`); all Bluetooth and protocol code
+The app target is SwiftUI (`MainScreenView` + `MainReducer`, via the Composable Architecture); all Bluetooth and protocol code
 lives in the local `SonyBTKit` Swift package (`Client` actor façade, `Bridge` ObjC++ layer, `Core` C++ protocol core).
 
 ## 🔬 How it works

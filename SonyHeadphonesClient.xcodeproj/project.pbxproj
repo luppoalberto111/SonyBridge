@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		A87B328B259FAA8B00EA6551 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A87B328A259FAA8B00EA6551 /* Cocoa.framework */; };
-		CC0000000000000000000004 /* MainScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000005 /* MainScreenView.swift */; };
+		CC0000000000000000000004 /* MainScreenFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000005 /* MainScreenFeature.swift */; };
 		CC000000000000000000000A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000009 /* AppDelegate.swift */; };
-		CC000000000000000000000E /* MainScreenViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000D /* MainScreenViewModel.swift */; };
 		CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000F /* SonyHeadphonesClientApp.swift */; };
 		DD0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD0000000000000000000002 /* Assets.xcassets */; };
 		EE0000000000000000000005 /* SonyBTKit in Frameworks */ = {isa = PBXBuildFile; productRef = EE0000000000000000000003 /* SonyBTKit */; };
+		F76B57F5305815DA00449C1F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F76B57F4305815DA00449C1F /* ComposableArchitecture */; };
 		F7EAEFD23053FBB600018001 /* HeadphonesCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */; };
 		F7EAEFDB30541E4D00018001 /* DisconnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */; };
 		F7EAEFDD30541E5F00018001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDC30541E5E00018001 /* Theme.swift */; };
@@ -39,9 +39,8 @@
 		A8DC78E32576922700447738 /* info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
 		A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SonyHeadphonesClient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8DC790425769A6600447738 /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
-		CC0000000000000000000005 /* MainScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenView.swift; sourceTree = "<group>"; };
+		CC0000000000000000000005 /* MainScreenFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenFeature.swift; sourceTree = "<group>"; };
 		CC0000000000000000000009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		CC000000000000000000000D /* MainScreenViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewModel.swift; sourceTree = "<group>"; };
 		CC000000000000000000000F /* SonyHeadphonesClientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonyHeadphonesClientApp.swift; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesCommands.swift; sourceTree = "<group>"; };
@@ -70,6 +69,7 @@
 			files = (
 				A87B328B259FAA8B00EA6551 /* Cocoa.framework in Frameworks */,
 				EE0000000000000000000005 /* SonyBTKit in Frameworks */,
+				F76B57F5305815DA00449C1F /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,9 +89,8 @@
 				A8DC78E32576922700447738 /* info.plist */,
 				A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */,
 				CC0000000000000000000009 /* AppDelegate.swift */,
-				CC0000000000000000000005 /* MainScreenView.swift */,
+				CC0000000000000000000005 /* MainScreenFeature.swift */,
 				F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */,
-				CC000000000000000000000D /* MainScreenViewModel.swift */,
 				CC000000000000000000000F /* SonyHeadphonesClientApp.swift */,
 				DD0000000000000000000002 /* Assets.xcassets */,
 				F7EAEFF505421700018001 /* Localizable.xcstrings */,
@@ -182,6 +181,7 @@
 			packageReferences = (
 				EE0000000000000000000002 /* XCLocalSwiftPackageReference "SonyBTKit" */,
 				F76B57EF3057F97000449C1F /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				F76B57F3305815DA00449C1F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			productRefGroup = A8DC78BB25757BF300447738;
 			projectDirPath = "";
@@ -233,10 +233,9 @@
 			files = (
 				F7EAEFD23053FBB600018001 /* HeadphonesCommands.swift in Sources */,
 				CC000000000000000000000A /* AppDelegate.swift in Sources */,
-				CC0000000000000000000004 /* MainScreenView.swift in Sources */,
+				CC0000000000000000000004 /* MainScreenFeature.swift in Sources */,
 				F7EAEFDB30541E4D00018001 /* DisconnectedView.swift in Sources */,
 				F7EAEFDF30541F4700018001 /* ConnectedView.swift in Sources */,
-				CC000000000000000000000E /* MainScreenViewModel.swift in Sources */,
 				F7EAEFE130541F9E00018001 /* ModeButton.swift in Sources */,
 				F7EAEFE330541FBE00018001 /* AmbientView.swift in Sources */,
 				F7EAEFE5305420C300018001 /* AboutView.swift in Sources */,
@@ -485,6 +484,14 @@
 				minimumVersion = 0.65.1;
 			};
 		};
+		F76B57F3305815DA00449C1F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.26.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -497,6 +504,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F76B57EF3057F97000449C1F /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
 			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		F76B57F4305815DA00449C1F /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F76B57F3305815DA00449C1F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -3,17 +3,17 @@
 //  SwiftUI entry point: window, appearance and menu commands.
 //
 
+import ComposableArchitecture
 import SwiftUI
 
 @main struct SonyHeadphonesClientApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self)
     var appDelegate
-
-    let viewModel = MainScreenViewModel()
+    let store = Store(initialState: MainScreenFeature.State(), reducer: MainScreenFeature.init)
 
     var body: some Scene {
         WindowGroup {
-            MainScreenView(viewModel: viewModel)
+            MainScreenView(store: store)
                 .preferredColorScheme(.dark)
         }
         .windowStyle(.hiddenTitleBar)
@@ -22,8 +22,8 @@ import SwiftUI
         .defaultPosition(.center)
         .commands {
             HeadphonesCommands(
-                connectClosure: { viewModel.connect() },
-                disconnectClosure: { viewModel.disconnect() }
+                connectClosure: { store.send(.connectButtonTapped) },
+                disconnectClosure: { store.send(.disconnectButtonTapped) }
             )
         }
     }
