@@ -22,7 +22,7 @@ import SwiftUI
         .defaultPosition(.center)
         .commands {
             HeadphonesCommands(
-                connectClosure: { store.send(.connectButtonTapped) },
+                connectClosure: { store.send(.disconnected(.connectButtonTapped)) },
                 disconnectClosure: { store.send(.disconnectButtonTapped) }
             )
         }

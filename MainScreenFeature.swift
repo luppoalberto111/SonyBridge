@@ -11,19 +11,13 @@ import SwiftUI
     @ObservableState struct State: Equatable {
         var headphones = HeadphonesState()
         var showAbout = false
-
-        /// Paired Sony headsets offered for connecting after auto-connect finds nothing.
-        var availableDevices: [DiscoveredDevice] = []
+        var disconnected = DisconnectedReducer.State()
     }
 
     enum Action {
-        case connectButtonTapped
-        case autoConnectResponse(HeadphonesState)
-        case devicesResponse([DiscoveredDevice])
-        case deviceSelected(DiscoveredDevice)
-        case connectionResponse(HeadphonesState)
+        case disconnected(DisconnectedReducer.Action)
         case disconnectButtonTapped
-        case disconnected(HeadphonesState)
+        case disconnectResponse(HeadphonesState)
         case refreshStatusRequested
         case snapshotReceived(HeadphonesState)
         case showAboutChanged(Bool)
@@ -53,64 +47,26 @@ import SwiftUI
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-                case .connectButtonTapped:
-                    state.headphones.connecting = true
-                    state.headphones.errorMessage = nil
-                    state.availableDevices = []
-                    return .run { send in
-                        await send(.autoConnectResponse(client.connectToAutoDevice()))
-                    }
-
-                case let .autoConnectResponse(snap):
+                case let .disconnected(.delegate(.didConnect(snap))):
                     state.headphones = snap
-                    if snap.connected {
-                        return .merge(startPolling(), .send(.refreshStatusRequested))
-                    }
-                    state.headphones.connecting = false
-                    return .run { send in
-                        await send(.devicesResponse(client.pairedDevices()))
-                    }
+                    return .merge(startPolling(), .send(.refreshStatusRequested))
 
-                case let .devicesResponse(devices):
-                    state.availableDevices = devices
-                    if devices.isEmpty {
-                        state.headphones.errorMessage = String(
-                            localized: "DisconnectedView.emptyListHint",
-                            // swiftlint:disable:next line_length
-                            defaultValue: "No paired Sony headphones found. Pair them in macOS Bluetooth settings first."
-                        )
-                    }
-                    return .none
-
-                case let .deviceSelected(device):
-                    state.headphones.connecting = true
-                    state.headphones.errorMessage = nil
-                    return .run { send in
-                        await send(.connectionResponse(client.connect(address: device.address)))
-                    }
-
-                case let .connectionResponse(snap):
-                    state.headphones = snap
-                    state.headphones.connecting = false
-                    if snap.connected {
-                        state.availableDevices = []
-                        return .merge(startPolling(), .send(.refreshStatusRequested))
-                    }
+                case .disconnected:
                     return .none
 
                 case .disconnectButtonTapped:
                     state.headphones.connected = false
                     state.headphones.deviceName = ""
-                    state.availableDevices = []
+                    state.disconnected = DisconnectedReducer.State()
                     return .merge(
                         .cancel(id: CancelID.dynamicPolling),
                         .cancel(id: CancelID.watchConnection),
                         .run { send in
-                            await send(.disconnected(client.disconnect()))
+                            await send(.disconnectResponse(client.disconnect()))
                         }
                     )
 
-                case let .disconnected(snap):
+                case let .disconnectResponse(snap):
                     state.headphones = snap
                     return .none
 
@@ -224,6 +180,10 @@ import SwiftUI
                     )
             }
         }
+
+        Scope(state: \.disconnected, action: \.disconnected) {
+            DisconnectedReducer()
+        }
     }
 
     /// Manual EQ (preset byte 0xA0 = 160). Called as the user drags a band or clear-bass slider.
@@ -288,11 +248,7 @@ struct MainScreenView: View {
                 )
             } else {
                 DisconnectedView(
-                    connecting: store.headphones.connecting,
-                    errorMessage: store.headphones.errorMessage,
-                    devices: store.availableDevices,
-                    connectAction: { store.send(.connectButtonTapped) },
-                    selectAction: { store.send(.deviceSelected($0)) }
+                    store: store.scope(state: \.disconnected, action: \.disconnected)
                 )
             }
         }

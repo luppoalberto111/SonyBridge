@@ -1,12 +1,97 @@
 import Client
+import ComposableArchitecture
+import Dependencies
+import Foundation
 import SwiftUI
 
+// MARK: - DisconnectedReducer
+
+/// Disconnected-screen feature: owns the connect flow UI state and effects.
+///
+/// Connect results are reported to the parent via `delegate` — the parent
+/// takes over once a headset is connected (polling, status refresh).
+@Reducer struct DisconnectedReducer {
+    @ObservableState struct State: Equatable {
+        var connecting = false
+        var errorMessage: String?
+        var devices: [DiscoveredDevice] = []
+    }
+
+    enum Action {
+        case connectButtonTapped
+        case autoConnectResponse(HeadphonesState)
+        case devicesResponse([DiscoveredDevice])
+        case deviceTapped(DiscoveredDevice)
+        case connectionResponse(HeadphonesState)
+        case delegate(Delegate)
+    }
+
+    enum Delegate {
+        case didConnect(HeadphonesState)
+    }
+
+    @Dependency(\.headphonesClient)
+    var client
+
+    var body: some ReducerOf<Self> {
+        Reduce { state, action in
+            switch action {
+                case .connectButtonTapped:
+                    state.connecting = true
+                    state.errorMessage = nil
+                    state.devices = []
+                    return .run { send in
+                        await send(.autoConnectResponse(client.connectToAutoDevice()))
+                    }
+
+                case let .autoConnectResponse(snap):
+                    if snap.connected {
+                        state.connecting = false
+                        return .send(.delegate(.didConnect(snap)))
+                    }
+                    state.connecting = false
+                    return .run { send in
+                        await send(.devicesResponse(client.pairedDevices()))
+                    }
+
+                case let .devicesResponse(devices):
+                    state.devices = devices
+                    if devices.isEmpty {
+                        state.errorMessage = String(
+                            localized: "DisconnectedView.emptyListHint",
+                            // swiftlint:disable:next line_length
+                            defaultValue: "No paired Sony headphones found. Pair them in macOS Bluetooth settings first."
+                        )
+                    }
+                    return .none
+
+                case let .deviceTapped(device):
+                    state.connecting = true
+                    state.errorMessage = nil
+                    return .run { send in
+                        await send(.connectionResponse(client.connect(address: device.address)))
+                    }
+
+                case let .connectionResponse(snap):
+                    state.connecting = false
+                    if snap.connected {
+                        state.devices = []
+                        return .send(.delegate(.didConnect(snap)))
+                    }
+                    state.errorMessage = snap.errorMessage
+                    return .none
+
+                case .delegate:
+                    return .none
+            }
+        }
+    }
+}
+
+// MARK: - DisconnectedView
+
 struct DisconnectedView: View {
-    let connecting: Bool
-    var errorMessage: String?
-    var devices: [DiscoveredDevice] = []
-    var connectAction: () -> Void = {}
-    var selectAction: (DiscoveredDevice) -> Void = { _ in }
+    let store: StoreOf<DisconnectedReducer>
 
     var body: some View {
         VStack(spacing: 24) {
@@ -17,18 +102,18 @@ struct DisconnectedView: View {
             Text("DisconnectedView.title")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundColor(Theme.secondary)
-            if let errorMessage {
+            if let errorMessage = store.errorMessage {
                 Text(errorMessage)
                     .font(.system(size: 12))
                     .foregroundColor(.red.opacity(0.9))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
-            if !devices.isEmpty {
+            if !store.devices.isEmpty {
                 deviceList
             }
-            Button(action: connectAction) {
-                Text(connecting ? "DisconnectedView.connecting" : "DisconnectedView.connect")
+            Button(action: { store.send(.connectButtonTapped) }) {
+                Text(store.connecting ? "DisconnectedView.connecting" : "DisconnectedView.connect")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -37,7 +122,7 @@ struct DisconnectedView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             .buttonStyle(PlainButtonStyle())
-            .disabled(connecting)
+            .disabled(store.connecting)
             .padding(.horizontal, 40)
             Spacer()
         }
@@ -50,8 +135,8 @@ struct DisconnectedView: View {
                 .foregroundColor(Theme.secondary)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
-            ForEach(devices) { device in
-                Button(action: { selectAction(device) }) {
+            ForEach(store.devices) { device in
+                Button(action: { store.send(.deviceTapped(device)) }) {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(device.name)
@@ -70,7 +155,7 @@ struct DisconnectedView: View {
                     .padding(.vertical, 10)
                 }
                 .buttonStyle(PlainButtonStyle())
-                .disabled(connecting)
+                .disabled(store.connecting)
             }
         }
         .background(Theme.card)
@@ -80,19 +165,32 @@ struct DisconnectedView: View {
 }
 
 #Preview {
-    DisconnectedView(connecting: false, errorMessage: "Error")
-}
-
-#Preview {
-    DisconnectedView(connecting: true, errorMessage: "Error")
+    DisconnectedView(
+        store: Store(initialState: DisconnectedReducer.State(connecting: true)) {
+            DisconnectedReducer()
+        }
+    )
 }
 
 #Preview {
     DisconnectedView(
-        connecting: false,
-        devices: [
-            DiscoveredDevice(name: "WH-1000XM5", address: "AA:BB:CC:DD:EE:FF"),
-            DiscoveredDevice(name: "WF-1000XM5", address: "11:22:33:44:55:66"),
-        ]
+        store: Store(initialState: DisconnectedReducer.State(errorMessage: "Error")) {
+            DisconnectedReducer()
+        }
+    )
+}
+
+#Preview {
+    DisconnectedView(
+        store: Store(
+            initialState: DisconnectedReducer.State(
+                devices: [
+                    DiscoveredDevice(name: "WH-1000XM5", address: "AA:BB:CC:DD:EE:FF"),
+                    DiscoveredDevice(name: "WF-1000XM5", address: "11:22:33:44:55:66"),
+                ]
+            )
+        ) {
+            DisconnectedReducer()
+        }
     )
 }
