@@ -9,15 +9,33 @@ import Foundation
 public actor HeadphonesTestClient: HeadphonesClientProtocol {
     public var state: HeadphonesState
 
+    /// Devices returned by `pairedDevices()`.
+    public var stubbedDevices: [DiscoveredDevice] = []
+
     public init(state: HeadphonesState = HeadphonesState()) {
         self.state = state
     }
 
     // MARK: Connection
 
-    public func connect() async -> HeadphonesState {
+    public func pairedDevices() async -> [DiscoveredDevice] {
+        stubbedDevices
+    }
+
+    public func connectToAutoDevice() async -> HeadphonesState {
         state.connecting = false
         state.errorMessage = nil
+        state.connected = true
+        return state
+    }
+
+    public func connect(address: String) async -> HeadphonesState {
+        state.connecting = false
+        state.errorMessage = nil
+        if let device = stubbedDevices.first(where: { $0.address == address }) {
+            state.deviceName = device.name
+            state.deviceMac = device.address
+        }
         state.connected = true
         return state
     }

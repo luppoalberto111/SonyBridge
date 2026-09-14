@@ -20,7 +20,6 @@ let package = Package(
             path: "Bridge",
             linkerSettings: [
                 .linkedFramework("IOBluetooth"),
-                .linkedFramework("IOBluetoothUI"),
             ]
         ),
         // Swift façade: observable state + serial actor owning the bridge.

@@ -49,20 +49,27 @@ public struct HeadphonesState: Sendable {
 extension HeadphonesState {
     func updated(with bridge: HeadphonesBridge) -> Self {
         var updated = self
-        updated.batteryLevel = bridge.batteryLevel
-        updated.batteryCharging = bridge.batteryCharging
-        updated.hasDualBattery = bridge.hasDualBattery
-        updated.batteryLeft = bridge.batteryLeft
-        updated.batteryRight = bridge.batteryRight
-        updated.batteryCase = bridge.batteryCase
+        // Battery reads can transiently report unknown (-1) while connected
+        // (slow/flaky inquiry, overlapping refresh). Never clobber a known
+        // reading with unknown — otherwise the hero flickers to "Connected".
+        if bridge.batteryLevel >= 0 {
+            updated.batteryLevel = bridge.batteryLevel
+            updated.batteryCharging = bridge.batteryCharging
+            updated.hasDualBattery = bridge.hasDualBattery
+            updated.batteryLeft = bridge.batteryLeft
+            updated.batteryRight = bridge.batteryRight
+            updated.batteryCase = bridge.batteryCase
+        }
         updated.eqPreset = bridge.eqPreset
         updated.clearBass = bridge.clearBass
         updated.dsee = bridge.dsee
         updated.eqBands = (0 ..< 5).map { bridge.equalizerBand(at: $0) }
         updated.hasAutoPowerOff = bridge.hasAutoPowerOff
         updated.autoPowerOff = bridge.autoPowerOff
-        updated.firmware = bridge.firmware ?? ""
-        updated.codec = bridge.codec ?? ""
+        let firmware = bridge.firmware ?? ""
+        if !firmware.isEmpty { updated.firmware = firmware }
+        let codec = bridge.codec ?? ""
+        if !codec.isEmpty { updated.codec = codec }
         updated.hasSpeakToChat = bridge.hasSpeakToChat
         updated.speakToChat = bridge.speakToChat
         updated.hasAdaptiveVolume = bridge.hasAdaptiveVolume
@@ -122,7 +129,7 @@ public enum BatteryState: Hashable {
     }
 
     public var image: Image {
-        let imageName = switch self {
+        let systemName = switch self {
             case .empty:
                 "battery.0"
             case .half:
@@ -132,6 +139,6 @@ public enum BatteryState: Hashable {
             case .charging:
                 "bolt.fill"
         }
-        return .init(imageName)
+        return Image(systemName: systemName)
     }
 }

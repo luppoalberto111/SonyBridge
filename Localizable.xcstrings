@@ -1756,6 +1756,125 @@
         }
       }
     },
+    "DisconnectedView.devicesTitle" : {
+      "comment" : "DisconnectedView: paired devices list title",
+      "localizations" : {
+        "cz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spárovaná zařízení"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gekoppelte Geräte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paired devices"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivos vinculados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appareils jumelés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivi associati"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペアリング済みデバイス"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dispositivos emparelhados"
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spárované zariadenia"
+          }
+        }
+      }
+    },
+    "DisconnectedView.emptyListHint" : {
+      "comment" : "DisconnectedView: hint shown when no paired Sony headphones are found",
+      "extractionState" : "stale",
+      "localizations" : {
+        "cz" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nebyla nalezena žádná spárovaná sluchátka Sony. Nejprve je spárujte v nastavení Bluetooth v systému macOS."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine gekoppelten Sony-Kopfhörer gefunden. Kopple sie zuerst in den macOS-Bluetooth-Einstellungen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No paired Sony headphones found. Pair them in macOS Bluetooth settings first."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se encontraron auriculares Sony vinculados. Vincúlalos primero en los ajustes de Bluetooth de macOS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aucun casque Sony jumelé trouvé. Jumelez-le d’abord dans les réglages Bluetooth de macOS."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna cuffia Sony associata trovata. Associala prima nelle impostazioni Bluetooth di macOS."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ペアリング済みのSonyヘッドホンが見つかりません。先にmacOSのBluetooth設定でペアリングしてください。"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum auricular Sony emparelhado encontrado. Emparelha-o primeiro nas definições de Bluetooth do macOS."
+          }
+        },
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenašli sa žiadne spárované slúchadlá Sony. Najprv ich spáruj v nastaveniach Bluetooth v systéme macOS."
+          }
+        }
+      }
+    },
     "DisconnectedView.title" : {
       "comment" : "DisconnectedView: empty-state title",
       "localizations" : {

@@ -31,7 +31,9 @@ struct MainScreenView: View {
                 DisconnectedView(
                     connecting: model.state.connecting,
                     errorMessage: model.state.errorMessage,
-                    connectAction: model.connect
+                    devices: model.availableDevices,
+                    connectAction: model.connect,
+                    selectAction: model.selectDevice
                 )
             }
         }

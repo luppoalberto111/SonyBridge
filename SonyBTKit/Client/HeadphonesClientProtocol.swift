@@ -8,7 +8,16 @@ import Foundation
 public protocol HeadphonesClientProtocol: Sendable {
     // MARK: Connection
 
-    func connect() async -> HeadphonesState
+    /// Paired Sony-looking headsets available for connecting.
+    func pairedDevices() async -> [DiscoveredDevice]
+
+    /// Connects to the already system-connected Sony headset, if any.
+    /// A non-connected state with no error means "nothing found".
+    func connectToAutoDevice() async -> HeadphonesState
+
+    /// Connects to the paired device with the given Bluetooth address.
+    func connect(address: String) async -> HeadphonesState
+
     func disconnect() async -> HeadphonesState
 
     /// Timer-driven watchdog: the headset can drop RFCOMM on its own

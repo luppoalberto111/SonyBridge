@@ -1,9 +1,6 @@
 import Bridge
 import Foundation
 
-/// Presents the native picker on the main thread by awaiting the bridge's
-/// synthesized async overload from the main actor.
-
 public actor HeadphonesClient: HeadphonesClientProtocol {
     public init() {}
 
@@ -12,18 +9,46 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
 
     // MARK: Connection
 
-    @MainActor
-    private func scanAndConnectOnMain(_ bridge: HeadphonesBridge) async -> (Bool, String?) {
-        await bridge.scanAndConnect()
+    public func pairedDevices() async -> [DiscoveredDevice] {
+        let bridge = bridge
+        let entries = await MainActor.run { bridge.pairedSonyDevices() }
+        return entries.compactMap { entry in
+            guard let name = entry["name"], let address = entry["address"] else { return nil }
+            return DiscoveredDevice(name: name, address: address)
+        }
     }
 
-    public func connect() async -> HeadphonesState {
+    // No UI is involved anymore; hopping to the main thread keeps all
+    // IOBluetooth use on one thread and lets "Connecting…" paint first.
+    @MainActor
+    private func connectToAutoDeviceOnMain(_ bridge: HeadphonesBridge) async -> (Bool, String?) {
+        await bridge.connectToAutoDevice()
+    }
+
+    @MainActor private func connectToDeviceOnMain(
+        _ bridge: HeadphonesBridge,
+        address: String
+    ) async -> (Bool, String?) {
+        await bridge.connectToDevice(withAddress: address)
+    }
+
+    public func connectToAutoDevice() async -> HeadphonesState {
         state.connecting = true
         state.errorMessage = nil
-        // The native picker must run on the main thread and blocks it while
-        // open; hopping to the main actor also lets the store's
-        // "Connecting…" state paint before the modal appears.
-        let (ok, error) = await scanAndConnectOnMain(bridge)
+        let (ok, error) = await connectToAutoDeviceOnMain(bridge)
+        state.connecting = false
+        if ok {
+            state = state.synced(with: bridge)
+        } else if let error {
+            state.errorMessage = error
+        }
+        return state
+    }
+
+    public func connect(address: String) async -> HeadphonesState {
+        state.connecting = true
+        state.errorMessage = nil
+        let (ok, error) = await connectToDeviceOnMain(bridge, address: address)
         state.connecting = false
         if ok {
             state = state.synced(with: bridge)

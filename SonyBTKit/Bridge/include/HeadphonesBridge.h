@@ -48,9 +48,17 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 @property (nonatomic, readonly) BOOL hasAdaptiveVolume;
 @property (nonatomic, readonly) BOOL adaptiveVolume;
 
-// Runs the native Bluetooth device picker (modal, main thread) and connects to the chosen device.
-// completion is called on the main thread.
-- (void)scanAndConnectWithCompletion:(void (^)(BOOL ok, NSString * _Nullable error))completion;
+// Paired Sony-looking headsets (name/address dictionaries), fastest first.
+// Synchronous and safe off the main thread; never shows any UI.
+- (NSArray<NSDictionary<NSString *, NSString *> *> *)pairedSonyDevices;
+
+// Connects to the already system-connected Sony headset, if any.
+// completion is called on the main thread; a nil error with ok=NO means
+// "nothing found" (not a failure) so the caller can offer a device list.
+- (void)connectToAutoDeviceWithCompletion:(void (^)(BOOL ok, NSString * _Nullable error))completion;
+
+// Connects to the paired device with the given Bluetooth address string.
+- (void)connectToDeviceWithAddress:(NSString *)address completion:(void (^)(BOOL ok, NSString * _Nullable error))completion;
 
 - (void)disconnect;
 

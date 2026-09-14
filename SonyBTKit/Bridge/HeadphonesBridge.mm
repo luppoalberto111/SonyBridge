@@ -1,5 +1,4 @@
 #import "HeadphonesBridge.h"
-#import <IOBluetoothUI/IOBluetoothUI.h>
 #import <IOBluetooth/IOBluetooth.h>
 
 #include <memory>
@@ -126,9 +125,20 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
     return NO;
 }
 
-- (void)scanAndConnectWithCompletion:(void (^)(BOOL, NSString * _Nullable))completion {
-    // Prefer the already system-connected Sony headset (Sony-app "My Device" behaviour) and skip the
-    // native picker, which shows a confusing empty list when nothing is connected.
+- (NSArray<NSDictionary<NSString *, NSString *> *> *)pairedSonyDevices {
+    NSMutableArray<NSDictionary<NSString *, NSString *> *> *devices = [NSMutableArray array];
+    for (IOBluetoothDevice *paired in [IOBluetoothDevice pairedDevices]) {
+        NSString *address = [paired addressString];
+        if (!address) continue;
+        NSString *name = [paired name] ?: @"Unknown Device";
+        if (!SHCLooksLikeSonyHeadset(name)) continue;
+        [devices addObject:@{@"name": name, @"address": address}];
+    }
+    return devices;
+}
+
+- (void)connectToAutoDeviceWithCompletion:(void (^)(BOOL, NSString * _Nullable))completion {
+    // Prefer the already system-connected Sony headset (Sony-app "My Device" behaviour).
     IOBluetoothDevice *device = nil;
     for (IOBluetoothDevice *paired in [IOBluetoothDevice pairedDevices]) {
         if ([paired isConnected] && SHCLooksLikeSonyHeadset([paired name])) {
@@ -138,20 +148,22 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
     }
 
     if (!device) {
-        // Fall back to the native picker if we can't auto-identify a connected Sony device.
-        IOBluetoothDeviceSelectorController *selector = [IOBluetoothDeviceSelectorController deviceSelector];
-        if ([selector runModal] != kIOBluetoothUISuccess) {
-            completion(NO, nil); // user cancelled - not an error
-            return;
-        }
-        device = [[selector getResults] lastObject];
-    }
-
-    if (!device) {
-        completion(NO, @"No connected Sony headset found. Connect your headphones in macOS Bluetooth settings first.");
+        completion(NO, nil); // nothing found - not an error, caller offers a device list
         return;
     }
+    [self connectToDevice:device completion:completion];
+}
 
+- (void)connectToDeviceWithAddress:(NSString *)address completion:(void (^)(BOOL, NSString * _Nullable))completion {
+    IOBluetoothDevice *device = [IOBluetoothDevice deviceWithAddressString:address];
+    if (!device) {
+        completion(NO, @"Couldn't find that Bluetooth device. Make sure it's paired in macOS Bluetooth settings.");
+        return;
+    }
+    [self connectToDevice:device completion:completion];
+}
+
+- (void)connectToDevice:(IOBluetoothDevice *)device completion:(void (^)(BOOL, NSString * _Nullable))completion {
     try {
         _bt->connect([[device addressString] UTF8String]);
     } catch (RecoverableException &exc) {

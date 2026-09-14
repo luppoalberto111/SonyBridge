@@ -23,6 +23,10 @@ import Foundation
     @Published
     var showAbout = false
 
+    /// Paired Sony headsets offered for connecting after auto-connect finds nothing.
+    @Published
+    var availableDevices: [DiscoveredDevice] = []
+
     private var pollTimer: Timer?
     private var dynamicTimer: Timer?
 
@@ -32,12 +36,40 @@ import Foundation
     func connect() {
         state.connecting = true
         state.errorMessage = nil
+        availableDevices = []
         Task {
-            // Let "Connecting…" paint before the modal picker blocks the main thread.
+            // Let "Connecting…" paint before the blocking connect runs.
             await Task.yield()
-            let snap = await headphonesClient.connect()
-            state = snap
+            let snap = await headphonesClient.connectToAutoDevice()
             if snap.connected {
+                state = snap
+                startWatchingConnection()
+                refreshStatus()
+                startDynamicPolling()
+            } else {
+                state = snap
+                state.connecting = false
+                availableDevices = await headphonesClient.pairedDevices()
+                if availableDevices.isEmpty {
+                    state.errorMessage = String(
+                        localized: "DisconnectedView.emptyListHint",
+                        defaultValue: "No paired Sony headphones found. Pair them in macOS Bluetooth settings first."
+                    )
+                }
+            }
+        }
+    }
+
+    func selectDevice(_ device: DiscoveredDevice) {
+        state.connecting = true
+        state.errorMessage = nil
+        Task {
+            await Task.yield()
+            let snap = await headphonesClient.connect(address: device.address)
+            state = snap
+            state.connecting = false
+            if snap.connected {
+                availableDevices = []
                 startWatchingConnection()
                 refreshStatus()
                 startDynamicPolling()
@@ -50,6 +82,7 @@ import Foundation
         stopDynamicPolling()
         state.connected = false
         state.deviceName = ""
+        availableDevices = []
         Task {
             state = await headphonesClient.disconnect()
         }
