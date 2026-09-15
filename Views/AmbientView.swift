@@ -79,19 +79,16 @@ struct AmbientView: View {
             HStack(spacing: 0) {
                 ModeButton(
                     mode: .noiseCanceling,
-                    isSelected: store.mode == .noiseCanceling,
-                    setMode: { store.send(.setMode($0)) }
-                )
+                    isSelected: store.mode == .noiseCanceling
+                ) { store.send(.setMode($0)) }
                 ModeButton(
                     mode: .ambientSound,
-                    isSelected: store.mode == .ambientSound,
-                    setMode: { store.send(.setMode($0)) }
-                )
+                    isSelected: store.mode == .ambientSound
+                ) { store.send(.setMode($0)) }
                 ModeButton(
                     mode: .off,
-                    isSelected: store.mode == .off,
-                    setMode: { store.send(.setMode($0)) }
-                )
+                    isSelected: store.mode == .off
+                ) { store.send(.setMode($0)) }
             }
         }
         .padding(18)

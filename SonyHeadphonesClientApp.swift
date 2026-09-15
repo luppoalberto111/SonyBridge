@@ -4,10 +4,10 @@ import SwiftUI
 @main struct SonyHeadphonesClientApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self)
     var appDelegate
-    let store = Store(initialState: MainScreenFeature.State
-        .disconnected(DisconnectedReducer.State())) {
-            MainScreenFeature()
-        }
+    let store = Store(
+        initialState: MainScreenFeature.State.disconnected(.init()),
+        reducer: MainScreenFeature.init
+    )
 
     var body: some Scene {
         WindowGroup {

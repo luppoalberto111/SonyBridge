@@ -90,10 +90,7 @@ struct DeviceHeroView: View {
                 .buttonStyle(PlainButtonStyle())
             }
 
-            // Product-style banner. Generic headphone graphic (device-specific Sony renders are
-            // copyrighted and can't be bundled) over a soft accent halo, mirroring Sony's app layout.
             ZStack {
-                // Soft accent glow behind the product for depth.
                 Circle()
                     .fill(
                         RadialGradient(
@@ -101,7 +98,9 @@ struct DeviceHeroView: View {
                                 Theme.accent.opacity(0.22),
                                 Theme.accent.opacity(0.0)
                             ]),
-                            center: .center, startRadius: 4, endRadius: 104
+                            center: .center,
+                            startRadius: 4,
+                            endRadius: 104
                         )
                     )
                     .frame(width: 210, height: 210)
@@ -110,7 +109,7 @@ struct DeviceHeroView: View {
                     // Background-removed product cutout floating on the dark UI.
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .scaledToFit()
                         .frame(width: 190, height: 190)
                 } else {
                     Image(systemName: "headphones")

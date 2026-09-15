@@ -72,17 +72,15 @@ struct SettingsView: View {
                 settingToggle(
                     "SettingsView.adaptiveVolume.title",
                     "SettingsView.adaptiveVolume.subtitle",
-                    on: store.adaptiveVolume,
-                    action: { store.send(.setAdaptiveVolume($0)) }
-                )
+                    on: store.adaptiveVolume
+                ) { store.send(.setAdaptiveVolume($0)) }
             }
             if store.hasSpeakToChat {
                 settingToggle(
                     "SettingsView.speakToChat.title",
                     "SettingsView.speakToChat.subtitle",
-                    on: store.speakToChat,
-                    action: { store.send(.setSpeakToChat($0)) }
-                )
+                    on: store.speakToChat
+                ) { store.send(.setSpeakToChat($0)) }
             }
             if store.hasAutoPowerOff {
                 HStack {
