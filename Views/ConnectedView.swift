@@ -12,6 +12,7 @@ import SwiftUI
         var deviceHero = DeviceHeroReducer.State()
         var ambient = AmbientReducer.State()
         var equalizer = EqualizerReducer.State()
+        var dsee = DseeReducer.State()
         var settings = SettingsReducer.State()
     }
 
@@ -19,6 +20,7 @@ import SwiftUI
         case deviceHero(DeviceHeroReducer.Action)
         case ambient(AmbientReducer.Action)
         case equalizer(EqualizerReducer.Action)
+        case dsee(DseeReducer.Action)
         case settings(SettingsReducer.Action)
         case task
         case refreshStatusRequested
@@ -85,6 +87,12 @@ import SwiftUI
                 case .equalizer:
                     return .none
 
+                case let .dsee(.delegate(.setDsee(on))):
+                    return .send(.setDsee(on))
+
+                case .dsee:
+                    return .none
+
                 case let .settings(.delegate(.setAdaptiveVolume(on))):
                     return .send(.setAdaptiveVolume(on))
 
@@ -111,6 +119,7 @@ import SwiftUI
                     state.deviceHero.headphones = snap
                     state.ambient.sync(from: snap)
                     state.equalizer.sync(from: snap)
+                    state.dsee.sync(from: snap)
                     state.settings.sync(from: snap)
                     return .none
 
@@ -198,6 +207,7 @@ import SwiftUI
                     state.deviceHero.headphones = snap
                     state.ambient.sync(from: snap)
                     state.equalizer.sync(from: snap)
+                    state.dsee.sync(from: snap)
                     state.settings.sync(from: snap)
                     return .none
 
@@ -211,6 +221,7 @@ import SwiftUI
                     state.deviceHero.headphones = snap
                     state.ambient.sync(from: snap)
                     state.equalizer.sync(from: snap)
+                    state.dsee.sync(from: snap)
                     state.settings.sync(from: snap)
                     if snap.connected {
                         return .none
@@ -234,6 +245,9 @@ import SwiftUI
         }
         Scope(state: \.equalizer, action: \.equalizer) {
             EqualizerReducer()
+        }
+        Scope(state: \.dsee, action: \.dsee) {
+            DseeReducer()
         }
         Scope(state: \.settings, action: \.settings) {
             SettingsReducer()
@@ -305,9 +319,9 @@ struct ConnectedView: View {
                     EqualizerView(
                         store: store.scope(state: \.equalizer, action: \.equalizer)
                     )
-                    DseeView(model: store.headphones.dseeModel) {
-                        store.send(.setDsee($0))
-                    }
+                    DseeView(
+                        store: store.scope(state: \.dsee, action: \.dsee)
+                    )
                 }
                 if store.headphones.hasAdaptiveVolume || store.headphones.hasSpeakToChat
                     || store.headphones.hasAutoPowerOff {

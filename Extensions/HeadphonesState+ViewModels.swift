@@ -18,10 +18,6 @@ extension HeadphonesState {
         )
     }
 
-    var dseeModel: DseeView.Model {
-        .init(dsee: dsee)
-    }
-
     var deviceHeroModel: DeviceHeroView.Model {
         .init(
             deviceName: deviceName,

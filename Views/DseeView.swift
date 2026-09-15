@@ -1,16 +1,51 @@
+import Client
+import ComposableArchitecture
 import SwiftUI
 
-struct DseeView: View {
-    struct Model {
-        let dsee: Bool
+// MARK: - DseeReducer
+
+@Reducer struct DseeReducer {
+    @ObservableState struct State: Equatable {
+        var dsee = false
+
+        mutating func sync(from headphones: HeadphonesState) {
+            dsee = headphones.dsee
+        }
     }
 
-    let model: Model
+    enum Action {
+        case setDsee(Bool)
+        case delegate(Delegate)
+    }
 
-    var setDsee: (Bool) -> Void = { _ in }
+    enum Delegate {
+        case setDsee(Bool)
+    }
+
+    var body: some ReducerOf<Self> {
+        Reduce { state, action in
+            switch action {
+                case let .setDsee(on):
+                    state.dsee = on
+                    return .send(.delegate(.setDsee(on)))
+
+                case .delegate:
+                    return .none
+            }
+        }
+    }
+}
+
+// MARK: - DseeView
+
+struct DseeView: View {
+    let store: StoreOf<DseeReducer>
 
     var body: some View {
-        Toggle(isOn: Binding(get: { model.dsee }, set: { setDsee($0) })) {
+        Toggle(isOn: Binding(
+            get: { store.dsee },
+            set: { store.send(.setDsee($0)) }
+        )) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("DseeView.title").font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
@@ -26,9 +61,17 @@ struct DseeView: View {
 }
 
 #Preview {
-    DseeView(model: .init(dsee: true))
+    DseeView(
+        store: Store(initialState: DseeReducer.State(dsee: true)) {
+            DseeReducer()
+        }
+    )
 }
 
 #Preview {
-    DseeView(model: .init(dsee: false))
+    DseeView(
+        store: Store(initialState: DseeReducer.State(dsee: false)) {
+            DseeReducer()
+        }
+    )
 }

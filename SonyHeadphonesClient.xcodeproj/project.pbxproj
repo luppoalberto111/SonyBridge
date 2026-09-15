@@ -41,6 +41,7 @@
 		AA0000000000000000000108 /* HeadphonesStateViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000208 /* HeadphonesStateViewModelTests.swift */; };
 		AA0000000000000000000109 /* IntPercentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000209 /* IntPercentTests.swift */; };
 		AA000000000000000000010A /* EqPresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020A /* EqPresetTests.swift */; };
+		AA0000000000000000000116 /* DseeReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000213 /* DseeReducerTests.swift */; };
 		AA000000000000000000010B /* SnapshotFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020B /* SnapshotFixtures.swift */; };
 		AA000000000000000000010C /* DisconnectedViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020C /* DisconnectedViewSnapshotTests.swift */; };
 		AA000000000000000000010D /* AmbientViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020D /* AmbientViewSnapshotTests.swift */; };
@@ -91,6 +92,7 @@
 		AA0000000000000000000208 /* HeadphonesStateViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesStateViewModelTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000209 /* IntPercentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntPercentTests.swift; sourceTree = "<group>"; };
 		AA000000000000000000020A /* EqPresetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqPresetTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000213 /* DseeReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DseeReducerTests.swift; sourceTree = "<group>"; };
 		AA000000000000000000020B /* SnapshotFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotFixtures.swift; sourceTree = "<group>"; };
 		AA000000000000000000020C /* DisconnectedViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedViewSnapshotTests.swift; sourceTree = "<group>"; };
 		AA000000000000000000020D /* AmbientViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientViewSnapshotTests.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				AA0000000000000000000208 /* HeadphonesStateViewModelTests.swift */,
 				AA0000000000000000000209 /* IntPercentTests.swift */,
 				AA000000000000000000020A /* EqPresetTests.swift */,
+				AA0000000000000000000213 /* DseeReducerTests.swift */,
 			);
 			path = SonyHeadphonesClientTests;
 			sourceTree = "<group>";
@@ -429,6 +432,7 @@
 				AA0000000000000000000108 /* HeadphonesStateViewModelTests.swift in Sources */,
 				AA0000000000000000000109 /* IntPercentTests.swift in Sources */,
 				AA000000000000000000010A /* EqPresetTests.swift in Sources */,
+				AA0000000000000000000116 /* DseeReducerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

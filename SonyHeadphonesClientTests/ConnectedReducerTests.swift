@@ -19,6 +19,7 @@ import Testing
         snapshot.mode = .ambientSound
         snapshot.ambientLevel = 12
         snapshot.eqPreset = EqPreset.bass.rawValue
+        snapshot.dsee = true
         snapshot.hasAdaptiveVolume = true
         snapshot.adaptiveVolume = true
 
@@ -34,6 +35,7 @@ import Testing
             $0.ambient.mode = .ambientSound
             $0.ambient.ambientLevel = 12
             $0.equalizer.eqPreset = EqPreset.bass.rawValue
+            $0.dsee.dsee = true
             $0.settings.hasAdaptiveVolume = true
             $0.settings.adaptiveVolume = true
         }
@@ -122,6 +124,7 @@ import Testing
             $0.deviceHero.headphones = HeadphonesState()
             $0.ambient = AmbientReducer.State()
             $0.equalizer = EqualizerReducer.State()
+            $0.dsee = DseeReducer.State()
             $0.settings = SettingsReducer.State()
         }
         await store.receive(\.delegate)

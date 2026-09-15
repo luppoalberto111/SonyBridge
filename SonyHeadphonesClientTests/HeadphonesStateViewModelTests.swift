@@ -43,13 +43,6 @@ struct HeadphonesStateViewModelTests {
         #expect(model.about.batteryCase == 50)
     }
 
-    @Test func dseeModelMirrorsDseeFlag() {
-        var state = HeadphonesState()
-        state.dsee = true
-
-        #expect(state.dseeModel.dsee)
-    }
-
     @Test func batteryStateMapsLevelsToIcons() {
         #expect(batteryState(level: 10, charging: false) == .empty)
         #expect(batteryState(level: 40, charging: false) == .half)
