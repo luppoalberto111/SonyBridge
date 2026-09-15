@@ -1,4 +1,3 @@
-import AppKit
 import Client
 import ComposableArchitecture
 import Foundation
@@ -11,8 +10,10 @@ import Testing
 @MainActor struct SettingsViewSnapshotTests {
     @Test func allCapabilitiesAvailable() {
         assertSnapshot(
-            of: SettingsView(store: SnapshotFixtures.settingsStore()),
-            as: .image(layout: .fixed(width: 380, height: 260))
+            of: SnapshotFixtures.hostingController(
+                SettingsView(store: SnapshotFixtures.settingsStore())
+            ),
+            as: .image(size: CGSize(width: 380, height: 260))
         )
     }
 }

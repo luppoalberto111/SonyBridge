@@ -1,4 +1,3 @@
-import AppKit
 import ComposableArchitecture
 import Foundation
 import SnapshotTesting
@@ -10,23 +9,27 @@ import Testing
 @MainActor struct DeviceHeroViewSnapshotTests {
     @Test func singleBattery() {
         assertSnapshot(
-            of: DeviceHeroView(
-                store: SnapshotFixtures.deviceHeroStore(
-                    headphones: SnapshotFixtures.singleBatteryHeadphones()
+            of: SnapshotFixtures.hostingController(
+                DeviceHeroView(
+                    store: SnapshotFixtures.deviceHeroStore(
+                        headphones: SnapshotFixtures.singleBatteryHeadphones()
+                    )
                 )
             ),
-            as: .image(layout: .fixed(width: 380, height: 420))
+            as: .image(size: CGSize(width: 380, height: 420))
         )
     }
 
     @Test func dualBattery() {
         assertSnapshot(
-            of: DeviceHeroView(
-                store: SnapshotFixtures.deviceHeroStore(
-                    headphones: SnapshotFixtures.dualBatteryHeadphones()
+            of: SnapshotFixtures.hostingController(
+                DeviceHeroView(
+                    store: SnapshotFixtures.deviceHeroStore(
+                        headphones: SnapshotFixtures.dualBatteryHeadphones()
+                    )
                 )
             ),
-            as: .image(layout: .fixed(width: 380, height: 420))
+            as: .image(size: CGSize(width: 380, height: 420))
         )
     }
 }

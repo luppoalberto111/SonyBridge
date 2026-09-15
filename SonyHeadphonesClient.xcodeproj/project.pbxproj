@@ -120,8 +120,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA0000000000000000000114 /* ComposableArchitecture in Frameworks */,
-				AA0000000000000000000115 /* SonyBTKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,8 +128,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA0000000000000000000113 /* SnapshotTesting in Frameworks */,
-				AA0000000000000000000114 /* ComposableArchitecture in Frameworks */,
-				AA0000000000000000000115 /* SonyBTKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,11 +261,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				AA0000000000000000000C01 /* PBXTargetDependency */,
 			);
 			name = SonyHeadphonesClientTests;
 			packageProductDependencies = (
-				AA0000000000000000000304 /* ComposableArchitecture */,
-				AA0000000000000000000305 /* SonyBTKit */,
 			);
 			productName = SonyHeadphonesClientTests;
 			productReference = AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */;
@@ -286,12 +281,11 @@
 			buildRules = (
 			);
 			dependencies = (
+				AA0000000000000000000C01 /* PBXTargetDependency */,
 			);
 			name = SonyHeadphonesClientSnapshotTests;
 			packageProductDependencies = (
 				AA0000000000000000000303 /* SnapshotTesting */,
-				AA0000000000000000000304 /* ComposableArchitecture */,
-				AA0000000000000000000305 /* SonyBTKit */,
 			);
 			productName = SonyHeadphonesClientSnapshotTests;
 			productReference = AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */;
@@ -462,6 +456,10 @@
 			isa = PBXTargetDependency;
 			productRef = F76B57F03057F99C00449C1F /* SwiftLintBuildToolPlugin */;
 		};
+		AA0000000000000000000C01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A8DC78C325757BF300447738 /* SonyHeadphonesClient */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -595,6 +593,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_DEBUG_DYLIB = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -646,6 +645,7 @@
 		AA0000000000000000000B01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SonyHeadphonesClient.app/Contents/MacOS/SonyHeadphonesClient";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -655,12 +655,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SonyHeadphonesClient.app/Contents/MacOS/SonyHeadphonesClient";
 			};
 			name = Debug;
 		};
 		AA0000000000000000000B02 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SonyHeadphonesClient.app/Contents/MacOS/SonyHeadphonesClient";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -670,12 +672,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SonyHeadphonesClient.app/Contents/MacOS/SonyHeadphonesClient";
 			};
 			name = Release;
 		};
 		AA0000000000000000000B03 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SonyHeadphonesClient.app/Contents/MacOS/SonyHeadphonesClient";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -685,12 +689,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SonyHeadphonesClient.app/Contents/MacOS/SonyHeadphonesClient";
 			};
 			name = Debug;
 		};
 		AA0000000000000000000B04 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/SonyHeadphonesClient.app/Contents/MacOS/SonyHeadphonesClient";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
@@ -700,6 +706,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SonyHeadphonesClient.app/Contents/MacOS/SonyHeadphonesClient";
 			};
 			name = Release;
 		};

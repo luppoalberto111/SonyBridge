@@ -1,4 +1,3 @@
-import AppKit
 import Client
 import ComposableArchitecture
 import Foundation
@@ -11,27 +10,31 @@ import Testing
 @MainActor struct MainScreenViewSnapshotTests {
     @Test func disconnected() {
         assertSnapshot(
-            of: MainScreenView(
-                store: SnapshotFixtures.mainScreenStore(
-                    state: .disconnected(DisconnectedReducer.State())
+            of: SnapshotFixtures.hostingController(
+                MainScreenView(
+                    store: SnapshotFixtures.mainScreenStore(
+                        state: .disconnected(DisconnectedReducer.State())
+                    )
                 )
             ),
-            as: .image(layout: .fixed(width: 380, height: 560))
+            as: .image(size: CGSize(width: 380, height: 560))
         )
     }
 
     @Test func connected() {
         assertSnapshot(
-            of: MainScreenView(
-                store: SnapshotFixtures.mainScreenStore(
-                    state: .connected(
-                        ConnectedReducer.State(
-                            headphones: SnapshotFixtures.singleBatteryHeadphones()
+            of: SnapshotFixtures.hostingController(
+                MainScreenView(
+                    store: SnapshotFixtures.mainScreenStore(
+                        state: .connected(
+                            ConnectedReducer.State(
+                                headphones: SnapshotFixtures.singleBatteryHeadphones()
+                            )
                         )
                     )
                 )
             ),
-            as: .image(layout: .fixed(width: 380, height: 900))
+            as: .image(size: CGSize(width: 380, height: 900))
         )
     }
 }

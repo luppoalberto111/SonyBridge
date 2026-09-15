@@ -1,3 +1,4 @@
+import AppKit
 import Bridge
 import Client
 import ComposableArchitecture
@@ -7,6 +8,15 @@ import SwiftUI
 
 /// Deterministic `HeadphonesState` values shared by the snapshot tests.
 enum SnapshotFixtures {
+    /// Wraps a SwiftUI view for image snapshotting on macOS.
+    ///
+    /// swift-snapshot-testing only ships `NSView`/`NSViewController` image
+    /// strategies on macOS, so views go through an `NSHostingController`
+    /// upcast to `NSViewController`.
+    @MainActor static func hostingController(_ view: some View) -> NSViewController {
+        NSHostingController(rootView: view)
+    }
+
     static func singleBatteryHeadphones() -> HeadphonesState {
         var state = HeadphonesState()
         state.connected = true

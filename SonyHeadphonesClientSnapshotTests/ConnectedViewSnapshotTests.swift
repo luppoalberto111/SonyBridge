@@ -1,4 +1,3 @@
-import AppKit
 import Client
 import ComposableArchitecture
 import Foundation
@@ -11,12 +10,14 @@ import Testing
 @MainActor struct ConnectedViewSnapshotTests {
     @Test func fullyFeaturedHeadphones() {
         assertSnapshot(
-            of: ConnectedView(
-                store: SnapshotFixtures.connectedStore(
-                    headphones: SnapshotFixtures.singleBatteryHeadphones()
+            of: SnapshotFixtures.hostingController(
+                ConnectedView(
+                    store: SnapshotFixtures.connectedStore(
+                        headphones: SnapshotFixtures.singleBatteryHeadphones()
+                    )
                 )
             ),
-            as: .image(layout: .fixed(width: 380, height: 900))
+            as: .image(size: CGSize(width: 380, height: 900))
         )
     }
 
@@ -26,8 +27,10 @@ import Testing
         headphones.deviceName = "WH-CH720N"
 
         assertSnapshot(
-            of: ConnectedView(store: SnapshotFixtures.connectedStore(headphones: headphones)),
-            as: .image(layout: .fixed(width: 380, height: 900))
+            of: SnapshotFixtures.hostingController(
+                ConnectedView(store: SnapshotFixtures.connectedStore(headphones: headphones))
+            ),
+            as: .image(size: CGSize(width: 380, height: 900))
         )
     }
 }
