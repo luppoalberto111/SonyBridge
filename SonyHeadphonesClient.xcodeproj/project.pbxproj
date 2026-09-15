@@ -31,6 +31,27 @@
 		F7EAEFF405421600018001 /* EqBand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFF305421600018001 /* EqBand.swift */; };
 		F7EAEFF605421700018001 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F7EAEFF505421700018001 /* Localizable.xcstrings */; };
 		F7EAEFF805421800018001 /* Int+Percent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFF705421800018001 /* Int+Percent.swift */; };
+		AA0000000000000000000101 /* DisconnectedReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000201 /* DisconnectedReducerTests.swift */; };
+		AA0000000000000000000102 /* AmbientReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000202 /* AmbientReducerTests.swift */; };
+		AA0000000000000000000103 /* EqualizerReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000203 /* EqualizerReducerTests.swift */; };
+		AA0000000000000000000104 /* SettingsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000204 /* SettingsReducerTests.swift */; };
+		AA0000000000000000000105 /* DeviceHeroReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000205 /* DeviceHeroReducerTests.swift */; };
+		AA0000000000000000000106 /* ConnectedReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000206 /* ConnectedReducerTests.swift */; };
+		AA0000000000000000000107 /* MainScreenFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000207 /* MainScreenFeatureTests.swift */; };
+		AA0000000000000000000108 /* HeadphonesStateViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000208 /* HeadphonesStateViewModelTests.swift */; };
+		AA0000000000000000000109 /* IntPercentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000209 /* IntPercentTests.swift */; };
+		AA000000000000000000010A /* EqPresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020A /* EqPresetTests.swift */; };
+		AA000000000000000000010B /* SnapshotFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020B /* SnapshotFixtures.swift */; };
+		AA000000000000000000010C /* DisconnectedViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020C /* DisconnectedViewSnapshotTests.swift */; };
+		AA000000000000000000010D /* AmbientViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020D /* AmbientViewSnapshotTests.swift */; };
+		AA000000000000000000010E /* EqualizerViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020E /* EqualizerViewSnapshotTests.swift */; };
+		AA000000000000000000010F /* SettingsViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000020F /* SettingsViewSnapshotTests.swift */; };
+		AA0000000000000000000110 /* DeviceHeroViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000210 /* DeviceHeroViewSnapshotTests.swift */; };
+		AA0000000000000000000111 /* ConnectedViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */; };
+		AA0000000000000000000112 /* MainScreenViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */; };
+		AA0000000000000000000113 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000303 /* SnapshotTesting */; };
+		AA0000000000000000000114 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000304 /* ComposableArchitecture */; };
+		AA0000000000000000000115 /* SonyBTKit in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000305 /* SonyBTKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +81,26 @@
 		F7EAEFF305421600018001 /* EqBand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqBand.swift; sourceTree = "<group>"; };
 		F7EAEFF505421700018001 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		F7EAEFF705421800018001 /* Int+Percent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Percent.swift"; sourceTree = "<group>"; };
+		AA0000000000000000000201 /* DisconnectedReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedReducerTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000202 /* AmbientReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientReducerTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000203 /* EqualizerReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqualizerReducerTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000204 /* SettingsReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsReducerTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000205 /* DeviceHeroReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHeroReducerTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000206 /* ConnectedReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedReducerTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000207 /* MainScreenFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenFeatureTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000208 /* HeadphonesStateViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesStateViewModelTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000209 /* IntPercentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntPercentTests.swift; sourceTree = "<group>"; };
+		AA000000000000000000020A /* EqPresetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqPresetTests.swift; sourceTree = "<group>"; };
+		AA000000000000000000020B /* SnapshotFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotFixtures.swift; sourceTree = "<group>"; };
+		AA000000000000000000020C /* DisconnectedViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedViewSnapshotTests.swift; sourceTree = "<group>"; };
+		AA000000000000000000020D /* AmbientViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientViewSnapshotTests.swift; sourceTree = "<group>"; };
+		AA000000000000000000020E /* EqualizerViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqualizerViewSnapshotTests.swift; sourceTree = "<group>"; };
+		AA000000000000000000020F /* SettingsViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewSnapshotTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000210 /* DeviceHeroViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHeroViewSnapshotTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedViewSnapshotTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewSnapshotTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientSnapshotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +111,25 @@
 				A87B328B259FAA8B00EA6551 /* Cocoa.framework in Frameworks */,
 				EE0000000000000000000005 /* SonyBTKit in Frameworks */,
 				F76B57F5305815DA00449C1F /* ComposableArchitecture in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000501 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0000000000000000000114 /* ComposableArchitecture in Frameworks */,
+				AA0000000000000000000115 /* SonyBTKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000502 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0000000000000000000113 /* SnapshotTesting in Frameworks */,
+				AA0000000000000000000114 /* ComposableArchitecture in Frameworks */,
+				AA0000000000000000000115 /* SonyBTKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,14 +148,50 @@
 				A863B14925A11DF500101F3B /* SonyHeadphonesClient.entitlements */,
 				A8DC78E32576922700447738 /* info.plist */,
 				A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */,
+				AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */,
+				AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */,
 				CC0000000000000000000009 /* AppDelegate.swift */,
 				CC0000000000000000000005 /* MainScreenFeature.swift */,
 				F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */,
 				CC000000000000000000000F /* SonyHeadphonesClientApp.swift */,
 				DD0000000000000000000002 /* Assets.xcassets */,
 				F7EAEFF505421700018001 /* Localizable.xcstrings */,
+				AA0000000000000000000601 /* SonyHeadphonesClientTests */,
+				AA0000000000000000000602 /* SonyHeadphonesClientSnapshotTests */,
 				A8DC790325769A6600447738 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000601 /* SonyHeadphonesClientTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000201 /* DisconnectedReducerTests.swift */,
+				AA0000000000000000000202 /* AmbientReducerTests.swift */,
+				AA0000000000000000000203 /* EqualizerReducerTests.swift */,
+				AA0000000000000000000204 /* SettingsReducerTests.swift */,
+				AA0000000000000000000205 /* DeviceHeroReducerTests.swift */,
+				AA0000000000000000000206 /* ConnectedReducerTests.swift */,
+				AA0000000000000000000207 /* MainScreenFeatureTests.swift */,
+				AA0000000000000000000208 /* HeadphonesStateViewModelTests.swift */,
+				AA0000000000000000000209 /* IntPercentTests.swift */,
+				AA000000000000000000020A /* EqPresetTests.swift */,
+			);
+			path = SonyHeadphonesClientTests;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000602 /* SonyHeadphonesClientSnapshotTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA000000000000000000020B /* SnapshotFixtures.swift */,
+				AA000000000000000000020C /* DisconnectedViewSnapshotTests.swift */,
+				AA000000000000000000020D /* AmbientViewSnapshotTests.swift */,
+				AA000000000000000000020E /* EqualizerViewSnapshotTests.swift */,
+				AA000000000000000000020F /* SettingsViewSnapshotTests.swift */,
+				AA0000000000000000000210 /* DeviceHeroViewSnapshotTests.swift */,
+				AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */,
+				AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */,
+			);
+			path = SonyHeadphonesClientSnapshotTests;
 			sourceTree = "<group>";
 		};
 		A8DC790325769A6600447738 /* Frameworks */ = {
@@ -155,6 +251,49 @@
 			productReference = A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */;
 			productType = "com.apple.product-type.application";
 		};
+		AA0000000000000000000701 /* SonyHeadphonesClientTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000801 /* Build configuration list for PBXNativeTarget "SonyHeadphonesClientTests" */;
+			buildPhases = (
+				AA0000000000000000000901 /* Sources */,
+				AA0000000000000000000501 /* Frameworks */,
+				AA0000000000000000000A01 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SonyHeadphonesClientTests;
+			packageProductDependencies = (
+				AA0000000000000000000304 /* ComposableArchitecture */,
+				AA0000000000000000000305 /* SonyBTKit */,
+			);
+			productName = SonyHeadphonesClientTests;
+			productReference = AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		AA0000000000000000000702 /* SonyHeadphonesClientSnapshotTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000802 /* Build configuration list for PBXNativeTarget "SonyHeadphonesClientSnapshotTests" */;
+			buildPhases = (
+				AA0000000000000000000902 /* Sources */,
+				AA0000000000000000000502 /* Frameworks */,
+				AA0000000000000000000A02 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SonyHeadphonesClientSnapshotTests;
+			packageProductDependencies = (
+				AA0000000000000000000303 /* SnapshotTesting */,
+				AA0000000000000000000304 /* ComposableArchitecture */,
+				AA0000000000000000000305 /* SonyBTKit */,
+			);
+			productName = SonyHeadphonesClientSnapshotTests;
+			productReference = AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -166,6 +305,12 @@
 				TargetAttributes = {
 					A8DC78C325757BF300447738 = {
 						CreatedOnToolsVersion = 12.2;
+					};
+					AA0000000000000000000701 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					AA0000000000000000000702 = {
+						CreatedOnToolsVersion = 27.0;
 					};
 				};
 			};
@@ -189,6 +334,8 @@
 			projectRoot = "";
 			targets = (
 				A8DC78C325757BF300447738 /* SonyHeadphonesClient */,
+				AA0000000000000000000701 /* SonyHeadphonesClientTests */,
+				AA0000000000000000000702 /* SonyHeadphonesClientSnapshotTests */,
 			);
 		};
 /* End PBXProject section */
@@ -200,6 +347,20 @@
 			files = (
 				DD0000000000000000000001 /* Assets.xcassets in Resources */,
 				F7EAEFF605421700018001 /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000A01 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000A02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,6 +412,38 @@
 				CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */,
 				F7EAEFE33057D8B000018001 /* EqPreset.swift in Sources */,
 				F7EAEFDD30541E5F00018001 /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000901 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0000000000000000000101 /* DisconnectedReducerTests.swift in Sources */,
+				AA0000000000000000000102 /* AmbientReducerTests.swift in Sources */,
+				AA0000000000000000000103 /* EqualizerReducerTests.swift in Sources */,
+				AA0000000000000000000104 /* SettingsReducerTests.swift in Sources */,
+				AA0000000000000000000105 /* DeviceHeroReducerTests.swift in Sources */,
+				AA0000000000000000000106 /* ConnectedReducerTests.swift in Sources */,
+				AA0000000000000000000107 /* MainScreenFeatureTests.swift in Sources */,
+				AA0000000000000000000108 /* HeadphonesStateViewModelTests.swift in Sources */,
+				AA0000000000000000000109 /* IntPercentTests.swift in Sources */,
+				AA000000000000000000010A /* EqPresetTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000902 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA000000000000000000010B /* SnapshotFixtures.swift in Sources */,
+				AA000000000000000000010C /* DisconnectedViewSnapshotTests.swift in Sources */,
+				AA000000000000000000010D /* AmbientViewSnapshotTests.swift in Sources */,
+				AA000000000000000000010E /* EqualizerViewSnapshotTests.swift in Sources */,
+				AA000000000000000000010F /* SettingsViewSnapshotTests.swift in Sources */,
+				AA0000000000000000000110 /* DeviceHeroViewSnapshotTests.swift in Sources */,
+				AA0000000000000000000111 /* ConnectedViewSnapshotTests.swift in Sources */,
+				AA0000000000000000000112 /* MainScreenViewSnapshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -446,6 +639,66 @@
 			};
 			name = Release;
 		};
+		AA0000000000000000000B01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.SonyHeadphonesClientTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		AA0000000000000000000B02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.SonyHeadphonesClientTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		AA0000000000000000000B03 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.SonyHeadphonesClientSnapshotTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		AA0000000000000000000B04 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = "$(RECOMMENDED_MACOSX_DEPLOYMENT_TARGET)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.SonyHeadphonesClientSnapshotTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -463,6 +716,24 @@
 			buildConfigurations = (
 				A8DC78D925757BF500447738 /* Debug */,
 				A8DC78DA25757BF500447738 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000801 /* Build configuration list for PBXNativeTarget "SonyHeadphonesClientTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000B01 /* Debug */,
+				AA0000000000000000000B02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000802 /* Build configuration list for PBXNativeTarget "SonyHeadphonesClientSnapshotTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000B03 /* Debug */,
+				AA0000000000000000000B04 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -518,6 +789,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = F76B57F3305815DA00449C1F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		AA0000000000000000000303 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F76B57FD3059194800449C1F /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		AA0000000000000000000304 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F76B57F3305815DA00449C1F /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+		AA0000000000000000000305 /* SonyBTKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE0000000000000000000002 /* XCLocalSwiftPackageReference "SonyBTKit" */;
+			productName = SonyBTKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

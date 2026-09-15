@@ -12,8 +12,19 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     /// Devices returned by `pairedDevices()`.
     public var stubbedDevices: [DiscoveredDevice] = []
 
+    /// When set, `connect(address:)` fails with this message instead of connecting.
+    public var connectionError: String?
+
     public init(state: HeadphonesState = HeadphonesState()) {
         self.state = state
+    }
+
+    public func setStubbedDevices(_ devices: [DiscoveredDevice]) {
+        stubbedDevices = devices
+    }
+
+    public func setConnectionError(_ message: String?) {
+        connectionError = message
     }
 
     // MARK: Connection
@@ -32,6 +43,10 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     public func connect(address: String) async -> HeadphonesState {
         state.connecting = false
         state.errorMessage = nil
+        if let connectionError {
+            state.errorMessage = connectionError
+            return state
+        }
         if let device = stubbedDevices.first(where: { $0.address == address }) {
             state.deviceName = device.name
             state.deviceMac = device.address

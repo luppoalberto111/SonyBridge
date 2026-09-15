@@ -544,6 +544,7 @@ xcuserdata/
 DerivedData/
 build/
 .build/
+*.xcresult
 *.ipa
 *.dSYM.zip
 *.dSYM
@@ -554,3 +555,6 @@ build/
 *.pem
 *.mobileprovision
 *.p12
+
+# Abacus
+.abacusai/
