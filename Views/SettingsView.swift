@@ -1,43 +1,90 @@
+import Client
+import ComposableArchitecture
 import SwiftUI
 
-struct SettingsView: View {
-    struct Model {
-        let hasAdaptiveVolume: Bool
-        let adaptiveVolume: Bool
-        let hasSpeakToChat: Bool
-        let speakToChat: Bool
-        let hasAutoPowerOff: Bool
-        let autoPowerOff: AutoPowerOffOption
+// MARK: - SettingsReducer
+
+@Reducer struct SettingsReducer {
+    @ObservableState struct State: Equatable {
+        var hasAdaptiveVolume = false
+        var adaptiveVolume = false
+        var hasSpeakToChat = false
+        var speakToChat = false
+        var hasAutoPowerOff = false
+        var autoPowerOff = AutoPowerOffOption.off
+
+        mutating func sync(from headphones: HeadphonesState) {
+            hasAdaptiveVolume = headphones.hasAdaptiveVolume
+            adaptiveVolume = headphones.adaptiveVolume
+            hasSpeakToChat = headphones.hasSpeakToChat
+            speakToChat = headphones.speakToChat
+            hasAutoPowerOff = headphones.hasAutoPowerOff
+            autoPowerOff = AutoPowerOffOption(rawValue: headphones.autoPowerOff) ?? .off
+        }
     }
 
-    let model: Model
+    enum Action {
+        case setAdaptiveVolume(Bool)
+        case setSpeakToChat(Bool)
+        case setAutoPowerOff(AutoPowerOffOption)
+        case delegate(Delegate)
+    }
 
-    var setAdaptiveVolume: (Bool) -> Void = { _ in }
-    var setSpeakToChat: (Bool) -> Void = { _ in }
-    var setAutoPowerOff: (AutoPowerOffOption) -> Void = { _ in }
+    enum Delegate {
+        case setAdaptiveVolume(Bool)
+        case setSpeakToChat(Bool)
+        case setAutoPowerOff(AutoPowerOffOption)
+    }
+
+    var body: some ReducerOf<Self> {
+        Reduce { state, action in
+            switch action {
+                case let .setAdaptiveVolume(on):
+                    state.adaptiveVolume = on
+                    return .send(.delegate(.setAdaptiveVolume(on)))
+
+                case let .setSpeakToChat(on):
+                    state.speakToChat = on
+                    return .send(.delegate(.setSpeakToChat(on)))
+
+                case let .setAutoPowerOff(option):
+                    state.autoPowerOff = option
+                    return .send(.delegate(.setAutoPowerOff(option)))
+
+                case .delegate:
+                    return .none
+            }
+        }
+    }
+}
+
+// MARK: - SettingsView
+
+struct SettingsView: View {
+    let store: StoreOf<SettingsReducer>
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("SettingsView.title")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(.white)
-            if model.hasAdaptiveVolume {
+            if store.hasAdaptiveVolume {
                 settingToggle(
                     "SettingsView.adaptiveVolume.title",
                     "SettingsView.adaptiveVolume.subtitle",
-                    on: model.adaptiveVolume,
-                    action: setAdaptiveVolume
+                    on: store.adaptiveVolume,
+                    action: { store.send(.setAdaptiveVolume($0)) }
                 )
             }
-            if model.hasSpeakToChat {
+            if store.hasSpeakToChat {
                 settingToggle(
                     "SettingsView.speakToChat.title",
                     "SettingsView.speakToChat.subtitle",
-                    on: model.speakToChat,
-                    action: setSpeakToChat
+                    on: store.speakToChat,
+                    action: { store.send(.setSpeakToChat($0)) }
                 )
             }
-            if model.hasAutoPowerOff {
+            if store.hasAutoPowerOff {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("SettingsView.autoPowerOff.title")
@@ -51,8 +98,8 @@ struct SettingsView: View {
                     Picker(
                         "",
                         selection: Binding(
-                            get: { model.autoPowerOff },
-                            set: { setAutoPowerOff($0) }
+                            get: { store.autoPowerOff },
+                            set: { store.send(.setAutoPowerOff($0)) }
                         )
                     ) {
                         ForEach(AutoPowerOffOption.allCases) { option in
@@ -89,26 +136,34 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView(
-        model: .init(
-            hasAdaptiveVolume: true,
-            adaptiveVolume: true,
-            hasSpeakToChat: true,
-            speakToChat: false,
-            hasAutoPowerOff: true,
-            autoPowerOff: .thirtyMinutes
-        )
+        store: Store(
+            initialState: SettingsReducer.State(
+                hasAdaptiveVolume: true,
+                adaptiveVolume: true,
+                hasSpeakToChat: true,
+                speakToChat: false,
+                hasAutoPowerOff: true,
+                autoPowerOff: .thirtyMinutes
+            )
+        ) {
+            SettingsReducer()
+        }
     )
 }
 
 #Preview {
     SettingsView(
-        model: .init(
-            hasAdaptiveVolume: false,
-            adaptiveVolume: false,
-            hasSpeakToChat: true,
-            speakToChat: true,
-            hasAutoPowerOff: false,
-            autoPowerOff: .off
-        )
+        store: Store(
+            initialState: SettingsReducer.State(
+                hasAdaptiveVolume: false,
+                adaptiveVolume: false,
+                hasSpeakToChat: true,
+                speakToChat: true,
+                hasAutoPowerOff: false,
+                autoPowerOff: .off
+            )
+        ) {
+            SettingsReducer()
+        }
     )
 }

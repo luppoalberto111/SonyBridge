@@ -6,21 +6,20 @@ import SwiftUI
 
 // MARK: - ConnectedReducer
 
-/// Connected-screen feature: owns the connected headset state and all of
-/// its effects (setters, polling, status refresh).
-///
-/// Exits back to the parent via `delegate` when the headset disconnects —
-/// the parent then tears this feature down and shows the disconnected screen.
 @Reducer struct ConnectedReducer {
     @ObservableState struct State: Equatable {
         var headphones: HeadphonesState
         var deviceHero = DeviceHeroReducer.State()
         var ambient = AmbientReducer.State()
+        var equalizer = EqualizerReducer.State()
+        var settings = SettingsReducer.State()
     }
 
     enum Action {
         case deviceHero(DeviceHeroReducer.Action)
         case ambient(AmbientReducer.Action)
+        case equalizer(EqualizerReducer.Action)
+        case settings(SettingsReducer.Action)
         case task
         case refreshStatusRequested
         case snapshotReceived(HeadphonesState)
@@ -74,6 +73,30 @@ import SwiftUI
                 case .ambient:
                     return .none
 
+                case let .equalizer(.delegate(.setEqualizer(preset))):
+                    return .send(.setEqualizer(preset))
+
+                case let .equalizer(.delegate(.setBand(index, value))):
+                    return .send(.setBand(index, value))
+
+                case let .equalizer(.delegate(.setClearBass(value))):
+                    return .send(.setClearBass(value))
+
+                case .equalizer:
+                    return .none
+
+                case let .settings(.delegate(.setAdaptiveVolume(on))):
+                    return .send(.setAdaptiveVolume(on))
+
+                case let .settings(.delegate(.setSpeakToChat(on))):
+                    return .send(.setSpeakToChat(on))
+
+                case let .settings(.delegate(.setAutoPowerOff(option))):
+                    return .send(.setAutoPowerOff(option))
+
+                case .settings:
+                    return .none
+
                 case .task:
                     return .merge(startPolling(), .send(.refreshStatusRequested))
 
@@ -87,6 +110,8 @@ import SwiftUI
                     state.headphones = snap
                     state.deviceHero.headphones = snap
                     state.ambient.sync(from: snap)
+                    state.equalizer.sync(from: snap)
+                    state.settings.sync(from: snap)
                     return .none
 
                 case .disconnectButtonTapped:
@@ -172,6 +197,8 @@ import SwiftUI
                     state.headphones = snap
                     state.deviceHero.headphones = snap
                     state.ambient.sync(from: snap)
+                    state.equalizer.sync(from: snap)
+                    state.settings.sync(from: snap)
                     return .none
 
                 case .watchTick:
@@ -183,6 +210,8 @@ import SwiftUI
                     state.headphones = snap
                     state.deviceHero.headphones = snap
                     state.ambient.sync(from: snap)
+                    state.equalizer.sync(from: snap)
+                    state.settings.sync(from: snap)
                     if snap.connected {
                         return .none
                     }
@@ -202,6 +231,12 @@ import SwiftUI
         }
         Scope(state: \.ambient, action: \.ambient) {
             AmbientReducer()
+        }
+        Scope(state: \.equalizer, action: \.equalizer) {
+            EqualizerReducer()
+        }
+        Scope(state: \.settings, action: \.settings) {
+            SettingsReducer()
         }
     }
 
@@ -268,10 +303,7 @@ struct ConnectedView: View {
                 )
                 if store.headphones.supportsEqualizer {
                     EqualizerView(
-                        model: store.headphones.equalizerModel,
-                        setEqualizer: { store.send(.setEqualizer($0)) },
-                        setBand: { store.send(.setBand($0, $1)) },
-                        setClearBass: { store.send(.setClearBass($0)) }
+                        store: store.scope(state: \.equalizer, action: \.equalizer)
                     )
                     DseeView(model: store.headphones.dseeModel) {
                         store.send(.setDsee($0))
@@ -280,10 +312,7 @@ struct ConnectedView: View {
                 if store.headphones.hasAdaptiveVolume || store.headphones.hasSpeakToChat
                     || store.headphones.hasAutoPowerOff {
                     SettingsView(
-                        model: store.headphones.settingsModel,
-                        setAdaptiveVolume: { store.send(.setAdaptiveVolume($0)) },
-                        setSpeakToChat: { store.send(.setSpeakToChat($0)) },
-                        setAutoPowerOff: { store.send(.setAutoPowerOff($0)) }
+                        store: store.scope(state: \.settings, action: \.settings)
                     )
                 }
                 if let error = store.headphones.errorMessage {

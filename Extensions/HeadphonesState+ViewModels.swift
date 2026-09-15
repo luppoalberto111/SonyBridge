@@ -18,25 +18,6 @@ extension HeadphonesState {
         )
     }
 
-    var settingsModel: SettingsView.Model {
-        .init(
-            hasAdaptiveVolume: hasAdaptiveVolume,
-            adaptiveVolume: adaptiveVolume,
-            hasSpeakToChat: hasSpeakToChat,
-            speakToChat: speakToChat,
-            hasAutoPowerOff: hasAutoPowerOff,
-            autoPowerOff: AutoPowerOffOption(rawValue: autoPowerOff) ?? .off
-        )
-    }
-
-    var equalizerModel: EqualizerView.Model {
-        .init(
-            eqPreset: eqPreset,
-            eqBands: eqBands,
-            clearBass: clearBass
-        )
-    }
-
     var dseeModel: DseeView.Model {
         .init(dsee: dsee)
     }

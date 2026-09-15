@@ -4,12 +4,6 @@ import SwiftUI
 
 // MARK: - DeviceHeroReducer
 
-/// Device hero feature: owns the About popover presentation state and
-/// forwards the disconnect tap to the parent via `delegate`.
-///
-/// Display data lives in `headphones` (synced from the parent's snapshots)
-/// and is mapped through the existing `deviceHeroModel` extension, so no
-/// image or formatting logic is duplicated here.
 @Reducer struct DeviceHeroReducer {
     @ObservableState struct State: Equatable {
         var headphones = HeadphonesState()

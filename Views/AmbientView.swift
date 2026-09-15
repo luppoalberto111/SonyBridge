@@ -5,10 +5,6 @@ import SwiftUI
 
 // MARK: - AmbientReducer
 
-/// Ambient-sound feature: owns the mode/level/voice-focus display slice.
-///
-/// Setter taps are reported to the parent via `delegate` — the parent runs
-/// the effects against `HeadphonesClient` and syncs fresh snapshots back.
 @Reducer struct AmbientReducer {
     @ObservableState struct State: Equatable {
         var mode: SHCAmbientMode = .off

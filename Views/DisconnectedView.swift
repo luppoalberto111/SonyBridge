@@ -6,10 +6,6 @@ import SwiftUI
 
 // MARK: - DisconnectedReducer
 
-/// Disconnected-screen feature: owns the connect flow UI state and effects.
-///
-/// Connect results are reported to the parent via `delegate` — the parent
-/// takes over once a headset is connected (polling, status refresh).
 @Reducer struct DisconnectedReducer {
     @ObservableState struct State: Equatable {
         var connecting = false
