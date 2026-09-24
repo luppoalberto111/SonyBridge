@@ -9,6 +9,12 @@ import SwiftUI
         reducer: MainScreenFeature.init
     )
 
+    init() {
+        appDelegate.connectHandler = { [store] in
+            store.send(.disconnected(.connectButtonTapped))
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             MainScreenView(store: store)
