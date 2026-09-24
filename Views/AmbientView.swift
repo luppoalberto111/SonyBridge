@@ -93,7 +93,7 @@ struct AmbientView: View {
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card)
+        .background(Color(.card))
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
@@ -102,11 +102,11 @@ struct AmbientView: View {
             HStack {
                 Text("AmbientView.levelCard.title")
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Theme.secondary)
+                    .foregroundColor(Color(.secondary))
                 Spacer()
                 Text("\(store.ambientLevel)")
                     .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundColor(Theme.accent)
+                    .foregroundColor(Color(.accent))
             }
             Slider(
                 value: Binding(
@@ -116,7 +116,7 @@ struct AmbientView: View {
                 in: 1 ... Double(store.maxAmbientLevel),
                 step: 1
             )
-            .accentColor(Theme.accent)
+            .accentColor(Color(.accent))
 
             if store.focusOnVoiceAvailable {
                 Toggle(isOn: Binding(
@@ -127,12 +127,12 @@ struct AmbientView: View {
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(.white)
                 }
-                .toggleStyle(SwitchToggleStyle(tint: Theme.accent))
+                .toggleStyle(SwitchToggleStyle(tint: Color(.accent)))
             }
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card)
+        .background(Color(.card))
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }

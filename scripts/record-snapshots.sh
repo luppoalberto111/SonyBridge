@@ -11,6 +11,9 @@
 #   so references are (re)written to disk. The app is sandboxed, which would
 #   block writing reference images next to the sources, so the test host is
 #   signed without entitlements for the recording run (CODE_SIGN_ENTITLEMENTS=).
+#   xcodebuild does not forward shell environment to the test host, so the
+#   record mode is injected into the shared scheme's TestAction for the
+#   duration of the run; the scheme file is restored afterwards.
 #
 # iOS flow (PLATFORM=ios):
 #   1. Ensure the requested iOS simulator runtime is installed
@@ -195,14 +198,52 @@ run_tests() {
     shift 2
 
     if [[ "$DRY_RUN" -eq 1 ]]; then
-        log "(dry-run) would now record snapshots with mode '$RECORD_MODE' on $label."
+        log "(dry-run) would inject SNAPSHOT_TESTING_RECORD=$RECORD_MODE into the scheme and record on $label."
         return 0
     fi
 
+    # xcodebuild does not forward shell environment variables to the test
+    # host, so the record mode is injected into the shared scheme's TestAction
+    # for the duration of the run and the scheme is restored afterwards.
+    local scheme_file="$PROJECT_DIR/SonyHeadphonesClient.xcodeproj/xcshareddata/xcschemes/$SCHEME.xcscheme"
+    if [[ ! -f "$scheme_file" ]]; then
+        echo "error: scheme file not found: $scheme_file" >&2
+        return 1
+    fi
+    local backup
+    backup="$(mktemp)"
+    cp "$scheme_file" "$backup"
+    restore_scheme() {
+        cp "$backup" "$scheme_file"
+        rm -f "$backup"
+    }
+    trap restore_scheme EXIT INT TERM
+    RECORD_MODE="$RECORD_MODE" SCHEME_FILE="$scheme_file" python3 - <<'EOF'
+import os
+path = os.environ["SCHEME_FILE"]
+mode = os.environ["RECORD_MODE"]
+s = open(path).read()
+if "<EnvironmentVariables>" not in s:
+    block = (
+        "      <EnvironmentVariables>\n"
+        "         <EnvironmentVariable\n"
+        '            key = "SNAPSHOT_TESTING_RECORD"\n'
+        f'            value = "{mode}"\n'
+        '            isEnabled = "YES">\n'
+        "         </EnvironmentVariable>\n"
+        "      </EnvironmentVariables>\n"
+    )
+    assert "      <Testables>" in s, "unexpected scheme format"
+    s = s.replace("      <Testables>", block + "      <Testables>", 1)
+    open(path, "w").write(s)
+EOF
+
     log "Recording snapshots (mode: $RECORD_MODE) on $label..."
+    local status=0
+    set +e
     (
         cd "$PROJECT_DIR"
-        SNAPSHOT_TESTING_RECORD="$RECORD_MODE" xcodebuild test \
+        xcodebuild test \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
             -destination "$destination" \
@@ -210,7 +251,12 @@ run_tests() {
             -skipPackagePluginValidation \
             "$@"
     )
+    status=$?
+    set -e
+    restore_scheme
+    trap - EXIT INT TERM
     log "Done. Review the changes under $TEST_TARGET/__Snapshots__ before committing."
+    return "$status"
 }
 
 main() {

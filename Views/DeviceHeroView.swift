@@ -64,9 +64,9 @@ struct DeviceHeroView: View {
                 Button(action: { store.send(.showAboutChanged(true)) }) {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundColor(Theme.secondary)
+                        .foregroundColor(Color(.secondary))
                         .frame(width: 32, height: 32)
-                        .background(Theme.card)
+                        .background(Color(.card))
                         .clipShape(Circle())
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -82,9 +82,9 @@ struct DeviceHeroView: View {
                 Button(action: { store.send(.disconnectTapped) }) {
                     Image(systemName: "power")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(Theme.secondary)
+                        .foregroundColor(Color(.secondary))
                         .frame(width: 32, height: 32)
-                        .background(Theme.card)
+                        .background(Color(.card))
                         .clipShape(Circle())
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -95,8 +95,8 @@ struct DeviceHeroView: View {
                     .fill(
                         RadialGradient(
                             gradient: Gradient(colors: [
-                                Theme.accent.opacity(0.22),
-                                Theme.accent.opacity(0.0)
+                                Color(.accent).opacity(0.22),
+                                Color(.accent).opacity(0.0)
                             ]),
                             center: .center,
                             startRadius: 4,
@@ -126,7 +126,7 @@ struct DeviceHeroView: View {
                 if model.hasDualBattery {
                     Image(systemName: "battery.100")
                         .font(.system(size: 13))
-                        .foregroundColor(Theme.accent)
+                        .foregroundColor(Color(.accent))
                     Text(String(
                         format: String(
                             localized: "DeviceHeroView.batteryDual.value",
@@ -136,26 +136,26 @@ struct DeviceHeroView: View {
                         model.batteryRight.percentFormatted
                     ))
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(Theme.secondary)
+                    .foregroundColor(Color(.secondary))
                 } else if model.batteryLevel >= 0 {
                     model.batteryImage
                         .font(.system(size: 13))
-                        .foregroundColor(model.batteryLevel <= 20 ? .red.opacity(0.9) : Theme
-                            .accent)
+                        .foregroundColor(model.batteryLevel <= 20 ? .red
+                            .opacity(0.9) : Color(.accent))
                     Text(model.batteryLevel.percentFormatted)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(Theme.secondary)
+                        .foregroundColor(Color(.secondary))
                 } else {
-                    Circle().fill(Theme.accent).frame(width: 7, height: 7)
+                    Circle().fill(Color(.accent)).frame(width: 7, height: 7)
                     Text("DeviceHeroView.status.connected")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(Theme.secondary)
+                        .foregroundColor(Color(.secondary))
                 }
                 if !model.codec.isEmpty {
-                    Text("·").foregroundColor(Theme.secondary)
+                    Text("·").foregroundColor(Color(.secondary))
                     Text(model.codec)
                         .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(Theme.secondary)
+                        .foregroundColor(Color(.secondary))
                 }
             }
         }

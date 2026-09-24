@@ -94,10 +94,10 @@ struct DisconnectedView: View {
             Spacer()
             Image(systemName: "headphones")
                 .font(.system(size: 64, weight: .thin))
-                .foregroundColor(Theme.secondary)
+                .foregroundColor(Color(.secondary))
             Text("DisconnectedView.title")
                 .font(.system(size: 15, weight: .medium))
-                .foregroundColor(Theme.secondary)
+                .foregroundColor(Color(.secondary))
             if let errorMessage = store.errorMessage {
                 Text(errorMessage)
                     .font(.system(size: 12))
@@ -114,7 +114,7 @@ struct DisconnectedView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
-                    .background(Theme.accent)
+                    .background(Color(.accent))
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             .buttonStyle(PlainButtonStyle())
@@ -128,7 +128,7 @@ struct DisconnectedView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text("DisconnectedView.devicesTitle")
                 .font(.system(size: 13, weight: .semibold))
-                .foregroundColor(Theme.secondary)
+                .foregroundColor(Color(.secondary))
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
             ForEach(store.devices) { device in
@@ -140,12 +140,12 @@ struct DisconnectedView: View {
                                 .foregroundColor(.white)
                             Text(device.address)
                                 .font(.system(size: 11, weight: .regular, design: .monospaced))
-                                .foregroundColor(Theme.secondary)
+                                .foregroundColor(Color(.secondary))
                         }
                         Spacer()
                         Image(systemName: "chevron.right")
                             .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(Theme.secondary)
+                            .foregroundColor(Color(.secondary))
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
@@ -154,7 +154,7 @@ struct DisconnectedView: View {
                 .disabled(store.connecting)
             }
         }
-        .background(Theme.card)
+        .background(Color(.card))
         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .padding(.horizontal, 40)
     }

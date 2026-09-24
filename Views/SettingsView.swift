@@ -90,7 +90,7 @@ struct SettingsView: View {
                             .foregroundColor(.white)
                         Text("SettingsView.autoPowerOff.subtitle")
                             .font(.system(size: 11))
-                            .foregroundColor(Theme.secondary)
+                            .foregroundColor(Color(.secondary))
                     }
                     Spacer()
                     Picker(
@@ -106,13 +106,13 @@ struct SettingsView: View {
                     }
                     .pickerStyle(MenuPickerStyle())
                     .frame(width: 130)
-                    .accentColor(Theme.accent)
+                    .accentColor(Color(.accent))
                 }
             }
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card)
+        .background(Color(.card))
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
@@ -125,10 +125,10 @@ struct SettingsView: View {
         Toggle(isOn: Binding(get: { on }, set: { action($0) })) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(.system(size: 14, weight: .semibold)).foregroundColor(.white)
-                Text(subtitle).font(.system(size: 11)).foregroundColor(Theme.secondary)
+                Text(subtitle).font(.system(size: 11)).foregroundColor(Color(.secondary))
             }
         }
-        .toggleStyle(SwitchToggleStyle(tint: Theme.accent))
+        .toggleStyle(SwitchToggleStyle(tint: Color(.accent)))
     }
 }
 

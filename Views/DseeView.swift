@@ -49,13 +49,14 @@ struct DseeView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text("DseeView.title").font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
-                Text("DseeView.subtitle").font(.system(size: 11)).foregroundColor(Theme.secondary)
+                Text("DseeView.subtitle").font(.system(size: 11))
+                    .foregroundColor(Color(.secondary))
             }
         }
-        .toggleStyle(SwitchToggleStyle(tint: Theme.accent))
+        .toggleStyle(SwitchToggleStyle(tint: Color(.accent)))
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card)
+        .background(Color(.card))
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }

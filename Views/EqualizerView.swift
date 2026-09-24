@@ -72,7 +72,7 @@ struct EqualizerView: View {
                 ForEach(EqPreset.allCases, content: eqChip)
             }
             if store.eqPreset == EqPreset.manual.rawValue {
-                Divider().background(Theme.cardHi)
+                Divider().background(Color(.cardHi))
                 ForEach(EqBand.allCases) { band in
                     eqBandRow(
                         band.label,
@@ -96,7 +96,7 @@ struct EqualizerView: View {
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card)
+        .background(Color(.card))
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
@@ -109,9 +109,9 @@ struct EqualizerView: View {
         HStack(spacing: 10) {
             Text(label)
                 .font(.system(size: 11, weight: .medium))
-                .foregroundColor(accent ? Theme.accent : Theme.secondary)
+                .foregroundColor(accent ? Color(.accent) : Color(.secondary))
                 .frame(width: 34, alignment: .leading)
-            Slider(value: value, in: -10 ... 10, step: 1).accentColor(Theme.accent)
+            Slider(value: value, in: -10 ... 10, step: 1).accentColor(Color(.accent))
             Text("\(display > 0 ? "+" : "")\(display)")
                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
                 .foregroundColor(.white)
@@ -124,10 +124,10 @@ struct EqualizerView: View {
         return Button(action: { store.send(.setEqualizer(preset.rawValue)) }) {
             Text(preset.name)
                 .font(.system(size: 12, weight: .medium))
-                .foregroundColor(selected ? .white : Theme.secondary)
+                .foregroundColor(selected ? .white : Color(.secondary))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
-                .background(selected ? Theme.accent : Theme.cardHi)
+                .background(selected ? Color(.accent) : Color(.cardHi))
                 .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
         }
         .buttonStyle(PlainButtonStyle())

@@ -51,7 +51,7 @@ struct MainScreenView: View {
 
     var body: some View {
         ZStack {
-            Theme.bg.ignoresSafeArea()
+            Color(.bg).ignoresSafeArea()
             switch store.state {
                 case .disconnected:
                     if let store = store.scope(\.disconnected, action: \.disconnected) {

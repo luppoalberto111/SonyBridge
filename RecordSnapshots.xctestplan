@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "B7E4C2A1-9D3F-4E8B-A5C6-7D8E9F0A1B2C",
+      "name" : "Record",
+      "options" : {
+        "environmentVariableEntries" : [
+          {
+            "key" : "SNAPSHOT_TESTING_RECORD",
+            "value" : "all"
+          }
+        ]
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:SonyHeadphonesClient.xcodeproj",
+        "identifier" : "AA0000000000000000000702",
+        "name" : "SonyHeadphonesClientSnapshotTests"
+      }
+    }
+  ],
+  "version" : 1
+}

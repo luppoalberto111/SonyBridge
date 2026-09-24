@@ -36,7 +36,6 @@
 		F76B57F5305815DA00449C1F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F76B57F4305815DA00449C1F /* ComposableArchitecture */; };
 		F7EAEFD23053FBB600018001 /* HeadphonesCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */; };
 		F7EAEFDB30541E4D00018001 /* DisconnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */; };
-		F7EAEFDD30541E5F00018001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDC30541E5E00018001 /* Theme.swift */; };
 		F7EAEFDF30541F4700018001 /* ConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDE30541F4400018001 /* ConnectedView.swift */; };
 		F7EAEFE130541F9E00018001 /* ModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFE030541F9B00018001 /* ModeButton.swift */; };
 		F7EAEFE330541FBE00018001 /* AmbientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFE230541FAE00018001 /* AmbientView.swift */; };
@@ -90,13 +89,13 @@
 		AA0000000000000000000213 /* DseeReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DseeReducerTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientSnapshotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB0000000000000000000001 /* RecordSnapshots.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text.json.xctestplan; path = RecordSnapshots.xctestplan; sourceTree = "<group>"; };
 		CC0000000000000000000005 /* MainScreenFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenFeature.swift; sourceTree = "<group>"; };
 		CC0000000000000000000009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CC000000000000000000000F /* SonyHeadphonesClientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonyHeadphonesClientApp.swift; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesCommands.swift; sourceTree = "<group>"; };
 		F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedView.swift; sourceTree = "<group>"; };
-		F7EAEFDC30541E5E00018001 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		F7EAEFDE30541F4400018001 /* ConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedView.swift; sourceTree = "<group>"; };
 		F7EAEFE030541F9B00018001 /* ModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeButton.swift; sourceTree = "<group>"; };
 		F7EAEFE230541FAE00018001 /* AmbientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientView.swift; sourceTree = "<group>"; };
@@ -160,6 +159,7 @@
 				F7EAEFF505421700018001 /* Localizable.xcstrings */,
 				AA0000000000000000000601 /* SonyHeadphonesClientTests */,
 				AA0000000000000000000602 /* SonyHeadphonesClientSnapshotTests */,
+				BB0000000000000000000001 /* RecordSnapshots.xctestplan */,
 				A8DC790325769A6600447738 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -210,7 +210,6 @@
 			isa = PBXGroup;
 			children = (
 				F7EAEFE8305420E100018001 /* AutoPowerOffOption.swift */,
-				F7EAEFDC30541E5E00018001 /* Theme.swift */,
 				F7EAEFF305421600018001 /* EqBand.swift */,
 				F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */,
 				F7EAEFE23057D8AB00018001 /* EqPreset.swift */,
@@ -424,7 +423,6 @@
 				F7EAEFF205421500018001 /* DeviceHeroView.swift in Sources */,
 				CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */,
 				F7EAEFE33057D8B000018001 /* EqPreset.swift in Sources */,
-				F7EAEFDD30541E5F00018001 /* Theme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
