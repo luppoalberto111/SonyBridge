@@ -75,7 +75,7 @@ struct AmbientView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("AmbientView.modeCard.title")
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(.white)
+                .foregroundColor(Color(.foreground))
             HStack(spacing: 0) {
                 ModeButton(
                     mode: .noiseCanceling,
@@ -125,7 +125,7 @@ struct AmbientView: View {
                 )) {
                     Text("AmbientView.levelCard.focusOnVoice")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color(.foreground))
                 }
                 .toggleStyle(SwitchToggleStyle(tint: Color(.accent)))
             }

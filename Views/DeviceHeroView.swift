@@ -114,13 +114,13 @@ struct DeviceHeroView: View {
                 } else {
                     Image(systemName: "headphones")
                         .font(.system(size: 92, weight: .thin))
-                        .foregroundColor(.white)
+                        .foregroundColor(Color(.foreground))
                 }
             }
 
             Text(model.deviceName)
                 .font(.system(size: 24, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundColor(Color(.foreground))
 
             HStack(spacing: 7) {
                 if model.hasDualBattery {

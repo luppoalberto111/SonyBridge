@@ -4,26 +4,6 @@
 
 **An unofficial, open-source macOS app for Sony headphones — Noise Cancelling, Ambient Sound, EQ, DSEE and battery, without the phone.**
 
-<br/>
-
-[![Build](https://github.com/AmitRajput-Dev/SonyBridge/actions/workflows/xcodebuild.yml/badge.svg)](https://github.com/AmitRajput-Dev/SonyBridge/actions/workflows/xcodebuild.yml)
-[![Release](https://img.shields.io/github/v/release/AmitRajput-Dev/SonyBridge?include_prereleases&sort=semver)](https://github.com/AmitRajput-Dev/SonyBridge/releases)
-[![Downloads](https://img.shields.io/github/downloads/AmitRajput-Dev/SonyBridge/total?color=success)](https://github.com/AmitRajput-Dev/SonyBridge/releases)
-[![Stars](https://img.shields.io/github/stars/AmitRajput-Dev/SonyBridge?style=flat)](https://github.com/AmitRajput-Dev/SonyBridge/stargazers)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-![Platform](https://img.shields.io/badge/platform-macOS-blue)
-
-<br/>
-
-[![Download for macOS](https://img.shields.io/badge/Download-macOS-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/AmitRajput-Dev/SonyBridge/releases/latest)
-[![Sponsor](https://img.shields.io/badge/Sponsor-%E2%9D%A4-EA4AAA?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://github.com/sponsors/AmitRajput-Dev)
-
-<br/>
-
-**[Features](#-features)** · **[Download](#-download)** · **[How it works](#-how-it-works)**
-
-</div>
-
 ---
 
 ## Why
@@ -51,30 +31,6 @@ out on connect. SonyBridge adds full **second-generation ("v2") protocol** suppo
 - 🧬 **Dual-protocol** — auto-detects and speaks either protocol generation
 - 🌑 **Modern UI** — dark, minimal SwiftUI interface shaped after Sony's own app
 
-## 📥 Download
-
-`brew tap AmitRajput-Dev/tap && brew install --cask sonybridge`
-
-or [**Download .app**](https://github.com/AmitRajput-Dev/SonyBridge/releases/latest)
-
-macOS 11+ · Apple Silicon & Intel.
-
-> 💡 After launching, **connect your headphones in macOS Bluetooth settings first**, then open SonyBridge and hit *Connect*. Keep audio playing — Sony headsets drop the control link when idle to save power.
-
-<details>
-<summary><b>macOS install notes (Gatekeeper)</b></summary>
-
-The app is ad-hoc signed (not notarized — no paid Apple Developer account). The Homebrew cask clears the
-quarantine flag for you. For a direct download, allow it once:
-
-```sh
-xattr -dr com.apple.quarantine /Applications/SonyBridge.app
-```
-
-…or right-click the app → **Open** → **Open**. Homebrew also asks you to trust the third-party tap the
-first time (`brew trust AmitRajput-Dev/tap`).
-</details>
-
 ## 🎧 Supported headphones
 
 | Status | Devices |
@@ -86,21 +42,6 @@ first time (`brew trust AmitRajput-Dev/tap`).
 
 > Only the WH-CH720N is fully hardware-verified. Others share the same protocol family, so the basics
 > should work — per-model quirks are untested. Reports and PRs for other devices are very welcome.
-
-## 🚀 Build from source
-
-Requires **Xcode 14+**.
-
-```sh
-git clone --recurse-submodules https://github.com/AmitRajput-Dev/SonyBridge.git
-open SonyHeadphonesClient.xcodeproj
-```
-
-Then ⌘R.
-
-The app target is SwiftUI (`MainScreenView` + `MainReducer`, via the Composable Architecture); all Bluetooth and protocol code
-lives in the local `SonyBTKit` Swift package (`Client` actor façade, `Bridge` ObjC++ layer, `Core` C++ protocol core).
-
 ## 🔬 How it works
 
 Sony headphones expose a vendor RFCOMM/SPP service. Commands are framed as:

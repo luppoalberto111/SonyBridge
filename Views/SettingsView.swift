@@ -67,7 +67,7 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("SettingsView.title")
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(.white)
+                .foregroundColor(Color(.foreground))
             if store.hasAdaptiveVolume {
                 settingToggle(
                     "SettingsView.adaptiveVolume.title",
@@ -87,7 +87,7 @@ struct SettingsView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("SettingsView.autoPowerOff.title")
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(.white)
+                            .foregroundColor(Color(.foreground))
                         Text("SettingsView.autoPowerOff.subtitle")
                             .font(.system(size: 11))
                             .foregroundColor(Color(.secondary))
@@ -124,7 +124,8 @@ struct SettingsView: View {
     ) -> some View {
         Toggle(isOn: Binding(get: { on }, set: { action($0) })) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 14, weight: .semibold)).foregroundColor(.white)
+                Text(title).font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(Color(.foreground))
                 Text(subtitle).font(.system(size: 11)).foregroundColor(Color(.secondary))
             }
         }

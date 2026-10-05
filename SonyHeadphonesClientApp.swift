@@ -18,7 +18,6 @@ import SwiftUI
     var body: some Scene {
         WindowGroup {
             MainScreenView(store: store)
-                .preferredColorScheme(.dark)
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)

@@ -22,7 +22,7 @@ struct AboutView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text(model.deviceName)
                 .font(.system(size: 15, weight: .bold))
-                .foregroundColor(.white)
+                .foregroundColor(Color(.foreground))
                 .padding(.bottom, 10)
             aboutRow(
                 "AboutView.row.status",
@@ -81,7 +81,7 @@ struct AboutView: View {
         HStack {
             Text(label).font(.system(size: 12)).foregroundColor(Color(.secondary))
             Spacer()
-            Text(value).font(.system(size: 12, weight: .medium)).foregroundColor(.white)
+            Text(value).font(.system(size: 12, weight: .medium)).foregroundColor(Color(.foreground))
         }
         .padding(.vertical, 3)
     }

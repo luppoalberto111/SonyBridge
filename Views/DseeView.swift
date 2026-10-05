@@ -48,7 +48,7 @@ struct DseeView: View {
         )) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("DseeView.title").font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(.foreground))
                 Text("DseeView.subtitle").font(.system(size: 11))
                     .foregroundColor(Color(.secondary))
             }

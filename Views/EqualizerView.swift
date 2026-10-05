@@ -64,7 +64,7 @@ struct EqualizerView: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("EqualizerView.title")
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(.white)
+                .foregroundColor(Color(.foreground))
             LazyVGrid(
                 columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())],
                 spacing: 10
@@ -114,7 +114,7 @@ struct EqualizerView: View {
             Slider(value: value, in: -10 ... 10, step: 1).accentColor(Color(.accent))
             Text("\(display > 0 ? "+" : "")\(display)")
                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                .foregroundColor(.white)
+                .foregroundColor(Color(.foreground))
                 .frame(width: 26, alignment: .trailing)
         }
     }

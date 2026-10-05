@@ -137,7 +137,7 @@ struct DisconnectedView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Text(device.name)
                                 .font(.system(size: 14, weight: .medium))
-                                .foregroundColor(.white)
+                                .foregroundColor(Color(.foreground))
                             Text(device.address)
                                 .font(.system(size: 11, weight: .regular, design: .monospaced))
                                 .foregroundColor(Color(.secondary))

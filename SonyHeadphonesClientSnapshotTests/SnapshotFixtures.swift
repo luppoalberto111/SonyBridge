@@ -12,9 +12,10 @@ enum SnapshotFixtures {
     ///
     /// swift-snapshot-testing only ships `NSView`/`NSViewController` image
     /// strategies on macOS, so views go through an `NSHostingController`
-    /// upcast to `NSViewController`.
+    /// upcast to `NSViewController`. The color scheme is pinned to Dark so
+    /// references stay deterministic regardless of the host Mac's setting.
     @MainActor static func hostingController(_ view: some View) -> NSViewController {
-        NSHostingController(rootView: view)
+        NSHostingController(rootView: AnyView(view.preferredColorScheme(.dark)))
     }
 
     static func singleBatteryHeadphones() -> HeadphonesState {
