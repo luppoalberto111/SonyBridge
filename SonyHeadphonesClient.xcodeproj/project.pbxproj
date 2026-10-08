@@ -28,9 +28,12 @@
 		AA0000000000000000000112 /* MainScreenViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */; };
 		AA0000000000000000000113 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000303 /* SnapshotTesting */; };
 		AA0000000000000000000116 /* DseeReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000213 /* DseeReducerTests.swift */; };
+		AA0000000000000000000114 /* MenuBarFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000214 /* MenuBarFeatureTests.swift */; };
 		CC0000000000000000000004 /* MainScreenFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000005 /* MainScreenFeature.swift */; };
 		CC000000000000000000000A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000009 /* AppDelegate.swift */; };
 		CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000F /* SonyHeadphonesClientApp.swift */; };
+		CC0000000000000000000011 /* AppFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000012 /* AppFeature.swift */; };
+		CC0000000000000000000013 /* MenuBarFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000014 /* MenuBarFeature.swift */; };
 		DD0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD0000000000000000000002 /* Assets.xcassets */; };
 		EE0000000000000000000005 /* SonyBTKit in Frameworks */ = {isa = PBXBuildFile; productRef = EE0000000000000000000003 /* SonyBTKit */; };
 		F76B57F5305815DA00449C1F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F76B57F4305815DA00449C1F /* ComposableArchitecture */; };
@@ -87,12 +90,15 @@
 		AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedViewSnapshotTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewSnapshotTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000213 /* DseeReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DseeReducerTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000214 /* MenuBarFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarFeatureTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientSnapshotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB0000000000000000000001 /* RecordSnapshots.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text.json.xctestplan; path = RecordSnapshots.xctestplan; sourceTree = "<group>"; };
 		CC0000000000000000000005 /* MainScreenFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenFeature.swift; sourceTree = "<group>"; };
 		CC0000000000000000000009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CC000000000000000000000F /* SonyHeadphonesClientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonyHeadphonesClientApp.swift; sourceTree = "<group>"; };
+		CC0000000000000000000012 /* AppFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFeature.swift; sourceTree = "<group>"; };
+		CC0000000000000000000014 /* MenuBarFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarFeature.swift; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesCommands.swift; sourceTree = "<group>"; };
 		F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedView.swift; sourceTree = "<group>"; };
@@ -153,6 +159,8 @@
 				AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */,
 				AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */,
 				CC0000000000000000000009 /* AppDelegate.swift */,
+				CC0000000000000000000012 /* AppFeature.swift */,
+				CC0000000000000000000014 /* MenuBarFeature.swift */,
 				CC0000000000000000000005 /* MainScreenFeature.swift */,
 				CC000000000000000000000F /* SonyHeadphonesClientApp.swift */,
 				DD0000000000000000000002 /* Assets.xcassets */,
@@ -187,6 +195,7 @@
 				AA0000000000000000000209 /* IntPercentTests.swift */,
 				AA000000000000000000020A /* EqPresetTests.swift */,
 				AA0000000000000000000213 /* DseeReducerTests.swift */,
+				AA0000000000000000000214 /* MenuBarFeatureTests.swift */,
 			);
 			path = SonyHeadphonesClientTests;
 			sourceTree = "<group>";
@@ -422,6 +431,8 @@
 				F7EAEFEF05421200018001 /* DseeView.swift in Sources */,
 				F7EAEFF205421500018001 /* DeviceHeroView.swift in Sources */,
 				CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */,
+				CC0000000000000000000011 /* AppFeature.swift in Sources */,
+				CC0000000000000000000013 /* MenuBarFeature.swift in Sources */,
 				F7EAEFE33057D8B000018001 /* EqPreset.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -441,6 +452,7 @@
 				AA0000000000000000000109 /* IntPercentTests.swift in Sources */,
 				AA000000000000000000010A /* EqPresetTests.swift in Sources */,
 				AA0000000000000000000116 /* DseeReducerTests.swift in Sources */,
+				AA0000000000000000000114 /* MenuBarFeatureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

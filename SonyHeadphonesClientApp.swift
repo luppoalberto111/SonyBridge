@@ -4,20 +4,17 @@ import SwiftUI
 @main struct SonyHeadphonesClientApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self)
     var appDelegate
-    let store = Store(
-        initialState: MainScreenFeature.State.disconnected(.init()),
-        reducer: MainScreenFeature.init
-    )
+    let store = Store(initialState: AppFeature.State()) {
+        AppFeature()
+    }
 
     init() {
-        appDelegate.connectHandler = { [store] in
-            store.send(.disconnected(.connectButtonTapped))
-        }
+        appDelegate.configure(statusMenuStore: store.scope(state: \.menuBar, action: \.menuBar))
     }
 
     var body: some Scene {
         WindowGroup {
-            MainScreenView(store: store)
+            MainScreenView(store: store.scope(state: \.mainScreen, action: \.mainScreen))
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
@@ -25,8 +22,8 @@ import SwiftUI
         .defaultPosition(.center)
         .commands {
             HeadphonesCommands(
-                connectClosure: { store.send(.disconnected(.connectButtonTapped)) },
-                disconnectClosure: { store.send(.connected(.disconnectButtonTapped)) }
+                connectClosure: { store.send(.mainScreen(.disconnected(.connectButtonTapped))) },
+                disconnectClosure: { store.send(.mainScreen(.connected(.disconnectButtonTapped))) }
             )
         }
     }
