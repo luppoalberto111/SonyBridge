@@ -8,13 +8,26 @@
 
 //A simple future wrapper class. Allows only a single instance to be active at any single time; particularly useful for GUI operations where we don't want
 //to send the same commands or repeat operations before they completed. Also wraps std::async nicely with setFromAsync
+/// A `std::future` that permits only one outstanding asynchronous operation at a time.
 template <class T>
 class SingleInstanceFuture : public std::future<T>
 {
 public:
 	SingleInstanceFuture(void) = default;
+
+	/// Launches `func` on a new async thread and adopts its future.
+	///
+	/// @param func Callable to run (free function, member function pointer or lambda).
+	/// @param args Arguments forwarded to `func`.
+	/// @throws std::runtime_error If a previous operation is still in flight - the caller is expected
+	///         to check ``ready()`` before re-issuing the same command from a UI event.
 	template<class Func, class... Args>
 	void setFromAsync(Func func, Args&&... args) noexcept(false);
+
+	/// Non-blocking completion check.
+	///
+	/// @return True if the future is valid *and* its value is already available; false when it was
+	///         never set or is still running.
 	bool ready();
 
 private:

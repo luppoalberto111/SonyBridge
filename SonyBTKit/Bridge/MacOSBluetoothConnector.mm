@@ -12,6 +12,11 @@ MacOSBluetoothConnector::~MacOSBluetoothConnector()
     }
 }
 
+/// IOBluetooth delegate that forwards RFCOMM data and close events to the C++ connector.
+///
+/// Chunks are queued on the connector under `receiveDataMutex` and waken `recv()`; a closed channel
+/// calls the same `disconnect()` path the app uses, so the rest of the stack sees one consistent
+/// state either way.
 @interface AsyncCommDelegate : NSObject <IOBluetoothRFCOMMChannelDelegate> {
 @public
     MacOSBluetoothConnector* delegateCPP;

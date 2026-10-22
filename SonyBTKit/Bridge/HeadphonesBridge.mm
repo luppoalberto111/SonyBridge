@@ -19,6 +19,10 @@
     dispatch_queue_t _cmdQueue;
 }
 
+/// Creates the bridge with its C++ wrapper and a serial command queue.
+///
+/// The serial queue (`com.sonybridge.commands`) keeps quick successive user taps in order — a
+/// concurrent queue let them race and land out of order on the device.
 - (instancetype)init {
     if ((self = [super init])) {
         _bt = std::make_unique<BluetoothWrapper>(std::make_unique<MacOSBluetoothConnector>());
@@ -116,6 +120,11 @@
 - (BOOL)hasAdaptiveVolume { return _hp && _hp->hasAdaptiveVolume(); }
 - (BOOL)adaptiveVolume { return _hp && _hp->getAdaptiveVolume(); }
 
+/// Heuristic used to decide which paired devices are Sony headsets worth offering.
+///
+/// @param name The device's advertised name; an empty name is never a match.
+/// @return YES if the name contains one of the known Sony model prefixes (WH-, WF-, WI-, MDR-, XB,
+///         LinkBuds).
 static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
     if (name.length == 0) return NO;
     NSArray<NSString *> *prefixes = @[@"WH-", @"WF-", @"WI-", @"MDR-", @"XB", @"LinkBuds"];
@@ -163,6 +172,14 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
     [self connectToDevice:device completion:completion];
 }
 
+/// Shared implementation behind the two public connect methods.
+///
+/// Opens the RFCOMM link (which can take a few seconds, so the run loop is pumped while waiting),
+/// then records the device name/address and creates the `Headphones` model.
+///
+/// @param device     The IOBluetooth device to open a channel to.
+/// @param completion Called on the caller's thread with `(ok, error)`; `error` is user-facing copy
+///                   (connection error or a timeout) and nil on success.
 - (void)connectToDevice:(IOBluetoothDevice *)device completion:(void (^)(BOOL, NSString * _Nullable))completion {
     try {
         _bt->connect([[device addressString] UTF8String]);
