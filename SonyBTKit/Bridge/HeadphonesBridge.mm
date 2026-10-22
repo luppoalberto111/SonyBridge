@@ -251,6 +251,13 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
         // The headphone's physical button only changes ambient/NC, so that's all we poll (keeps traffic low).
         // requestAmbientState() is protocol-aware (v2 uses 66 17, v1 uses 66 02), so this is safe on both.
         try { hp->requestAmbientState(); } catch (std::exception &exc) {}
+        // Battery inquiry only runs at connect and is best-effort: re-request while unknown so a missed
+        // read recovers on a later tick instead of staying empty forever. V2-only on purpose: opcode 0x22
+        // is BATTERY_LEVEL_REQUEST on v2 but POWER_OFF on v1 (mirrors the refreshStatus guard).
+        // requestBattery() only fills on success, never clears, so this cannot clobber a known reading.
+        if (_bt->getProtocolVersion() == SonyProtocolVersion::V2 && hp->getBatteryLevel() < 0) {
+            try { hp->requestBattery(); } catch (std::exception &exc) {}
+        }
         dispatch_async(dispatch_get_main_queue(), ^{ completion(); });
     });
 }

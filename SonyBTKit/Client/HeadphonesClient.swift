@@ -96,6 +96,9 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
 
     /// Re-reads the fast-changing state (ambient/NC, level, EQ, DSEE) so
     /// changes made with the headphone's own button show up in the app.
+    /// Also folds in the battery inquiry while still unknown: the inquiry
+    /// only runs at connect and is best-effort, so without a retry a missed
+    /// read stays empty forever. Never clobbers a known reading.
     public func refreshDynamic() async -> HeadphonesState {
         guard state.connected else { return state }
         await bridge.refreshDynamic()
@@ -106,6 +109,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
         state.clearBass = bridge.clearBass
         state.dsee = bridge.dsee
         state.eqBands = (0 ..< 5).map { bridge.equalizerBand(at: $0) }
+        state.mergeBattery(from: bridge)
         return state
     }
 

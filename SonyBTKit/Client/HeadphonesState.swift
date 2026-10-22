@@ -47,19 +47,24 @@ public struct HeadphonesState: Sendable, Equatable {
 }
 
 extension HeadphonesState {
+    /// Folds a battery inquiry into state, never clobbering a known reading
+    /// with unknown (-1). Battery reads can transiently report unknown while
+    /// connected (slow/flaky inquiry, overlapping refresh) — otherwise the
+    /// hero flickers to "Connected".
+    mutating func mergeBattery(from bridge: HeadphonesBridge) {
+        let level = bridge.batteryLevel
+        guard level >= 0 else { return }
+        batteryLevel = level
+        batteryCharging = bridge.batteryCharging
+        hasDualBattery = bridge.hasDualBattery
+        batteryLeft = bridge.batteryLeft
+        batteryRight = bridge.batteryRight
+        batteryCase = bridge.batteryCase
+    }
+
     func updated(with bridge: HeadphonesBridge) -> Self {
         var updated = self
-        // Battery reads can transiently report unknown (-1) while connected
-        // (slow/flaky inquiry, overlapping refresh). Never clobber a known
-        // reading with unknown — otherwise the hero flickers to "Connected".
-        if bridge.batteryLevel >= 0 {
-            updated.batteryLevel = bridge.batteryLevel
-            updated.batteryCharging = bridge.batteryCharging
-            updated.hasDualBattery = bridge.hasDualBattery
-            updated.batteryLeft = bridge.batteryLeft
-            updated.batteryRight = bridge.batteryRight
-            updated.batteryCase = bridge.batteryCase
-        }
+        updated.mergeBattery(from: bridge)
         updated.eqPreset = bridge.eqPreset
         updated.clearBass = bridge.clearBass
         updated.dsee = bridge.dsee

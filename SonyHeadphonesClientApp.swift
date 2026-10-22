@@ -15,6 +15,39 @@ import SwiftUI
     var body: some Scene {
         WindowGroup {
             MainScreenView(store: store.scope(state: \.mainScreen, action: \.mainScreen))
+                .task { store.send(.launchAtLogin(.task)) }
+                .alert(
+                    String(
+                        localized: "LaunchAtLoginAlert.title",
+                        defaultValue: "Launch at login?"
+                    ),
+                    isPresented: Binding(
+                        get: { store.launchAtLogin.promptVisible },
+                        set: { _ in }
+                    )
+                ) {
+                    Button(String(
+                        localized: "LaunchAtLoginAlert.allow",
+                        defaultValue: "Allow"
+                    )) {
+                        store.send(.launchAtLogin(.allowTapped))
+                    }
+                    Button(
+                        String(
+                            localized: "LaunchAtLoginAlert.deny",
+                            defaultValue: "Not Now"
+                        ),
+                        role: .cancel
+                    ) {
+                        store.send(.launchAtLogin(.denyTapped))
+                    }
+                } message: {
+                    Text(String(
+                        localized: "LaunchAtLoginAlert.message",
+                        // swiftlint:disable:next line_length
+                        defaultValue: "SonyHeadphonesClient can start automatically when you log in. You can change this anytime in System Settings."
+                    ))
+                }
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)

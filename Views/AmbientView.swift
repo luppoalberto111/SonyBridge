@@ -118,17 +118,15 @@ struct AmbientView: View {
             )
             .accentColor(Color(.accent))
 
-            if store.focusOnVoiceAvailable {
-                Toggle(isOn: Binding(
-                    get: { store.focusOnVoice },
-                    set: { store.send(.setFocusOnVoice($0)) }
-                )) {
-                    Text("AmbientView.levelCard.focusOnVoice")
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(Color(.foreground))
-                }
-                .toggleStyle(SwitchToggleStyle(tint: Color(.accent)))
+            Toggle(isOn: Binding(
+                get: { store.focusOnVoice },
+                set: { store.send(.setFocusOnVoice($0)) }
+            )) {
+                Text("AmbientView.levelCard.focusOnVoice")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(Color(.foreground))
             }
+            .toggleStyle(SwitchToggleStyle(tint: Color(.accent)))
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
