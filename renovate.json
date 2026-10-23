@@ -3,6 +3,7 @@
   "extends": ["config:recommended"],
   "branchPrefix": "renovate/",
   "prCreation": "immediate",
+  "prHourlyLimit": 0,
   "packageRules": [
     {
       "matchPackageNames": ["*"],

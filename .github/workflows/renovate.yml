@@ -11,9 +11,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Renovate
+        env:
+          LOG_LEVEL: debug
         run: |
           docker run --rm \
             --env RENOVATE_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+            --env LOG_LEVEL=debug \
             --volume ${{ github.workspace }}:/repo \
             --workdir /repo \
             ghcr.io/renovatebot/renovate:44 \
