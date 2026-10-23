@@ -12,7 +12,11 @@ import Testing
             of: SnapshotFixtures.hostingController(
                 SettingsView(store: SnapshotFixtures.settingsStore())
             ),
-            as: .image(precision: 0.95, size: CGSize(width: 380, height: 260))
+            as: .image(
+                precision: 0.95,
+                perceptualPrecision: 0.95,
+                size: CGSize(width: 380, height: 260)
+            )
         )
     }
 }

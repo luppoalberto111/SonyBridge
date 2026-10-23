@@ -16,7 +16,11 @@ import Testing
                     )
                 )
             ),
-            as: .image(precision: 0.95, size: CGSize(width: 380, height: 900))
+            as: .image(
+                precision: 0.95,
+                perceptualPrecision: 0.95,
+                size: CGSize(width: 380, height: 900)
+            )
         )
     }
 
@@ -29,7 +33,11 @@ import Testing
             of: SnapshotFixtures.hostingController(
                 ConnectedView(store: SnapshotFixtures.connectedStore(headphones: headphones))
             ),
-            as: .image(precision: 0.95, size: CGSize(width: 380, height: 900))
+            as: .image(
+                precision: 0.95,
+                perceptualPrecision: 0.95,
+                size: CGSize(width: 380, height: 900)
+            )
         )
     }
 }
