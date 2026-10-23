@@ -1,15 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": ["config:recommended"],
   "packageRules": [
     {
       "matchPackageNames": ["*"],
       "automerge": false,
-      "prConcurrentLimit": 10
+      "prConcurrentLimit": 10,
+      "prPriority": 2
     }
   ],
-  "platform": "github",
-  "prHourlyLimit": 2,
-  "prPriority": "low",
-  "timeout": 3600
+  "platform": "github"
 }
