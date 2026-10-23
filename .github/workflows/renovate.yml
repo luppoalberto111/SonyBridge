@@ -18,7 +18,7 @@ jobs:
           LOG_LEVEL: debug
         run: |
           docker run --rm \
-            --env RENOVATE_TOKEN=${{ github.token }} \
+            --env RENOVATE_TOKEN=${{ secrets.RENOVATE_TOKEN }} \
             --env LOG_LEVEL=debug \
             --volume ${{ github.workspace }}:/repo \
             --workdir /repo \
