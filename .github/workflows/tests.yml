@@ -1,0 +1,38 @@
+name: Tests
+
+on:
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Unit Tests
+        run: xcodebuild test -project SonyHeadphonesClient.xcodeproj -scheme SonyHeadphonesClient -destination 'platform=macOS' -only-testing:SonyHeadphonesClientTests
+
+  ui-tests:
+    name: UI Tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run UI Tests
+        run: |
+          echo "No dedicated UI test target exists in this project."
+          echo "UI behavior is covered by Snapshot Tests (see Snapshot Tests job)."
+          echo "Skipping separate UI test step."
+
+  snapshot-tests:
+    name: Snapshot Tests
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Snapshot Tests
+        run: xcodebuild test -project SonyHeadphonesClient.xcodeproj -scheme SonyHeadphonesClient -destination 'platform=macOS' -only-testing:SonyHeadphonesClientSnapshotTests
