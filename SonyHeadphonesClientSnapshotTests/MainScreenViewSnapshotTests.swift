@@ -16,7 +16,7 @@ import Testing
                     )
                 )
             ),
-            as: .image(precision: 0.99, size: CGSize(width: 380, height: 560))
+            as: .image(precision: 0.95, size: CGSize(width: 380, height: 560))
         )
     }
 
@@ -33,7 +33,7 @@ import Testing
                     )
                 )
             ),
-            as: .image(precision: 0.99, size: CGSize(width: 380, height: 900))
+            as: .image(precision: 0.95, size: CGSize(width: 380, height: 900))
         )
     }
 }

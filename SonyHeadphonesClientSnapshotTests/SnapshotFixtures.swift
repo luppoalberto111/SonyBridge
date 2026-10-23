@@ -6,6 +6,16 @@ import ComposableArchitecture
 @testable import SonyHeadphonesClient
 import SwiftUI
 
+// MARK: - FixedScaleWindow
+
+/// A window that always reports a 2x backing scale so snapshots are recorded and
+/// compared at the same pixel size on Retina Macs and headless CI runners.
+@MainActor private final class FixedScaleWindow: NSWindow {
+    override var backingScaleFactor: CGFloat { 2 }
+}
+
+// MARK: - SnapshotFixtures
+
 /// Deterministic `HeadphonesState` values shared by the snapshot tests.
 enum SnapshotFixtures {
     /// Wraps a SwiftUI view for image snapshotting on macOS.
@@ -14,8 +24,23 @@ enum SnapshotFixtures {
     /// strategies on macOS, so views go through an `NSHostingController`
     /// upcast to `NSViewController`. The color scheme is pinned to Dark so
     /// references stay deterministic regardless of the host Mac's setting.
+    @MainActor
+    private static var snapshotWindows: [NSWindow] = []
+
     @MainActor static func hostingController(_ view: some View) -> NSViewController {
-        NSHostingController(rootView: AnyView(view.preferredColorScheme(.dark)))
+        let controller = NSHostingController(rootView: AnyView(view.preferredColorScheme(.dark)))
+        let window = FixedScaleWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 1000, height: 1000),
+            styleMask: .borderless,
+            backing: .buffered,
+            defer: false
+        )
+        window.contentView = NSView(frame: NSRect(x: 0, y: 0, width: 1000, height: 1000))
+        controller.view.translatesAutoresizingMaskIntoConstraints = true
+        controller.view.autoresizingMask = []
+        window.contentView?.addSubview(controller.view)
+        snapshotWindows.append(window)
+        return controller
     }
 
     static func singleBatteryHeadphones() -> HeadphonesState {

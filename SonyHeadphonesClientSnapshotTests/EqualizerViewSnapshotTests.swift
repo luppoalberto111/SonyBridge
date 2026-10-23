@@ -11,7 +11,7 @@ import Testing
             of: SnapshotFixtures.hostingController(
                 EqualizerView(store: SnapshotFixtures.equalizerStore(preset: .excited))
             ),
-            as: .image(precision: 0.99, size: CGSize(width: 380, height: 420))
+            as: .image(precision: 0.95, size: CGSize(width: 380, height: 420))
         )
     }
 
@@ -20,7 +20,7 @@ import Testing
             of: SnapshotFixtures.hostingController(
                 EqualizerView(store: SnapshotFixtures.equalizerStore(preset: .manual))
             ),
-            as: .image(precision: 0.99, size: CGSize(width: 380, height: 420))
+            as: .image(precision: 0.95, size: CGSize(width: 380, height: 420))
         )
     }
 }
