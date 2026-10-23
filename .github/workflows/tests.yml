@@ -9,7 +9,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run Unit Tests
         run: xcodebuild test -project SonyHeadphonesClient.xcodeproj -scheme SonyHeadphonesClient -destination 'platform=macOS' -only-testing:SonyHeadphonesClientTests
@@ -19,7 +19,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run UI Tests
         run: |
@@ -32,7 +32,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Run Snapshot Tests
         run: xcodebuild test -project SonyHeadphonesClient.xcodeproj -scheme SonyHeadphonesClient -destination 'platform=macOS' -only-testing:SonyHeadphonesClientSnapshotTests
