@@ -28,7 +28,13 @@ enum SnapshotFixtures {
     private static var snapshotWindows: [NSWindow] = []
 
     @MainActor static func hostingController(_ view: some View) -> NSViewController {
-        let controller = NSHostingController(rootView: AnyView(view.preferredColorScheme(.dark)))
+        let controller = NSHostingController(
+            rootView: AnyView(
+                view
+                    .preferredColorScheme(.dark)
+                    .environment(\.colorScheme, .dark)
+            )
+        )
         let window = FixedScaleWindow(
             contentRect: NSRect(x: 0, y: 0, width: 1000, height: 1000),
             styleMask: .borderless,
@@ -36,6 +42,16 @@ enum SnapshotFixtures {
             defer: false
         )
         window.contentView = NSView(frame: NSRect(x: 0, y: 0, width: 1000, height: 1000))
+
+        // `preferredColorScheme` alone is not enough on every macOS version:
+        // some runners resolve AppKit colors from the window's appearance and
+        // render the whole view in light mode. Pin the appearance on the
+        // window and hosting view as well so it cannot fall back.
+        let appearance = NSAppearance(named: .darkAqua)
+        window.appearance = appearance
+        window.contentView?.appearance = appearance
+        controller.view.appearance = appearance
+
         controller.view.translatesAutoresizingMaskIntoConstraints = true
         controller.view.autoresizingMask = []
         window.contentView?.addSubview(controller.view)
