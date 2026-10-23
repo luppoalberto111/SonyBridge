@@ -1,7 +1,6 @@
 import ComposableArchitecture
-import Testing
-
 @testable import SonyHeadphonesClient
+import Testing
 
 @Suite(.serialized)
 @MainActor struct LaunchAtLoginFeatureTests {

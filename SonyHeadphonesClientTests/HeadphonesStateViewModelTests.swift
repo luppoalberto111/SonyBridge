@@ -1,7 +1,6 @@
 import Client
-import Testing
-
 @testable import SonyHeadphonesClient
+import Testing
 
 struct HeadphonesStateViewModelTests {
     @Test func deviceHeroModelCarriesIdentityBatteryAndCodec() {

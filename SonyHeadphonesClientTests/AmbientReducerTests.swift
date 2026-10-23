@@ -1,8 +1,7 @@
 import Client
 import ComposableArchitecture
-import Testing
-
 @testable import SonyHeadphonesClient
+import Testing
 
 @MainActor struct AmbientReducerTests {
     @Test func setModeUpdatesStateAndDelegates() async {

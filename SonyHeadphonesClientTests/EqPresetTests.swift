@@ -1,6 +1,5 @@
-import Testing
-
 @testable import SonyHeadphonesClient
+import Testing
 
 // MARK: - EqPresetTests
 

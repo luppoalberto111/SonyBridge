@@ -1,7 +1,6 @@
 import ComposableArchitecture
-import Testing
-
 @testable import SonyHeadphonesClient
+import Testing
 
 @MainActor struct DeviceHeroReducerTests {
     @Test func showAboutChangedTogglesPopover() async {

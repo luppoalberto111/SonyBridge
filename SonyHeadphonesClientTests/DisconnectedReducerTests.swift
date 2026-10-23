@@ -1,8 +1,7 @@
 import Client
 import ComposableArchitecture
-import Testing
-
 @testable import SonyHeadphonesClient
+import Testing
 
 @MainActor struct DisconnectedReducerTests {
     @Test func autoConnectSuccessDelegatesDidConnect() async {

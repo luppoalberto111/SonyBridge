@@ -2,9 +2,8 @@ import AppKit
 import Bridge
 import Client
 import ComposableArchitecture
-import SwiftUI
-
 @testable import SonyHeadphonesClient
+import SwiftUI
 
 /// Deterministic `HeadphonesState` values shared by the snapshot tests.
 enum SnapshotFixtures {

@@ -1,9 +1,8 @@
 import Bridge
 import Client
 import ComposableArchitecture
-import Testing
-
 @testable import SonyHeadphonesClient
+import Testing
 
 @MainActor struct ConnectedReducerTests {
     private func connectedState() -> HeadphonesState {

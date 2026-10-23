@@ -2,10 +2,9 @@ import Client
 import ComposableArchitecture
 import Foundation
 import SnapshotTesting
+@testable import SonyHeadphonesClient
 import SwiftUI
 import Testing
-
-@testable import SonyHeadphonesClient
 
 @MainActor struct ConnectedViewSnapshotTests {
     @Test func fullyFeaturedHeadphones() {

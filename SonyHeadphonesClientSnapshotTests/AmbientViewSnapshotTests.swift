@@ -2,10 +2,9 @@ import Bridge
 import Client
 import ComposableArchitecture
 import SnapshotTesting
+@testable import SonyHeadphonesClient
 import SwiftUI
 import Testing
-
-@testable import SonyHeadphonesClient
 
 @MainActor struct AmbientViewSnapshotTests {
     @Test func noiseCanceling() {

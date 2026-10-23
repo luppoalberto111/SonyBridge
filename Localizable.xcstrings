@@ -23,7 +23,7 @@
     },
     "AboutView.batteryDual.value" : {
       "comment" : "AboutView: left/right battery value, e.g. 80% / 75%",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -83,7 +83,7 @@
     },
     "AboutView.batterySingle.chargingSuffix" : {
       "comment" : "AboutView: suffix appended to the battery value while charging",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -202,7 +202,7 @@
     },
     "AboutView.row.batteryCase" : {
       "comment" : "AboutView: charging-case battery row label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -262,7 +262,7 @@
     },
     "AboutView.row.batteryDual" : {
       "comment" : "AboutView: left/right battery row label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -322,7 +322,7 @@
     },
     "AboutView.row.batterySingle" : {
       "comment" : "AboutView: single battery row label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -382,7 +382,7 @@
     },
     "AboutView.row.bluetooth" : {
       "comment" : "AboutView: bluetooth address row label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -442,7 +442,7 @@
     },
     "AboutView.row.codec" : {
       "comment" : "AboutView: audio codec row label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -502,7 +502,7 @@
     },
     "AboutView.row.firmware" : {
       "comment" : "AboutView: firmware version row label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -562,7 +562,7 @@
     },
     "AboutView.row.protocol" : {
       "comment" : "AboutView: protocol version row label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -622,7 +622,7 @@
     },
     "AboutView.row.status" : {
       "comment" : "AboutView: connection status row label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -682,7 +682,7 @@
     },
     "AboutView.status.connected" : {
       "comment" : "AboutView: connected status value",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -742,7 +742,7 @@
     },
     "AboutView.status.disconnected" : {
       "comment" : "AboutView: disconnected status value",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -802,7 +802,7 @@
     },
     "AmbientMode.ambientSound" : {
       "comment" : "ModeButton: ambient sound mode label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -862,7 +862,7 @@
     },
     "AmbientMode.noiseCanceling" : {
       "comment" : "ModeButton: noise canceling mode label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -922,7 +922,7 @@
     },
     "AmbientMode.off" : {
       "comment" : "ModeButton: mode off label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1159,7 +1159,7 @@
     },
     "AutoPowerOff.fiveMinutes" : {
       "comment" : "SettingsView: auto power-off after 5 minutes",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1219,7 +1219,7 @@
     },
     "AutoPowerOff.off" : {
       "comment" : "SettingsView: auto power-off disabled",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1279,7 +1279,7 @@
     },
     "AutoPowerOff.oneHour" : {
       "comment" : "SettingsView: auto power-off after 1 hour",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1339,7 +1339,7 @@
     },
     "AutoPowerOff.thirtyMinutes" : {
       "comment" : "SettingsView: auto power-off after 30 minutes",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1399,7 +1399,7 @@
     },
     "AutoPowerOff.threeHours" : {
       "comment" : "SettingsView: auto power-off after 3 hours",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1459,7 +1459,7 @@
     },
     "AutoPowerOff.whenTakenOff" : {
       "comment" : "SettingsView: auto power-off when headphones are taken off",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1519,7 +1519,7 @@
     },
     "DeviceHeroView.batteryDual.value" : {
       "comment" : "DeviceHeroView: left/right battery text, e.g. L 80%  R 75%",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1638,7 +1638,7 @@
     },
     "DisconnectedView.connect" : {
       "comment" : "DisconnectedView: connect button title",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1698,7 +1698,7 @@
     },
     "DisconnectedView.connecting" : {
       "comment" : "DisconnectedView: connect button title while connecting",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -1817,7 +1817,7 @@
     },
     "DisconnectedView.emptyListHint" : {
       "comment" : "DisconnectedView: hint shown when no paired Sony headphones are found",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2054,7 +2054,7 @@
     },
     "EqPreset.bass" : {
       "comment" : "EqualizerView: bass preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2114,7 +2114,7 @@
     },
     "EqPreset.bright" : {
       "comment" : "EqualizerView: bright preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2174,7 +2174,7 @@
     },
     "EqPreset.excited" : {
       "comment" : "EqualizerView: excited preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2234,7 +2234,7 @@
     },
     "EqPreset.manual" : {
       "comment" : "EqualizerView: manual preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2294,7 +2294,7 @@
     },
     "EqPreset.mellow" : {
       "comment" : "EqualizerView: mellow preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2354,7 +2354,7 @@
     },
     "EqPreset.off" : {
       "comment" : "EqualizerView: equalizer off preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2414,7 +2414,7 @@
     },
     "EqPreset.relaxed" : {
       "comment" : "EqualizerView: relaxed preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2474,7 +2474,7 @@
     },
     "EqPreset.speech" : {
       "comment" : "EqualizerView: speech preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2534,7 +2534,7 @@
     },
     "EqPreset.treble" : {
       "comment" : "EqualizerView: treble preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2594,7 +2594,7 @@
     },
     "EqPreset.vocal" : {
       "comment" : "EqualizerView: vocal preset",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2654,7 +2654,7 @@
     },
     "EqualizerView.clearBass" : {
       "comment" : "EqualizerView: clear bass slider label",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2773,7 +2773,7 @@
     },
     "SettingsView.adaptiveVolume.subtitle" : {
       "comment" : "SettingsView: adaptive volume description",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -2833,7 +2833,7 @@
     },
     "SettingsView.adaptiveVolume.title" : {
       "comment" : "SettingsView: adaptive volume row title",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -3011,7 +3011,7 @@
     },
     "SettingsView.speakToChat.subtitle" : {
       "comment" : "SettingsView: speak-to-chat description",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
@@ -3071,7 +3071,7 @@
     },
     "SettingsView.speakToChat.title" : {
       "comment" : "SettingsView: speak-to-chat row title",
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "cz" : {
           "stringUnit" : {
