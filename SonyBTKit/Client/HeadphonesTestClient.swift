@@ -17,6 +17,9 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     /// When set, `connect(address:)` fails with this message instead of connecting.
     public var connectionError: String?
 
+    /// When false, ``connectToAutoDevice()`` simulates finding no system-connected headset.
+    public var autoConnectSucceeds = true
+
     /// Creates a test client with an optional pre-seeded snapshot.
     ///
     /// - Parameter state: The initial ``HeadphonesState``; defaults to an empty (disconnected) one.
@@ -38,6 +41,13 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
         connectionError = message
     }
 
+    /// Controls whether ``connectToAutoDevice()`` simulates finding a device.
+    ///
+    /// - Parameter value: False to exercise the "no auto-connectable device" path.
+    public func setAutoConnectSucceeds(_ value: Bool) {
+        autoConnectSucceeds = value
+    }
+
     // MARK: Connection
 
     /// Returns the seeded device list.
@@ -47,13 +57,16 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
         stubbedDevices
     }
 
-    /// Simulates a successful auto-connect.
+    /// Simulates an auto-connect attempt.
     ///
-    /// - Returns: The snapshot with `connected` true and no error.
+    /// - Returns: The snapshot with `connected` true when ``autoConnectSucceeds`` is true;
+    ///            otherwise the unchanged (disconnected) snapshot.
     public func connectToAutoDevice() async -> HeadphonesState {
         state.connecting = false
         state.errorMessage = nil
-        state.connected = true
+        if autoConnectSucceeds {
+            state.connected = true
+        }
         return state
     }
 

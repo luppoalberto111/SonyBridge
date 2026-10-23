@@ -56,6 +56,7 @@ import Testing
         }
         await store.receive(\.snapshotReceived) {
             $0.headphones.mode = .noiseCanceling
+            $0.deviceHero.headphones = $0.headphones
             $0.ambient.mode = .noiseCanceling
         }
     }
@@ -88,6 +89,7 @@ import Testing
         await store.receive(\.snapshotReceived) {
             $0.headphones.eqBands[0] = 5
             $0.headphones.eqPreset = EqPreset.manual.rawValue
+            $0.deviceHero.headphones = $0.headphones
             $0.equalizer.eqBands[0] = 5
             $0.equalizer.eqPreset = EqPreset.manual.rawValue
         }
@@ -117,8 +119,8 @@ import Testing
             $0.headphonesClient = client
         }
 
-        await store.send(.dynamicTick)
-        await store.receive(\.dynamicTickResponse) {
+        await store.send(.watchTick)
+        await store.receive(\.watchTickResponse) {
             $0.headphones = HeadphonesState()
             $0.deviceHero.headphones = HeadphonesState()
             $0.ambient = AmbientReducer.State()

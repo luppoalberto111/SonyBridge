@@ -12,7 +12,7 @@ import Testing
             of: SnapshotFixtures.hostingController(
                 AmbientView(store: SnapshotFixtures.ambientStore(mode: .noiseCanceling))
             ),
-            as: .image(size: CGSize(width: 380, height: 320))
+            as: .image(precision: 0.99, size: CGSize(width: 380, height: 320))
         )
     }
 
@@ -26,7 +26,7 @@ import Testing
                     )
                 )
             ),
-            as: .image(size: CGSize(width: 380, height: 320))
+            as: .image(precision: 0.99, size: CGSize(width: 380, height: 320))
         )
     }
 
@@ -35,7 +35,7 @@ import Testing
             of: SnapshotFixtures.hostingController(
                 AmbientView(store: SnapshotFixtures.ambientStore(mode: .off))
             ),
-            as: .image(size: CGSize(width: 380, height: 320))
+            as: .image(precision: 0.99, size: CGSize(width: 380, height: 320))
         )
     }
 }

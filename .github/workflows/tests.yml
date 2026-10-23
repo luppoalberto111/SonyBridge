@@ -1,38 +1,106 @@
 name: Tests
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   unit-tests:
     name: Unit Tests
     runs-on: macos-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
 
       - name: Run Unit Tests
-        run: xcodebuild test -project SonyHeadphonesClient.xcodeproj -scheme SonyHeadphonesClient -destination 'platform=macOS' -only-testing:SonyHeadphonesClientTests
-
-  ui-tests:
-    name: UI Tests
-    runs-on: macos-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Run UI Tests
         run: |
-          echo "No dedicated UI test target exists in this project."
-          echo "UI behavior is covered by Snapshot Tests (see Snapshot Tests job)."
-          echo "Skipping separate UI test step."
+          mkdir -p TestResults
+          xcodebuild test \
+            -project SonyHeadphonesClient.xcodeproj \
+            -scheme SonyHeadphonesClient \
+            -destination 'platform=macOS' \
+            -only-testing:SonyHeadphonesClientTests \
+            -resultBundlePath TestResults/UnitTests.xcresult
+
+      - name: Upload unit test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: TestResults/UnitTests.xcresult
+          if-no-files-found: ignore
 
   snapshot-tests:
     name: Snapshot Tests
     runs-on: macos-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Show Xcode version
+        run: xcodebuild -version
+
       - name: Run Snapshot Tests
-        run: xcodebuild test -project SonyHeadphonesClient.xcodeproj -scheme SonyHeadphonesClient -destination 'platform=macOS' -only-testing:SonyHeadphonesClientSnapshotTests
+        run: |
+          mkdir -p TestResults
+          xcodebuild test \
+            -project SonyHeadphonesClient.xcodeproj \
+            -scheme SonyHeadphonesClient \
+            -destination 'platform=macOS' \
+            -only-testing:SonyHeadphonesClientSnapshotTests \
+            -resultBundlePath TestResults/SnapshotTests.xcresult
+
+      - name: Upload snapshot test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshot-test-results
+          path: TestResults/SnapshotTests.xcresult
+          if-no-files-found: ignore
+
+  ui-tests:
+    name: UI Tests
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Run UI Tests
+        run: |
+          SCHEME=SonyHeadphonesClient.xcodeproj/xcshareddata/xcschemes/SonyHeadphonesClient.xcscheme
+          if grep -q "SonyHeadphonesClientUITests" "$SCHEME"; then
+            mkdir -p TestResults
+            xcodebuild test \
+              -project SonyHeadphonesClient.xcodeproj \
+              -scheme SonyHeadphonesClient \
+              -destination 'platform=macOS' \
+              -only-testing:SonyHeadphonesClientUITests \
+              -resultBundlePath TestResults/UITests.xcresult
+          else
+            echo "::notice title=No UI test target::This project has no SonyHeadphonesClientUITests target, so there are no UI tests to run. Add a UI test target (and include it in the SonyHeadphonesClient scheme) to enable this job."
+          fi
+
+      - name: Upload UI test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-results
+          path: TestResults/UITests.xcresult
+          if-no-files-found: ignore

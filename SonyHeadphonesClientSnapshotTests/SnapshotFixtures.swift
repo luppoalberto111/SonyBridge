@@ -1,6 +1,7 @@
 import AppKit
 import Bridge
 import Client
+import Clocks
 import ComposableArchitecture
 @testable import SonyHeadphonesClient
 import SwiftUI
@@ -142,14 +143,26 @@ enum SnapshotFixtures {
             )
         ) {
             ConnectedReducer()
+        } withDependencies: {
+            $0.continuousClock = TestClock<Duration>()
+            $0.headphonesClient = HeadphonesTestClient(state: headphones)
         }
     }
 
     static func mainScreenStore(
         state: MainScreenFeature.State
     ) -> StoreOf<MainScreenFeature> {
-        Store(initialState: state) {
+        let headphones: HeadphonesState
+        if case let .connected(connected) = state {
+            headphones = connected.headphones
+        } else {
+            headphones = HeadphonesState()
+        }
+        return Store(initialState: state) {
             MainScreenFeature()
+        } withDependencies: {
+            $0.continuousClock = TestClock<Duration>()
+            $0.headphonesClient = HeadphonesTestClient(state: headphones)
         }
     }
 }
