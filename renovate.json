@@ -10,5 +10,17 @@
       "automerge": false,
       "prConcurrentLimit": 10
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Xcode SPM dependencies declared in project.pbxproj",
+      "managerFilePatterns": ["/(^|/)project\\.pbxproj$/"],
+      "matchStrings": [
+        "repositoryURL = \"https://github\\.com/(?<depName>[^\"/]+/[^\"/]+?)(?:\\.git)?\";\\s*requirement = \\{\\s*kind = \\w+;\\s*minimumVersion = (?<currentValue>[^;]+);"
+      ],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    }
   ]
 }
