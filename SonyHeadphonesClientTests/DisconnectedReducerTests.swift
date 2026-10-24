@@ -25,10 +25,12 @@ import Testing
     }
 
     @Test func emptyDeviceListShowsHint() async {
+        let client = HeadphonesTestClient()
+        await client.setAutoConnectSucceeds(false)
         let store = TestStore(initialState: DisconnectedReducer.State()) {
             DisconnectedReducer()
         } withDependencies: {
-            $0.headphonesClient = HeadphonesTestClient()
+            $0.headphonesClient = client
         }
 
         await store.send(.connectButtonTapped) {
@@ -94,12 +96,14 @@ import Testing
     }
 
     @Test func connectButtonTappedStartsConnectingAndClearsPreviousError() async {
+        let client = HeadphonesTestClient()
+        await client.setAutoConnectSucceeds(false)
         let store = TestStore(
             initialState: DisconnectedReducer.State(errorMessage: "Boom")
         ) {
             DisconnectedReducer()
         } withDependencies: {
-            $0.headphonesClient = HeadphonesTestClient()
+            $0.headphonesClient = client
         }
 
         await store.send(.connectButtonTapped) {
@@ -110,6 +114,11 @@ import Testing
         await store.receive(\.autoConnectResponse) {
             $0.connecting = false
         }
-        await store.receive(\.devicesResponse)
+        await store.receive(\.devicesResponse) {
+            $0.errorMessage = String(
+                localized: "DisconnectedView.emptyListHint",
+                defaultValue: "No paired Sony headphones found. Pair them in macOS Bluetooth settings first."
+            )
+        }
     }
 }

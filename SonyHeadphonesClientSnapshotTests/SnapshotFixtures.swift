@@ -1,9 +1,20 @@
 import AppKit
 import Bridge
 import Client
+import Clocks
 import ComposableArchitecture
 @testable import SonyHeadphonesClient
 import SwiftUI
+
+// MARK: - FixedScaleWindow
+
+/// A window that always reports a 2x backing scale so snapshots are recorded and
+/// compared at the same pixel size on Retina Macs and headless CI runners.
+@MainActor private final class FixedScaleWindow: NSWindow {
+    override var backingScaleFactor: CGFloat { 2 }
+}
+
+// MARK: - SnapshotFixtures
 
 /// Deterministic `HeadphonesState` values shared by the snapshot tests.
 enum SnapshotFixtures {
@@ -13,8 +24,39 @@ enum SnapshotFixtures {
     /// strategies on macOS, so views go through an `NSHostingController`
     /// upcast to `NSViewController`. The color scheme is pinned to Dark so
     /// references stay deterministic regardless of the host Mac's setting.
+    @MainActor
+    private static var snapshotWindows: [NSWindow] = []
+
     @MainActor static func hostingController(_ view: some View) -> NSViewController {
-        NSHostingController(rootView: AnyView(view.preferredColorScheme(.dark)))
+        let controller = NSHostingController(
+            rootView: AnyView(
+                view
+                    .preferredColorScheme(.dark)
+                    .environment(\.colorScheme, .dark)
+            )
+        )
+        let window = FixedScaleWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 1000, height: 1000),
+            styleMask: .borderless,
+            backing: .buffered,
+            defer: false
+        )
+        window.contentView = NSView(frame: NSRect(x: 0, y: 0, width: 1000, height: 1000))
+
+        // `preferredColorScheme` alone is not enough on every macOS version:
+        // some runners resolve AppKit colors from the window's appearance and
+        // render the whole view in light mode. Pin the appearance on the
+        // window and hosting view as well so it cannot fall back.
+        let appearance = NSAppearance(named: .darkAqua)
+        window.appearance = appearance
+        window.contentView?.appearance = appearance
+        controller.view.appearance = appearance
+
+        controller.view.translatesAutoresizingMaskIntoConstraints = true
+        controller.view.autoresizingMask = []
+        window.contentView?.addSubview(controller.view)
+        snapshotWindows.append(window)
+        return controller
     }
 
     static func singleBatteryHeadphones() -> HeadphonesState {
@@ -142,14 +184,26 @@ enum SnapshotFixtures {
             )
         ) {
             ConnectedReducer()
+        } withDependencies: {
+            $0.continuousClock = TestClock<Duration>()
+            $0.headphonesClient = HeadphonesTestClient(state: headphones)
         }
     }
 
     static func mainScreenStore(
         state: MainScreenFeature.State
     ) -> StoreOf<MainScreenFeature> {
-        Store(initialState: state) {
+        let headphones: HeadphonesState
+        if case let .connected(connected) = state {
+            headphones = connected.headphones
+        } else {
+            headphones = HeadphonesState()
+        }
+        return Store(initialState: state) {
             MainScreenFeature()
+        } withDependencies: {
+            $0.continuousClock = TestClock<Duration>()
+            $0.headphonesClient = HeadphonesTestClient(state: headphones)
         }
     }
 }
