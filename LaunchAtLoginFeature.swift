@@ -41,14 +41,14 @@ import Dependencies
 
                 case .allowTapped:
                     state.promptVisible = false
-                    state.promptResolved = true
+                    state.$promptResolved.withLock { $0 = true }
                     return .run { send in
                         await send(.setEnabledResponse(client.setEnabled(true)))
                     }
 
                 case .denyTapped:
                     state.promptVisible = false
-                    state.promptResolved = true
+                    state.$promptResolved.withLock { $0 = true }
                     return .none
 
                 case let .setEnabledResponse(enabled):
