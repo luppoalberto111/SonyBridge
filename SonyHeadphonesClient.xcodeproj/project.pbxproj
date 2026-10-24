@@ -27,9 +27,9 @@
 		AA0000000000000000000111 /* ConnectedViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */; };
 		AA0000000000000000000112 /* MainScreenViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */; };
 		AA0000000000000000000113 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000303 /* SnapshotTesting */; };
-		AA0000000000000000000116 /* DseeReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000213 /* DseeReducerTests.swift */; };
 		AA0000000000000000000114 /* MenuBarFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000214 /* MenuBarFeatureTests.swift */; };
 		AA0000000000000000000115 /* LaunchAtLoginFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000215 /* LaunchAtLoginFeatureTests.swift */; };
+		AA0000000000000000000116 /* DseeReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000213 /* DseeReducerTests.swift */; };
 		CC0000000000000000000004 /* MainScreenFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000005 /* MainScreenFeature.swift */; };
 		CC000000000000000000000A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000009 /* AppDelegate.swift */; };
 		CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000F /* SonyHeadphonesClientApp.swift */; };
@@ -334,7 +334,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2700;
+				LastUpgradeCheck = 2720;
 				TargetAttributes = {
 					A8DC78C325757BF300447738 = {
 						CreatedOnToolsVersion = 12.2;
@@ -510,6 +510,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -572,6 +573,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

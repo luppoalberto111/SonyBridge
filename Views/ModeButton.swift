@@ -14,16 +14,16 @@ struct ModeButton: View {
             VStack(spacing: 8) {
                 ZStack {
                     Circle()
-                        .fill(isSelected ? Color(.accent) : Color(.cardHi))
+                        .fill(isSelected ? Color.highlight : .cardHi)
                         .frame(width: 58, height: 58)
                     Image(systemName: mode.symbol)
                         .font(.system(size: 22, weight: .medium))
-                        .foregroundColor(isSelected ? .white : Color(.secondary))
+                        .foregroundColor(isSelected ? .white : .foregroundSecondary)
                 }
                 Text(mode.label)
                     .font(.system(size: 11, weight: .medium))
                     .multilineTextAlignment(.center)
-                    .foregroundColor(isSelected ? .white : Color(.secondary))
+                    .foregroundColor(isSelected ? .white : .foregroundSecondary)
             }
             .frame(maxWidth: .infinity)
         }

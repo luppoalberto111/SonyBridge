@@ -64,7 +64,7 @@ struct EqualizerView: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("EqualizerView.title")
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundColor(Color(.foreground))
+                .foregroundColor(.foreground)
             LazyVGrid(
                 columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())],
                 spacing: 10
@@ -72,7 +72,7 @@ struct EqualizerView: View {
                 ForEach(EqPreset.allCases, content: eqChip)
             }
             if store.eqPreset == EqPreset.manual.rawValue {
-                Divider().background(Color(.cardHi))
+                Divider().background(Color.cardHi)
                 ForEach(EqBand.allCases) { band in
                     eqBandRow(
                         band.label,
@@ -96,7 +96,7 @@ struct EqualizerView: View {
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.card))
+        .background(Color.card)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
@@ -109,12 +109,12 @@ struct EqualizerView: View {
         HStack(spacing: 10) {
             Text(label)
                 .font(.system(size: 11, weight: .medium))
-                .foregroundColor(accent ? Color(.accent) : Color(.secondary))
+                .foregroundColor(accent ? Color(.highlight) : Color(.foregroundSecondary))
                 .frame(width: 34, alignment: .leading)
             Slider(value: value, in: -10 ... 10, step: 1).accentColor(Color(.accent))
             Text("\(display > 0 ? "+" : "")\(display)")
                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                .foregroundColor(Color(.foreground))
+                .foregroundColor(.foreground)
                 .frame(width: 26, alignment: .trailing)
         }
     }
@@ -124,10 +124,10 @@ struct EqualizerView: View {
         return Button(action: { store.send(.setEqualizer(preset.rawValue)) }) {
             Text(preset.name)
                 .font(.system(size: 12, weight: .medium))
-                .foregroundColor(selected ? .white : Color(.secondary))
+                .foregroundColor(selected ? .white : Color(.foregroundSecondary))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 8)
-                .background(selected ? Color(.accent) : Color(.cardHi))
+                .background(selected ? Color.accent : .cardHi)
                 .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
         }
         .buttonStyle(PlainButtonStyle())
