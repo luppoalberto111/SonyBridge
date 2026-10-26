@@ -4,6 +4,10 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct DisconnectedReducerTests {
+    private var emptyListHintDefault: String.LocalizationValue {
+        "No paired Sony headphones found. Pair them in macOS Bluetooth settings first."
+    }
+
     @Test func autoConnectSuccessDelegatesDidConnect() async {
         var connected = HeadphonesState()
         connected.connected = true
@@ -42,7 +46,7 @@ import Testing
         await store.receive(\.devicesResponse) {
             $0.errorMessage = String(
                 localized: "DisconnectedView.emptyListHint",
-                defaultValue: "No paired Sony headphones found. Pair them in macOS Bluetooth settings first."
+                defaultValue: emptyListHintDefault
             )
         }
     }
@@ -117,7 +121,7 @@ import Testing
         await store.receive(\.devicesResponse) {
             $0.errorMessage = String(
                 localized: "DisconnectedView.emptyListHint",
-                defaultValue: "No paired Sony headphones found. Pair them in macOS Bluetooth settings first."
+                defaultValue: emptyListHintDefault
             )
         }
     }
