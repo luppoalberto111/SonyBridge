@@ -27,19 +27,20 @@
 		AA0000000000000000000111 /* ConnectedViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */; };
 		AA0000000000000000000112 /* MainScreenViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */; };
 		AA0000000000000000000113 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000303 /* SnapshotTesting */; };
-		AA0000000000000000000114 /* MenuBarFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000214 /* MenuBarFeatureTests.swift */; };
 		AA0000000000000000000115 /* LaunchAtLoginFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000215 /* LaunchAtLoginFeatureTests.swift */; };
 		AA0000000000000000000116 /* DseeReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000213 /* DseeReducerTests.swift */; };
 		CC0000000000000000000004 /* MainScreenFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000005 /* MainScreenFeature.swift */; };
 		CC000000000000000000000A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000009 /* AppDelegate.swift */; };
 		CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000F /* SonyHeadphonesClientApp.swift */; };
 		CC0000000000000000000011 /* AppFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000012 /* AppFeature.swift */; };
-		CC0000000000000000000013 /* MenuBarFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000014 /* MenuBarFeature.swift */; };
-		CC0000000000000000000015 /* MenuBarApplicationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000016 /* MenuBarApplicationClient.swift */; };
 		CC0000000000000000000017 /* LaunchAtLoginClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000018 /* LaunchAtLoginClient.swift */; };
 		CC0000000000000000000019 /* LaunchAtLoginFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000020 /* LaunchAtLoginFeature.swift */; };
 		DD0000000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD0000000000000000000002 /* Assets.xcassets */; };
 		EE0000000000000000000005 /* SonyBTKit in Frameworks */ = {isa = PBXBuildFile; productRef = EE0000000000000000000003 /* SonyBTKit */; };
+		F72387E1309129B60023FA02 /* MenuBarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72387DB309129B50023FA02 /* MenuBarApp.swift */; };
+		F72387E2309129B60023FA02 /* MenuBarFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72387DD309129B50023FA02 /* MenuBarFeature.swift */; };
+		F72387E3309129B60023FA02 /* MenuBarKitAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72387DE309129B50023FA02 /* MenuBarKitAppDelegate.swift */; };
+		F72387E4309129B60023FA02 /* MenuBarApplicationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72387DC309129B50023FA02 /* MenuBarApplicationClient.swift */; };
 		F76B57F5305815DA00449C1F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F76B57F4305815DA00449C1F /* ComposableArchitecture */; };
 		F7EAEFD23053FBB600018001 /* HeadphonesCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */; };
 		F7EAEFDB30541E4D00018001 /* DisconnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */; };
@@ -57,6 +58,12 @@
 		F7EAEFF405421600018001 /* EqBand.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFF305421600018001 /* EqBand.swift */; };
 		F7EAEFF605421700018001 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F7EAEFF505421700018001 /* Localizable.xcstrings */; };
 		F7EAEFF805421800018001 /* Int+Percent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFF705421800018001 /* Int+Percent.swift */; };
+		F8000000000000000000000B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A87B328A259FAA8B00EA6551 /* Cocoa.framework */; };
+		F8000000000000000000000C /* SonyBTKit in Frameworks */ = {isa = PBXBuildFile; productRef = EE0000000000000000000003 /* SonyBTKit */; };
+		F8000000000000000000000D /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F76B57F4305815DA00449C1F /* ComposableArchitecture */; };
+		F90000000000000000000002 /* SharedStateKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90000000000000000000001 /* SharedStateKeys.swift */; };
+		F90000000000000000000003 /* SharedStateKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90000000000000000000001 /* SharedStateKeys.swift */; };
+		F9000000000000000000001B /* MenuBarFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9000000000000000000001C /* MenuBarFeatureTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +73,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = A8DC78C325757BF300447738;
 			remoteInfo = SonyHeadphonesClient;
+		};
+		F90000000000000000000015 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A8DC78BC25757BF300447738 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F80000000000000000000001;
+			remoteInfo = MenuBarKit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -94,20 +108,25 @@
 		AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedViewSnapshotTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewSnapshotTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000213 /* DseeReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DseeReducerTests.swift; sourceTree = "<group>"; };
-		AA0000000000000000000214 /* MenuBarFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarFeatureTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000215 /* LaunchAtLoginFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginFeatureTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientSnapshotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB0000000000000000000001 /* RecordSnapshots.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text.json.xctestplan; path = RecordSnapshots.xctestplan; sourceTree = "<group>"; };
+		F90000000000000000000001 /* SharedStateKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStateKeys.swift; sourceTree = "<group>"; };
+		F90000000000000000000010 /* MenuBarKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MenuBarKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9000000000000000000001C /* MenuBarFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarFeatureTests.swift; sourceTree = "<group>"; };
 		CC0000000000000000000005 /* MainScreenFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenFeature.swift; sourceTree = "<group>"; };
 		CC0000000000000000000009 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CC000000000000000000000F /* SonyHeadphonesClientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SonyHeadphonesClientApp.swift; sourceTree = "<group>"; };
 		CC0000000000000000000012 /* AppFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFeature.swift; sourceTree = "<group>"; };
-		CC0000000000000000000014 /* MenuBarFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarFeature.swift; sourceTree = "<group>"; };
-		CC0000000000000000000016 /* MenuBarApplicationClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarApplicationClient.swift; sourceTree = "<group>"; };
 		CC0000000000000000000018 /* LaunchAtLoginClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginClient.swift; sourceTree = "<group>"; };
 		CC0000000000000000000020 /* LaunchAtLoginFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginFeature.swift; sourceTree = "<group>"; };
 		DD0000000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F72387DA309129B50023FA02 /* info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = info.plist; sourceTree = "<group>"; };
+		F72387DB309129B50023FA02 /* MenuBarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarApp.swift; sourceTree = "<group>"; };
+		F72387DC309129B50023FA02 /* MenuBarApplicationClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarApplicationClient.swift; sourceTree = "<group>"; };
+		F72387DD309129B50023FA02 /* MenuBarFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarFeature.swift; sourceTree = "<group>"; };
+		F72387DE309129B50023FA02 /* MenuBarKitAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarKitAppDelegate.swift; sourceTree = "<group>"; };
 		F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesCommands.swift; sourceTree = "<group>"; };
 		F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedView.swift; sourceTree = "<group>"; };
 		F7EAEFDE30541F4400018001 /* ConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedView.swift; sourceTree = "<group>"; };
@@ -124,6 +143,7 @@
 		F7EAEFF305421600018001 /* EqBand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqBand.swift; sourceTree = "<group>"; };
 		F7EAEFF505421700018001 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		F7EAEFF705421800018001 /* Int+Percent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Percent.swift"; sourceTree = "<group>"; };
+		F80000000000000000000005 /* MenuBarKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MenuBarKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,12 +172,31 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F80000000000000000000007 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F8000000000000000000000B /* Cocoa.framework in Frameworks */,
+				F8000000000000000000000C /* SonyBTKit in Frameworks */,
+				F8000000000000000000000D /* ComposableArchitecture in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F90000000000000000000013 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		A8DC78BB25757BF300447738 = {
 			isa = PBXGroup;
 			children = (
+				F72387DF309129B50023FA02 /* MenuBarKit */,
+				F90000000000000000000001 /* SharedStateKeys.swift */,
 				F7D8BFCA3059538000B46259 /* Models */,
 				F7EAEFE905420F000018001 /* Extensions */,
 				F7EAEFD930541DEA00018001 /* Views */,
@@ -166,10 +205,10 @@
 				A8DC78E62576922D00447738 /* SonyHeadphonesClient.app */,
 				AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */,
 				AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */,
+				F90000000000000000000010 /* MenuBarKitTests.xctest */,
+				F90000000000000000000011 /* MenuBarKitTests */,
 				CC0000000000000000000009 /* AppDelegate.swift */,
 				CC0000000000000000000012 /* AppFeature.swift */,
-				CC0000000000000000000014 /* MenuBarFeature.swift */,
-				CC0000000000000000000016 /* MenuBarApplicationClient.swift */,
 				CC0000000000000000000018 /* LaunchAtLoginClient.swift */,
 				CC0000000000000000000020 /* LaunchAtLoginFeature.swift */,
 				CC0000000000000000000005 /* MainScreenFeature.swift */,
@@ -206,7 +245,6 @@
 				AA0000000000000000000209 /* IntPercentTests.swift */,
 				AA000000000000000000020A /* EqPresetTests.swift */,
 				AA0000000000000000000213 /* DseeReducerTests.swift */,
-				AA0000000000000000000214 /* MenuBarFeatureTests.swift */,
 				AA0000000000000000000215 /* LaunchAtLoginFeatureTests.swift */,
 			);
 			path = SonyHeadphonesClientTests;
@@ -225,6 +263,26 @@
 				AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */,
 			);
 			path = SonyHeadphonesClientSnapshotTests;
+			sourceTree = "<group>";
+		};
+		F72387DF309129B50023FA02 /* MenuBarKit */ = {
+			isa = PBXGroup;
+			children = (
+				F72387DA309129B50023FA02 /* info.plist */,
+				F72387DB309129B50023FA02 /* MenuBarApp.swift */,
+				F72387DC309129B50023FA02 /* MenuBarApplicationClient.swift */,
+				F72387DD309129B50023FA02 /* MenuBarFeature.swift */,
+				F72387DE309129B50023FA02 /* MenuBarKitAppDelegate.swift */,
+			);
+			path = MenuBarKit;
+			sourceTree = "<group>";
+		};
+		F90000000000000000000011 /* MenuBarKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				F9000000000000000000001C /* MenuBarFeatureTests.swift */,
+			);
+			path = MenuBarKitTests;
 			sourceTree = "<group>";
 		};
 		F7D8BFCA3059538000B46259 /* Models */ = {
@@ -327,6 +385,49 @@
 			productReference = AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		F80000000000000000000001 /* MenuBarKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F80000000000000000000002 /* Build configuration list for PBXNativeTarget "MenuBarKit" */;
+			buildPhases = (
+				F80000000000000000000006 /* Sources */,
+				F80000000000000000000007 /* Frameworks */,
+				F80000000000000000000008 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F80000000000000000000010 /* PBXTargetDependency */,
+				F80000000000000000000011 /* PBXTargetDependency */,
+			);
+			name = MenuBarKit;
+			productName = MenuBarKit;
+			productReference = F80000000000000000000005 /* MenuBarKit.app */;
+			productType = "com.apple.product-type.application";
+			packageProductDependencies = (
+				EE0000000000000000000003 /* SonyBTKit */,
+				F76B57F4305815DA00449C1F /* ComposableArchitecture */,
+			);
+		};
+		F90000000000000000000017 /* MenuBarKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F90000000000000000000018 /* Build configuration list for PBXNativeTarget "MenuBarKitTests" */;
+			buildPhases = (
+				F90000000000000000000012 /* Sources */,
+				F90000000000000000000013 /* Frameworks */,
+				F90000000000000000000014 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F90000000000000000000016 /* PBXTargetDependency */,
+			);
+			name = MenuBarKitTests;
+			packageProductDependencies = (
+			);
+			productName = MenuBarKitTests;
+			productReference = F90000000000000000000010 /* MenuBarKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -367,8 +468,10 @@
 			projectRoot = "";
 			targets = (
 				A8DC78C325757BF300447738 /* SonyHeadphonesClient */,
+				F80000000000000000000001 /* MenuBarKit */,
 				AA0000000000000000000701 /* SonyHeadphonesClientTests */,
 				AA0000000000000000000702 /* SonyHeadphonesClientSnapshotTests */,
+				F90000000000000000000017 /* MenuBarKitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -391,6 +494,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		AA0000000000000000000A02 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F80000000000000000000008 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F90000000000000000000014 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -444,11 +561,10 @@
 				F7EAEFF205421500018001 /* DeviceHeroView.swift in Sources */,
 				CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */,
 				CC0000000000000000000011 /* AppFeature.swift in Sources */,
-				CC0000000000000000000013 /* MenuBarFeature.swift in Sources */,
-				CC0000000000000000000015 /* MenuBarApplicationClient.swift in Sources */,
 				CC0000000000000000000017 /* LaunchAtLoginClient.swift in Sources */,
 				CC0000000000000000000019 /* LaunchAtLoginFeature.swift in Sources */,
 				F7EAEFE33057D8B000018001 /* EqPreset.swift in Sources */,
+				F90000000000000000000002 /* SharedStateKeys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,7 +583,6 @@
 				AA0000000000000000000109 /* IntPercentTests.swift in Sources */,
 				AA000000000000000000010A /* EqPresetTests.swift in Sources */,
 				AA0000000000000000000116 /* DseeReducerTests.swift in Sources */,
-				AA0000000000000000000114 /* MenuBarFeatureTests.swift in Sources */,
 				AA0000000000000000000115 /* LaunchAtLoginFeatureTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -487,6 +602,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F80000000000000000000006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F72387E1309129B60023FA02 /* MenuBarApp.swift in Sources */,
+				F72387E2309129B60023FA02 /* MenuBarFeature.swift in Sources */,
+				F72387E3309129B60023FA02 /* MenuBarKitAppDelegate.swift in Sources */,
+				F72387E4309129B60023FA02 /* MenuBarApplicationClient.swift in Sources */,
+				F90000000000000000000003 /* SharedStateKeys.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F90000000000000000000012 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9000000000000000000001B /* MenuBarFeatureTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -502,6 +637,19 @@
 		F76B57F13057F99C00449C1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			productRef = F76B57F03057F99C00449C1F /* SwiftLintBuildToolPlugin */;
+		};
+		F80000000000000000000010 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = F76B57F4305815DA00449C1F /* ComposableArchitecture */;
+		};
+		F80000000000000000000011 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = EE0000000000000000000003 /* SonyBTKit */;
+		};
+		F90000000000000000000016 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F80000000000000000000001 /* MenuBarKit */;
+			targetProxy = F90000000000000000000015 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -755,6 +903,77 @@
 			};
 			name = Release;
 		};
+		F80000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_TESTABILITY = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/MenuBarKit/info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.MenuBarKit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		F80000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_TESTABILITY = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/MenuBarKit/info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.MenuBarKit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		F90000000000000000000019 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MenuBarKit.app/Contents/MacOS/MenuBarKit";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.MenuBarKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MenuBarKit.app/Contents/MacOS/MenuBarKit";
+			};
+			name = Debug;
+		};
+		F9000000000000000000001A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MenuBarKit.app/Contents/MacOS/MenuBarKit";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.semvis123.MenuBarKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MenuBarKit.app/Contents/MacOS/MenuBarKit";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -790,6 +1009,24 @@
 			buildConfigurations = (
 				AA0000000000000000000B03 /* Debug */,
 				AA0000000000000000000B04 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F80000000000000000000002 /* Build configuration list for PBXNativeTarget "MenuBarKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F80000000000000000000003 /* Debug */,
+				F80000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F90000000000000000000018 /* Build configuration list for PBXNativeTarget "MenuBarKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F90000000000000000000019 /* Debug */,
+				F9000000000000000000001A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -4,14 +4,12 @@ import ComposableArchitecture
 
 // MARK: - AppFeature
 
-/// Root of the app: the main window content plus the menu-bar status item.
+/// Root of the app: the main window content.
 ///
-/// `MenuBarFeature` delegate actions are forwarded to `MainScreenFeature`,
-/// and connection transitions sync back so the menu title stays accurate.
+/// Connection transitions sync headphone state back into shared state.
 @Reducer struct AppFeature {
     @ObservableState struct State: Equatable {
         var mainScreen: MainScreenFeature.State = .disconnected(.init())
-        var menuBar = MenuBarFeature.State()
         var launchAtLogin = LaunchAtLoginFeature.State()
         @Shared(.isConnected)
         var isConnected: Bool
@@ -29,7 +27,6 @@ import ComposableArchitecture
 
     enum Action {
         case mainScreen(MainScreenFeature.Action)
-        case menuBar(MenuBarFeature.Action)
         case launchAtLogin(LaunchAtLoginFeature.Action)
     }
 
@@ -37,44 +34,11 @@ import ComposableArchitecture
         Scope(state: \.mainScreen, action: \.mainScreen) {
             MainScreenFeature()
         }
-        Scope(state: \.menuBar, action: \.menuBar) {
-            MenuBarFeature()
-        }
         Scope(state: \.launchAtLogin, action: \.launchAtLogin) {
             LaunchAtLoginFeature()
         }
         Reduce { state, action in
             switch action {
-                case .menuBar(.delegate(.connectRequested)):
-                    guard case .disconnected = state.mainScreen else {
-                        return .none
-                    }
-                    return .send(.mainScreen(.disconnected(.connectButtonTapped)))
-
-                case .menuBar(.delegate(.disconnectRequested)):
-                    guard case .connected = state.mainScreen else {
-                        return .none
-                    }
-                    return .send(.mainScreen(.connected(.disconnectButtonTapped)))
-
-                case let .menuBar(.delegate(.ambientModeSelected(mode))):
-                    guard case .connected = state.mainScreen else {
-                        return .none
-                    }
-                    return .send(.mainScreen(.connected(.setMode(mode))))
-
-                case let .menuBar(.delegate(.ambientLevelSelected(level))):
-                    guard case .connected = state.mainScreen else {
-                        return .none
-                    }
-                    return .send(.mainScreen(.connected(.setLevel(level))))
-
-                case let .menuBar(.delegate(.focusOnVoiceSelected(focusOn))):
-                    guard case .connected = state.mainScreen else {
-                        return .none
-                    }
-                    return .send(.mainScreen(.connected(.setFocusOnVoice(focusOn))))
-
                 case let .mainScreen(.disconnected(.delegate(.didConnect(snapshot)))):
                     state.$isConnected.withLock { $0 = true }
                     state.syncSharedHeadphoneState(from: snapshot)
@@ -96,7 +60,7 @@ import ComposableArchitecture
                     state.syncSharedHeadphoneState(from: snapshot)
                     return .none
 
-                case .launchAtLogin, .mainScreen, .menuBar:
+                case .launchAtLogin, .mainScreen:
                     return .none
             }
         }
@@ -105,7 +69,7 @@ import ComposableArchitecture
 
 extension AppFeature.State {
     /// Mirrors the headphone-driven values into shared state
-    /// so the menu bar stays in sync with the app and the headphones.
+    /// so any menu-bar process stays in sync with the app and the headphones.
     mutating func syncSharedHeadphoneState(from snapshot: HeadphonesState) {
         $ambientMode.withLock { $0 = snapshot.mode }
         $ambientLevel.withLock { $0 = snapshot.ambientLevel }

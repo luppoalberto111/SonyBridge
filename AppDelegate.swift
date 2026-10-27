@@ -2,13 +2,6 @@ import Cocoa
 import ComposableArchitecture
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    private var statusMenuController: StatusMenuController?
-
-    /// Injects the menu-bar store. Called once from `SonyHeadphonesClientApp.init`.
-    @MainActor func configure(statusMenuStore: StoreOf<MenuBarFeature>) {
-        statusMenuController = StatusMenuController(store: statusMenuStore)
-    }
-
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApplication.shared.activate(ignoringOtherApps: true)
         DispatchQueue.main.async {

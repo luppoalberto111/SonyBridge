@@ -8,10 +8,6 @@ import SwiftUI
         AppFeature()
     }
 
-    init() {
-        appDelegate.configure(statusMenuStore: store.scope(state: \.menuBar, action: \.menuBar))
-    }
-
     var body: some Scene {
         WindowGroup {
             MainScreenView(store: store.scope(state: \.mainScreen, action: \.mainScreen))
