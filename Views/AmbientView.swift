@@ -102,11 +102,11 @@ struct AmbientView: View {
             HStack {
                 Text("AmbientView.levelCard.title")
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Color(.secondary))
+                    .foregroundColor(Color(.foregroundSecondary))
                 Spacer()
                 Text("\(store.ambientLevel)")
                     .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundColor(Color(.accent))
+                    .foregroundColor(Color(.highlight))
             }
             Slider(
                 value: Binding(
@@ -116,7 +116,7 @@ struct AmbientView: View {
                 in: 1 ... Double(store.maxAmbientLevel),
                 step: 1
             )
-            .accentColor(Color(.accent))
+            .accentColor(Color(.highlight))
 
             Toggle(isOn: Binding(
                 get: { store.focusOnVoice },
@@ -126,7 +126,7 @@ struct AmbientView: View {
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(Color(.foreground))
             }
-            .toggleStyle(SwitchToggleStyle(tint: Color(.accent)))
+            .toggleStyle(SwitchToggleStyle(tint: Color(.highlight)))
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)

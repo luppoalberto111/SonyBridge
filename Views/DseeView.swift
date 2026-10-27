@@ -50,13 +50,13 @@ struct DseeView: View {
                 Text("DseeView.title").font(.system(size: 14, weight: .semibold))
                     .foregroundColor(Color(.foreground))
                 Text("DseeView.subtitle").font(.system(size: 11))
-                    .foregroundColor(Color(.secondary))
+                    .foregroundColor(Color(.foregroundSecondary))
             }
         }
-        .toggleStyle(SwitchToggleStyle(tint: Color(.accent)))
+        .toggleStyle(SwitchToggleStyle(tint: Color.highlight))
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(.card))
+        .background(Color.card)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 }

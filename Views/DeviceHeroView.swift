@@ -64,9 +64,9 @@ struct DeviceHeroView: View {
                 Button(action: { store.send(.showAboutChanged(true)) }) {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundColor(Color(.secondary))
+                        .foregroundColor(.foregroundSecondary)
                         .frame(width: 32, height: 32)
-                        .background(Color(.card))
+                        .background(Color.card)
                         .clipShape(Circle())
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -82,7 +82,7 @@ struct DeviceHeroView: View {
                 Button(action: { store.send(.disconnectTapped) }) {
                     Image(systemName: "power")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(Color(.secondary))
+                        .foregroundColor(.foregroundSecondary)
                         .frame(width: 32, height: 32)
                         .background(Color(.card))
                         .clipShape(Circle())
@@ -95,8 +95,8 @@ struct DeviceHeroView: View {
                     .fill(
                         RadialGradient(
                             gradient: Gradient(colors: [
-                                Color(.accent).opacity(0.22),
-                                Color(.accent).opacity(0.0)
+                                Color.highlight.opacity(0.22),
+                                Color.highlight.opacity(0.0)
                             ]),
                             center: .center,
                             startRadius: 4,
@@ -114,19 +114,19 @@ struct DeviceHeroView: View {
                 } else {
                     Image(systemName: "headphones")
                         .font(.system(size: 92, weight: .thin))
-                        .foregroundColor(Color(.foreground))
+                        .foregroundColor(.foreground)
                 }
             }
 
             Text(model.deviceName)
                 .font(.system(size: 24, weight: .bold))
-                .foregroundColor(Color(.foreground))
+                .foregroundColor(.foreground)
 
             HStack(spacing: 7) {
                 if model.hasDualBattery {
                     Image(systemName: "battery.100")
                         .font(.system(size: 13))
-                        .foregroundColor(Color(.accent))
+                        .foregroundColor(.highlight)
                     Text(String(
                         format: String(
                             localized: "DeviceHeroView.batteryDual.value",
@@ -136,26 +136,26 @@ struct DeviceHeroView: View {
                         model.batteryRight.percentFormatted
                     ))
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(Color(.secondary))
+                    .foregroundColor(.foregroundSecondary)
                 } else if model.batteryLevel >= 0 {
                     model.batteryImage
                         .font(.system(size: 13))
                         .foregroundColor(model.batteryLevel <= 20 ? .red
-                            .opacity(0.9) : Color(.accent))
+                            .opacity(0.9) : Color(.highlight))
                     Text(model.batteryLevel.percentFormatted)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(Color(.secondary))
+                        .foregroundColor(.foregroundSecondary)
                 } else {
-                    Circle().fill(Color(.accent)).frame(width: 7, height: 7)
+                    Circle().fill(Color(.highlight)).frame(width: 7, height: 7)
                     Text("DeviceHeroView.status.connected")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(Color(.secondary))
+                        .foregroundColor(.foregroundSecondary)
                 }
                 if !model.codec.isEmpty {
-                    Text("·").foregroundColor(Color(.secondary))
+                    Text("·").foregroundColor(.foregroundSecondary)
                     Text(model.codec)
                         .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(Color(.secondary))
+                        .foregroundColor(.foregroundSecondary)
                 }
             }
         }

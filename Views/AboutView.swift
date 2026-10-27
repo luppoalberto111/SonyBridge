@@ -67,21 +67,21 @@ struct AboutView: View {
                 model.protocolVersion
             ) }
             if !model.deviceMac.isEmpty { aboutRow("AboutView.row.bluetooth", model.deviceMac) }
-            Divider().background(Color(.cardHi)).padding(.vertical, 10)
+            Divider().background(Color.cardHi).padding(.vertical, 10)
             Text("AboutView.disclaimer")
                 .font(.system(size: 10))
-                .foregroundColor(Color(.secondary).opacity(0.7))
+                .foregroundColor(Color.foregroundSecondary.opacity(0.7))
         }
         .padding(18)
         .frame(width: 260)
-        .background(Color(.card))
+        .background(Color.card)
     }
 
     private func aboutRow(_ label: LocalizedStringKey, _ value: String) -> some View {
         HStack {
-            Text(label).font(.system(size: 12)).foregroundColor(Color(.secondary))
+            Text(label).font(.system(size: 12)).foregroundColor(.foregroundSecondary)
             Spacer()
-            Text(value).font(.system(size: 12, weight: .medium)).foregroundColor(Color(.foreground))
+            Text(value).font(.system(size: 12, weight: .medium)).foregroundColor(.foreground)
         }
         .padding(.vertical, 3)
     }

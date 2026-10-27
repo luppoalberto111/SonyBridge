@@ -43,7 +43,7 @@ import Testing
     }
 
     @Test func allowRegistersAndMarksResolved() async {
-        var requested: Bool?
+        var requested = false
         let store = TestStore(initialState: initialState(promptResolved: false)) {
             LaunchAtLoginFeature()
         } withDependencies: {
@@ -65,7 +65,7 @@ import Testing
     }
 
     @Test func denyMarksResolvedWithoutRegistering() async {
-        var requested: Bool?
+        var requested = false
         let store = TestStore(initialState: initialState(promptResolved: false)) {
             LaunchAtLoginFeature()
         } withDependencies: {
@@ -79,7 +79,7 @@ import Testing
         await store.send(.denyTapped)
         await store.finish()
 
-        #expect(requested == nil)
+        #expect(requested == false)
         #expect(store.state.promptVisible == false)
         #expect(LaunchAtLoginFeature.State().promptResolved == true)
     }

@@ -76,12 +76,12 @@ import ComposableArchitecture
                     return .send(.mainScreen(.connected(.setFocusOnVoice(focusOn))))
 
                 case let .mainScreen(.disconnected(.delegate(.didConnect(snapshot)))):
-                    state.isConnected = true
+                    state.$isConnected.withLock { $0 = true }
                     state.syncSharedHeadphoneState(from: snapshot)
                     return .none
 
                 case .mainScreen(.connected(.delegate(.didDisconnect))):
-                    state.isConnected = false
+                    state.$isConnected.withLock { $0 = false }
                     return .none
 
                 case let .mainScreen(.connected(.snapshotReceived(snapshot))):
@@ -107,14 +107,14 @@ extension AppFeature.State {
     /// Mirrors the headphone-driven values into shared state
     /// so the menu bar stays in sync with the app and the headphones.
     mutating func syncSharedHeadphoneState(from snapshot: HeadphonesState) {
-        ambientMode = snapshot.mode
-        ambientLevel = snapshot.ambientLevel
-        maxAmbientLevel = snapshot.maxAmbientLevel
-        focusOnVoice = snapshot.focusOnVoice
+        $ambientMode.withLock { $0 = snapshot.mode }
+        $ambientLevel.withLock { $0 = snapshot.ambientLevel }
+        $maxAmbientLevel.withLock { $0 = snapshot.maxAmbientLevel }
+        $focusOnVoice.withLock { $0 = snapshot.focusOnVoice }
         // Snapshots can carry unknown (-1) while the inquiry is still pending;
         // never let that wipe a known menu value back to "--".
         if snapshot.batteryLevel >= 0 {
-            batteryLevel = snapshot.batteryLevel
+            $batteryLevel.withLock { $0 = snapshot.batteryLevel }
         }
     }
 }
