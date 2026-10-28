@@ -72,12 +72,4 @@ extension Either where Left == DeviceModel, Right == String {
             case let .right(name): name
         }
     }
-
-    /// Hero artwork for a recognised model; `nil` for unknown devices.
-    public var image: Image? {
-        switch self {
-            case let .left(model): model.image
-            case .right: nil
-        }
-    }
 }

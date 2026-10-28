@@ -85,7 +85,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
             return state
         }
         if let device = stubbedDevices.first(where: { $0.address == address }) {
-            state.deviceName = device.name
+            state.deviceModel = .init(deviceName: device.name)
             state.deviceMac = device.address
         }
         state.connected = true
@@ -97,7 +97,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     /// - Returns: The snapshot with `connected` false and an empty `deviceName`.
     public func disconnect() async -> HeadphonesState {
         state.connected = false
-        state.deviceName = ""
+        state.deviceModel = nil
         return state
     }
 

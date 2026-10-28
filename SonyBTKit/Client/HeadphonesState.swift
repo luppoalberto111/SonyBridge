@@ -17,8 +17,8 @@ public struct HeadphonesState: Sendable, Equatable {
     /// True while a connection attempt is in flight (drives the "Connecting…" UI).
     public var connecting = false
 
-    /// The headset's display name, empty when not connected.
-    public var deviceName = ""
+    /// The connected model, resolved from the advertised Bluetooth name.
+    public var deviceModel: Either<DeviceModel, String>?
 
     /// Whether the v1-only surround/virtual-position commands are usable (v1 devices only).
     public var supportsVpt = false
@@ -166,7 +166,7 @@ extension HeadphonesState {
     func synced(with bridge: HeadphonesBridge) -> Self {
         var updated = self
         updated.connected = bridge.connected
-        updated.deviceName = bridge.deviceName ?? ""
+        updated.deviceModel = bridge.deviceName.map { .init(deviceName: $0) }
         updated.deviceMac = bridge.deviceMac ?? ""
         updated.protocolVersion = bridge.protocolVersionString ?? ""
         updated.supportsVpt = bridge.supportsVpt
@@ -178,19 +178,6 @@ extension HeadphonesState {
         updated.focusOnVoice = bridge.focusOnVoice
         updated.focusOnVoiceAvailable = bridge.focusOnVoiceAvailable
         return updated
-    }
-
-    /// The connected model, resolved from the advertised Bluetooth name.
-    ///
-    /// A recognised model is the first case; renamed or unsupported headsets keep their raw
-    /// name in the second case.
-    public var deviceModel: Either<DeviceModel, String> {
-        .init(deviceName: deviceName)
-    }
-
-    /// Hero image matching the connected model, or `nil` when the model is unrecognised.
-    public var deviceImage: Image? {
-        deviceModel.image
     }
 
     /// The battery level/charging combination reduced to the icon the UI shows.

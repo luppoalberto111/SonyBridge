@@ -3,7 +3,7 @@ import Client
 extension HeadphonesState {
     var aboutModel: AboutView.Model {
         .init(
-            deviceName: deviceName,
+            deviceName: deviceModel?.displayName ?? "",
             connected: connected,
             hasDualBattery: hasDualBattery,
             batteryLeft: batteryLeft,
@@ -20,8 +20,8 @@ extension HeadphonesState {
 
     var deviceHeroModel: DeviceHeroView.Model {
         .init(
-            deviceName: deviceName,
-            deviceImage: deviceImage,
+            deviceName: deviceModel?.displayName ?? "",
+            deviceImage: deviceModel?.left?.image,
             hasDualBattery: hasDualBattery,
             batteryLeft: batteryLeft,
             batteryRight: batteryRight,

@@ -166,7 +166,7 @@ struct DeviceHeroView: View {
 private func previewHeadphones() -> HeadphonesState {
     var state = HeadphonesState()
     state.connected = true
-    state.deviceName = "WH-1000XM5"
+    state.deviceModel = .left(.wh1000Xm5)
     state.batteryLevel = 80
     state.codec = "LDAC"
     state.firmware = "2.0.0"
@@ -185,7 +185,7 @@ private func previewHeadphones() -> HeadphonesState {
 
 #Preview {
     var dual = previewHeadphones()
-    dual.deviceName = "WF-1000XM5"
+    dual.deviceModel = .left(.wh1000Xm5)
     dual.hasDualBattery = true
     dual.batteryLeft = 80
     dual.batteryRight = 75

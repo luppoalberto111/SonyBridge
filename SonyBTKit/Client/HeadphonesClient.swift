@@ -98,7 +98,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
         let bridge = bridge
         await MainActor.run { bridge.disconnect() }
         state.connected = false
-        state.deviceName = ""
+        state.deviceModel = nil
         return state
     }
 
@@ -118,7 +118,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
         let connected = await MainActor.run { bridge.connected }
         if state.connected, !connected {
             state.connected = false
-            state.deviceName = ""
+            state.deviceModel = nil
             state.errorMessage = "Headphones disconnected."
         }
         return state
