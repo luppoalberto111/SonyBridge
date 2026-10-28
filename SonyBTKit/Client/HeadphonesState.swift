@@ -1,7 +1,6 @@
 import Bridge
 import Either
 import Foundation
-import SwiftUI
 
 // MARK: - HeadphonesState
 
@@ -117,15 +116,18 @@ extension HeadphonesState {
     /// failed inquiry can't blank out a percentage the user is already looking at.
     ///
     /// - Parameter bridge: The bridge to read the battery properties from.
-    mutating func mergeBattery(from bridge: HeadphonesBridge) {
+    func updatedBattery(from bridge: HeadphonesBridge) -> Self {
         let level = bridge.batteryLevel
-        guard level >= 0 else { return }
-        batteryLevel = level
-        batteryCharging = bridge.batteryCharging
-        hasDualBattery = bridge.hasDualBattery
-        batteryLeft = bridge.batteryLeft
-        batteryRight = bridge.batteryRight
-        batteryCase = bridge.batteryCase
+        guard level >= 0 else { return self }
+        var updated = self
+        updated.batteryLevel = level
+        updated.batteryCharging = bridge.batteryCharging
+        updated.hasDualBattery = bridge.hasDualBattery
+        updated.batteryLeft = bridge.batteryLeft
+        updated.batteryRight = bridge.batteryRight
+        updated.batteryCase = bridge.batteryCase
+        
+        return updated
     }
 
     /// Refreshes everything the slow reads can change: battery, equalizer, DSEE and the optional features.
@@ -137,8 +139,7 @@ extension HeadphonesState {
     /// - Parameter bridge: The bridge whose properties to mirror.
     /// - Returns: A new snapshot with the refreshed values.
     func updated(with bridge: HeadphonesBridge) -> Self {
-        var updated = self
-        updated.mergeBattery(from: bridge)
+        var updated = self.updatedBattery(from: bridge)
         updated.eqPreset = bridge.eqPreset
         updated.clearBass = bridge.clearBass
         updated.dsee = bridge.dsee
@@ -183,55 +184,5 @@ extension HeadphonesState {
     /// The battery level/charging combination reduced to the icon the UI shows.
     public var batteryState: BatteryState {
         .init(rawValue: batteryLevel, isCharging: batteryCharging)
-    }
-}
-
-// MARK: - BatteryState
-
-/// The battery buckets the UI renders, derived from a percentage and a charging flag.
-public enum BatteryState: Hashable {
-    /// 15 % or less.
-    case empty
-    /// 16–50 %.
-    case half
-    /// More than 50 %.
-    case full
-    /// Plugged in / charging, whatever the percentage is.
-    case charging
-
-    /// Buckets a raw battery percentage into one of the displayable states.
-    ///
-    /// - Parameters:
-    ///   - rawValue: The percentage, 0...100; negative (unknown) buckets as `.full` since it never
-    ///               reaches a level read.
-    ///   - isCharging: When true the state is `.charging` regardless of `rawValue`.
-    init(rawValue: Int, isCharging: Bool) {
-        if isCharging {
-            self = .charging
-            return
-        }
-        self = switch rawValue {
-            case ...15:
-                .empty
-            case ...50:
-                .half
-            default:
-                .full
-        }
-    }
-
-    /// The SF Symbol name for this state, so the view can build an `Image` directly.
-    public var image: Image {
-        let systemName = switch self {
-            case .empty:
-                "battery.0"
-            case .half:
-                "battery.25"
-            case .full:
-                "battery.100"
-            case .charging:
-                "bolt.fill"
-        }
-        return Image(systemName: systemName)
     }
 }

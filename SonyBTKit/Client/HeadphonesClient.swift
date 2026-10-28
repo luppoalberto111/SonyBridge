@@ -25,7 +25,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
         let entries = await MainActor.run { bridge.pairedSonyDevices() }
         return entries.compactMap { entry in
             guard let name = entry["name"], let address = entry["address"] else { return nil }
-            return DiscoveredDevice(name: name, address: address)
+            return .init(name: name, address: address)
         }
     }
 
@@ -173,8 +173,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
         state.clearBass = bridge.clearBass
         state.dsee = bridge.dsee
         state.eqBands = (0 ..< 5).map { bridge.equalizerBand(at: $0) }
-        state.mergeBattery(from: bridge)
-        return state
+        return state.updatedBattery(from: bridge)
     }
 
     // MARK: Ambient sound control
