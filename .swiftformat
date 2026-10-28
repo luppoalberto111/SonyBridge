@@ -100,7 +100,7 @@ strongifiedSelf
 
 # Excluded folders
 
---exclude Pods,**/UNTESTED_TODO,vendor,fastlane,"**/Project.swift",Derived
+--exclude Pods,**/UNTESTED_TODO,vendor,fastlane,"**/Project.swift",Derived,build,.build,DerivedData,"**/SourcePackages/**"
 --exclude "**/DerivedSources/**"
 --exclude "**/Generated/**"
 --exclude "**/*AssetSymbols.swift"

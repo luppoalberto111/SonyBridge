@@ -1,5 +1,5 @@
 {
-  "originHash" : "d17cc91b0eed76b2295912aeec16448714761c5bdd55e213cb3dbe3b423d934f",
+  "originHash" : "01d10137330137b979e9904992d2a2e62c1d931a513805e1a7db3bbb58311a99",
   "pins" : [
     {
       "identity" : "combine-schedulers",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "b476cc5761057d8d857de063fe7ac8daecf5c06b",
         "version" : "1.17.1"
+      }
+    },
+    {
+      "identity" : "swift-either",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RougeWare/Swift-Either.git",
+      "state" : {
+        "revision" : "89bdbb865bde920c8cee7c998c5887869586e0c7",
+        "version" : "2.0.0"
       }
     },
     {

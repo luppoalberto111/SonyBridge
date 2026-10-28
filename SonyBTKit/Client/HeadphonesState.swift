@@ -1,5 +1,5 @@
-import AppKit
 import Bridge
+import Either
 import Foundation
 import SwiftUI
 
@@ -180,14 +180,17 @@ extension HeadphonesState {
         return updated
     }
 
-    /// Hero image matching the connected model, looked up in the asset catalog.
+    /// The connected model, resolved from the advertised Bluetooth name.
     ///
-    /// The device name is lowercased and space-dashed ("WH-1000XM5" -> "wh-1000xm5") to match the
-    /// `NSImage` names in the bundle.
+    /// A recognised model is the first case; renamed or unsupported headsets keep their raw
+    /// name in the second case.
+    public var deviceModel: Either<DeviceModel, String> {
+        .init(deviceName: deviceName)
+    }
+
+    /// Hero image matching the connected model, or `nil` when the model is unrecognised.
     public var deviceImage: Image? {
-        let name = deviceName.lowercased().replacingOccurrences(of: " ", with: "-")
-        guard NSImage(named: name) != nil else { return nil }
-        return Image(name)
+        deviceModel.image
     }
 
     /// The battery level/charging combination reduced to the icon the UI shows.

@@ -29,6 +29,7 @@
 		AA0000000000000000000113 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000303 /* SnapshotTesting */; };
 		AA0000000000000000000115 /* LaunchAtLoginFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000215 /* LaunchAtLoginFeatureTests.swift */; };
 		AA0000000000000000000116 /* DseeReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000213 /* DseeReducerTests.swift */; };
+		AA0000000000000000000117 /* DeviceModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000216 /* DeviceModelTests.swift */; };
 		CC0000000000000000000004 /* MainScreenFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000005 /* MainScreenFeature.swift */; };
 		CC000000000000000000000A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC0000000000000000000009 /* AppDelegate.swift */; };
 		CC0000000000000000000010 /* SonyHeadphonesClientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000000000000000000000F /* SonyHeadphonesClientApp.swift */; };
@@ -109,6 +110,7 @@
 		AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewSnapshotTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000213 /* DseeReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DseeReducerTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000215 /* LaunchAtLoginFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginFeatureTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000216 /* DeviceModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModelTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000401 /* SonyHeadphonesClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000000000000000000402 /* SonyHeadphonesClientSnapshotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SonyHeadphonesClientSnapshotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB0000000000000000000001 /* RecordSnapshots.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text.json.xctestplan; path = RecordSnapshots.xctestplan; sourceTree = "<group>"; };
@@ -246,6 +248,7 @@
 				AA000000000000000000020A /* EqPresetTests.swift */,
 				AA0000000000000000000213 /* DseeReducerTests.swift */,
 				AA0000000000000000000215 /* LaunchAtLoginFeatureTests.swift */,
+				AA0000000000000000000216 /* DeviceModelTests.swift */,
 			);
 			path = SonyHeadphonesClientTests;
 			sourceTree = "<group>";
@@ -584,6 +587,7 @@
 				AA000000000000000000010A /* EqPresetTests.swift in Sources */,
 				AA0000000000000000000116 /* DseeReducerTests.swift in Sources */,
 				AA0000000000000000000115 /* LaunchAtLoginFeatureTests.swift in Sources */,
+				AA0000000000000000000117 /* DeviceModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

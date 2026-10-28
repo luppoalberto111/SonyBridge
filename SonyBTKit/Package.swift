@@ -9,6 +9,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-dependencies.git", exact: "1.17.1"),
+        .package(url: "https://github.com/RougeWare/Swift-Either.git", from: "2.0.0"),
     ],
     targets: [
         // Cross-platform C++ core (protocol, transport framing, models).
@@ -29,8 +30,12 @@ let package = Package(
                 "Bridge",
                 .product(name: "Dependencies", package: "swift-dependencies"),
                 .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                .product(name: "Either", package: "Swift-Either"),
             ],
-            path: "Client"
+            path: "Client",
+            resources: [
+                .process("Assets.xcassets"),
+            ]
         ),
     ],
     cxxLanguageStandard: .cxx17
