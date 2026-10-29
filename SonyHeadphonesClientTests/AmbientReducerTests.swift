@@ -10,7 +10,7 @@ import Testing
         }
 
         await store.send(.setMode(.noiseCanceling)) {
-            $0.mode = .noiseCanceling
+            $0.headphones.mode = .noiseCanceling
         }
         await store.receive(\.delegate)
     }
@@ -21,7 +21,7 @@ import Testing
         }
 
         await store.send(.setLevel(17)) {
-            $0.ambientLevel = 17
+            $0.headphones.ambientLevel = 17
         }
         await store.receive(\.delegate)
     }
@@ -32,12 +32,12 @@ import Testing
         }
 
         await store.send(.setFocusOnVoice(true)) {
-            $0.focusOnVoice = true
+            $0.headphones.focusOnVoice = true
         }
         await store.receive(\.delegate)
     }
 
-    @Test func syncCopiesEveryAmbientFieldFromHeadphones() {
+    @Test func initCopiesEveryAmbientFieldFromHeadphones() {
         var headphones = HeadphonesState()
         headphones.mode = .ambientSound
         headphones.ambientLevel = 14
@@ -45,13 +45,12 @@ import Testing
         headphones.focusOnVoice = true
         headphones.focusOnVoiceAvailable = true
 
-        var state = AmbientReducer.State()
-        state.sync(from: headphones)
+        let state = AmbientReducer.State(headphones: headphones)
 
-        #expect(state.mode == .ambientSound)
-        #expect(state.ambientLevel == 14)
-        #expect(state.maxAmbientLevel == 18)
-        #expect(state.focusOnVoice)
-        #expect(state.focusOnVoiceAvailable)
+        #expect(state.headphones.mode == .ambientSound)
+        #expect(state.headphones.ambientLevel == 14)
+        #expect(state.headphones.maxAmbientLevel == 18)
+        #expect(state.headphones.focusOnVoice)
+        #expect(state.headphones.focusOnVoiceAvailable)
     }
 }

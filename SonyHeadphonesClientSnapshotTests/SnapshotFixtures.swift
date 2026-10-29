@@ -62,7 +62,7 @@ enum SnapshotFixtures {
     static func singleBatteryHeadphones() -> HeadphonesState {
         var state = HeadphonesState()
         state.connected = true
-        state.deviceName = "WH-1000XM5"
+        state.deviceModel = .left(.wh1000Xm5)
         state.batteryLevel = 80
         state.codec = "LDAC"
         state.firmware = "2.0.0"
@@ -81,7 +81,7 @@ enum SnapshotFixtures {
     static func dualBatteryHeadphones() -> HeadphonesState {
         var state = HeadphonesState()
         state.connected = true
-        state.deviceName = "WF-1000XM5"
+        state.deviceModel = .left(.wf1000Xm5)
         state.hasDualBattery = true
         state.batteryLeft = 80
         state.batteryRight = 75
@@ -128,11 +128,13 @@ enum SnapshotFixtures {
     ) -> StoreOf<AmbientReducer> {
         Store(
             initialState: AmbientReducer.State(
-                mode: mode,
-                ambientLevel: 10,
-                maxAmbientLevel: 20,
-                focusOnVoice: false,
-                focusOnVoiceAvailable: focusOnVoiceAvailable
+                headphones: .init(
+                    maxAmbientLevel: 20,
+                    mode: mode,
+                    ambientLevel: 10,
+                    focusOnVoice: false,
+                    focusOnVoiceAvailable: focusOnVoiceAvailable
+                )
             )
         ) {
             AmbientReducer()
@@ -142,9 +144,11 @@ enum SnapshotFixtures {
     static func equalizerStore(preset: EqPreset) -> StoreOf<EqualizerReducer> {
         Store(
             initialState: EqualizerReducer.State(
-                eqPreset: preset.rawValue,
-                eqBands: [2, -1, 0, 3, -2],
-                clearBass: 5
+                headphones: .init(
+                    eqPreset: preset.rawValue,
+                    eqBands: [2, -1, 0, 3, -2],
+                    clearBass: 5
+                )
             )
         ) {
             EqualizerReducer()
@@ -154,12 +158,14 @@ enum SnapshotFixtures {
     static func settingsStore() -> StoreOf<SettingsReducer> {
         Store(
             initialState: SettingsReducer.State(
-                hasAdaptiveVolume: true,
-                adaptiveVolume: true,
-                hasSpeakToChat: true,
-                speakToChat: false,
-                hasAutoPowerOff: true,
-                autoPowerOff: .thirtyMinutes
+                headphones: .init(
+                    hasAutoPowerOff: true,
+                    autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue,
+                    hasSpeakToChat: true,
+                    speakToChat: false,
+                    hasAdaptiveVolume: true,
+                    adaptiveVolume: true
+                )
             )
         ) {
             SettingsReducer()
@@ -180,7 +186,7 @@ enum SnapshotFixtures {
         Store(
             initialState: ConnectedReducer.State(
                 headphones: headphones,
-                deviceHero: DeviceHeroReducer.State(headphones: headphones)
+                showAbout: false
             )
         ) {
             ConnectedReducer()

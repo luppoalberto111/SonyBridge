@@ -24,7 +24,7 @@ import SwiftUI
         Reduce { state, action in
             switch action {
                 case let .disconnected(.delegate(.didConnect(snap))):
-                    state = .connected(ConnectedReducer.State(headphones: snap))
+                    state = .connected(ConnectedReducer.State(headphones: snap, showAbout: false))
                     return .none
 
                 case .connected(.delegate(.didDisconnect)):

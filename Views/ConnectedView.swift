@@ -9,11 +9,23 @@ import SwiftUI
 @Reducer struct ConnectedReducer {
     @ObservableState struct State: Equatable {
         var headphones: HeadphonesState
-        var deviceHero = DeviceHeroReducer.State()
-        var ambient = AmbientReducer.State()
-        var equalizer = EqualizerReducer.State()
-        var dsee = DseeReducer.State()
-        var settings = SettingsReducer.State()
+        var deviceHero: DeviceHeroReducer.State
+        var ambient: AmbientReducer.State
+        var equalizer: EqualizerReducer.State
+        var dsee: DseeReducer.State
+        var settings: SettingsReducer.State
+
+        init(
+            headphones: HeadphonesState,
+            showAbout: Bool
+        ) {
+            self.headphones = headphones
+            self.deviceHero = .init(headphones: headphones, showAbout: showAbout)
+            self.ambient = .init(headphones: headphones)
+            self.equalizer = .init(headphones: headphones)
+            self.dsee = .init(headphones: headphones)
+            self.settings = .init(headphones: headphones)
+        }
     }
 
     enum Action {
@@ -115,12 +127,7 @@ import SwiftUI
                     }
 
                 case let .snapshotReceived(snap):
-                    state.headphones = snap
-                    state.deviceHero.headphones = snap
-                    state.ambient.sync(from: snap)
-                    state.equalizer.sync(from: snap)
-                    state.dsee.sync(from: snap)
-                    state.settings.sync(from: snap)
+                    state = .init(headphones: snap, showAbout: state.deviceHero.showAbout)
                     return .none
 
                 case .disconnectButtonTapped:
@@ -203,12 +210,7 @@ import SwiftUI
                     }
 
                 case let .dynamicTickResponse(snap):
-                    state.headphones = snap
-                    state.deviceHero.headphones = snap
-                    state.ambient.sync(from: snap)
-                    state.equalizer.sync(from: snap)
-                    state.dsee.sync(from: snap)
-                    state.settings.sync(from: snap)
+                    state = .init(headphones: snap, showAbout: state.deviceHero.showAbout)
                     return .none
 
                 case .watchTick:
@@ -217,12 +219,7 @@ import SwiftUI
                     }
 
                 case let .watchTickResponse(snap):
-                    state.headphones = snap
-                    state.deviceHero.headphones = snap
-                    state.ambient.sync(from: snap)
-                    state.equalizer.sync(from: snap)
-                    state.dsee.sync(from: snap)
-                    state.settings.sync(from: snap)
+                    state = .init(headphones: snap, showAbout: state.deviceHero.showAbout)
                     if snap.connected {
                         return .none
                     }
@@ -360,20 +357,17 @@ private func previewState() -> HeadphonesState {
 #Preview {
     ConnectedView(
         store: Store(
-            initialState: ConnectedReducer.State(
-                headphones: previewState(),
-                deviceHero: DeviceHeroReducer.State(headphones: previewState())
-            )
-        ) {
-            ConnectedReducer()
-        }
+            initialState: .init(headphones: previewState(), showAbout: false),
+            reducer: ConnectedReducer.init
+        )
     )
 }
 
 #Preview {
     ConnectedView(
-        store: Store(initialState: ConnectedReducer.State(headphones: HeadphonesState())) {
-            ConnectedReducer()
-        }
+        store: Store(
+            initialState: .init(headphones: .init(), showAbout: false),
+            reducer: ConnectedReducer.init
+        )
     )
 }

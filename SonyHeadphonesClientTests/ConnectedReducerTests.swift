@@ -8,7 +8,7 @@ import Testing
     private func connectedState() -> HeadphonesState {
         var state = HeadphonesState()
         state.connected = true
-        state.deviceName = "WH-1000XM5"
+        state.deviceModel = .left(.wh1000Xm5)
         state.supportsEqualizer = true
         return state
     }
@@ -23,27 +23,21 @@ import Testing
         snapshot.adaptiveVolume = true
 
         let store = TestStore(
-            initialState: ConnectedReducer.State(headphones: connectedState())
+            initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)
         ) {
             ConnectedReducer()
         }
 
         await store.send(.snapshotReceived(snapshot)) {
-            $0.headphones = snapshot
-            $0.deviceHero.headphones = snapshot
-            $0.ambient.mode = .ambientSound
-            $0.ambient.ambientLevel = 12
-            $0.equalizer.eqPreset = EqPreset.bass.rawValue
-            $0.dsee.dsee = true
-            $0.settings.hasAdaptiveVolume = true
-            $0.settings.adaptiveVolume = true
+            let showAbout = $0.deviceHero.showAbout
+            $0 = .init(headphones: snapshot, showAbout: showAbout)
         }
     }
 
     @Test func setModeForwardsToClientAndAppliesSnapshot() async {
         let client = HeadphonesTestClient(state: connectedState())
         let store = TestStore(
-            initialState: ConnectedReducer.State(headphones: connectedState())
+            initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)
         ) {
             ConnectedReducer()
         } withDependencies: {
@@ -55,15 +49,14 @@ import Testing
             $0.headphones.errorMessage = nil
         }
         await store.receive(\.snapshotReceived) {
-            $0.headphones.mode = .noiseCanceling
-            $0.deviceHero.headphones = $0.headphones
-            $0.ambient.mode = .noiseCanceling
+            let showAbout = $0.deviceHero.showAbout
+            $0 = .init(headphones: $0.headphones, showAbout: showAbout)
         }
     }
 
     @Test func setBandIgnoresOutOfRangeIndex() async {
         let store = TestStore(
-            initialState: ConnectedReducer.State(headphones: connectedState())
+            initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)
         ) {
             ConnectedReducer()
         }
@@ -74,7 +67,7 @@ import Testing
     @Test func setBandSendsCustomEqualizerToClient() async {
         let client = HeadphonesTestClient(state: connectedState())
         let store = TestStore(
-            initialState: ConnectedReducer.State(headphones: connectedState())
+            initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)
         ) {
             ConnectedReducer()
         } withDependencies: {
@@ -87,18 +80,15 @@ import Testing
             $0.headphones.errorMessage = nil
         }
         await store.receive(\.snapshotReceived) {
-            $0.headphones.eqBands[0] = 5
-            $0.headphones.eqPreset = EqPreset.manual.rawValue
-            $0.deviceHero.headphones = $0.headphones
-            $0.equalizer.eqBands[0] = 5
-            $0.equalizer.eqPreset = EqPreset.manual.rawValue
+            let showAbout = $0.deviceHero.showAbout
+            $0 = .init(headphones: $0.headphones, showAbout: showAbout)
         }
     }
 
     @Test func disconnectButtonTappedDelegatesDidDisconnect() async {
         let client = HeadphonesTestClient(state: connectedState())
         let store = TestStore(
-            initialState: ConnectedReducer.State(headphones: connectedState())
+            initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)
         ) {
             ConnectedReducer()
         } withDependencies: {
@@ -112,7 +102,7 @@ import Testing
     @Test func watchTickReportsDisconnectWhenHeadphonesDropOff() async {
         let client = HeadphonesTestClient(state: HeadphonesState())
         let store = TestStore(
-            initialState: ConnectedReducer.State(headphones: connectedState())
+            initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)
         ) {
             ConnectedReducer()
         } withDependencies: {
@@ -121,12 +111,7 @@ import Testing
 
         await store.send(.watchTick)
         await store.receive(\.watchTickResponse) {
-            $0.headphones = HeadphonesState()
-            $0.deviceHero.headphones = HeadphonesState()
-            $0.ambient = AmbientReducer.State()
-            $0.equalizer = EqualizerReducer.State()
-            $0.dsee = DseeReducer.State()
-            $0.settings = SettingsReducer.State()
+            $0 = ConnectedReducer.State(headphones: HeadphonesState(), showAbout: false)
         }
         await store.receive(\.delegate)
     }

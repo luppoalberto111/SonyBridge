@@ -6,7 +6,7 @@ struct HeadphonesStateViewModelTests {
     @Test func deviceHeroModelCarriesIdentityBatteryAndCodec() {
         var state = HeadphonesState()
         state.connected = true
-        state.deviceName = "WH-1000XM5"
+        state.deviceModel = .left(.wh1000Xm5)
         state.batteryLevel = 80
         state.codec = "LDAC"
         state.firmware = "2.0.0"

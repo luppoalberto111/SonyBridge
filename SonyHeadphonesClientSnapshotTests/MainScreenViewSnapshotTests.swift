@@ -31,7 +31,8 @@ import Testing
                     store: SnapshotFixtures.mainScreenStore(
                         state: .connected(
                             ConnectedReducer.State(
-                                headphones: SnapshotFixtures.singleBatteryHeadphones()
+                                headphones: SnapshotFixtures.singleBatteryHeadphones(),
+                                showAbout: false
                             )
                         )
                     )

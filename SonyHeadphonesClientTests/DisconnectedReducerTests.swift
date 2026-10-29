@@ -11,7 +11,7 @@ import Testing
     @Test func autoConnectSuccessDelegatesDidConnect() async {
         var connected = HeadphonesState()
         connected.connected = true
-        connected.deviceName = "WH-1000XM5"
+        connected.deviceModel = .left(.wh1000Xm5)
 
         let store = TestStore(initialState: DisconnectedReducer.State()) {
             DisconnectedReducer()

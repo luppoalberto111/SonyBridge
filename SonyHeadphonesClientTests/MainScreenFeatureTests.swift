@@ -7,7 +7,7 @@ import Testing
     @Test func didConnectSwapsToConnectedScreen() async {
         var snapshot = HeadphonesState()
         snapshot.connected = true
-        snapshot.deviceName = "WH-1000XM5"
+        snapshot.deviceModel = .left(.wh1000Xm5)
 
         let store = TestStore(
             initialState: MainScreenFeature.State.disconnected(DisconnectedReducer.State())
@@ -16,7 +16,7 @@ import Testing
         }
 
         await store.send(.disconnected(.delegate(.didConnect(snapshot)))) {
-            $0 = .connected(ConnectedReducer.State(headphones: snapshot))
+            $0 = .connected(ConnectedReducer.State(headphones: snapshot, showAbout: false))
         }
     }
 
@@ -26,7 +26,7 @@ import Testing
 
         let store = TestStore(
             initialState: MainScreenFeature.State.connected(
-                ConnectedReducer.State(headphones: snapshot)
+                ConnectedReducer.State(headphones: snapshot, showAbout: false)
             )
         ) {
             MainScreenFeature()

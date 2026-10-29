@@ -7,18 +7,18 @@ import SwiftUI
 
 @Reducer struct AmbientReducer {
     @ObservableState struct State: Equatable {
-        var mode: SHCAmbientMode = .off
-        var ambientLevel = 10
-        var maxAmbientLevel = 20
-        var focusOnVoice = false
-        var focusOnVoiceAvailable = false
+        var headphones: HeadphonesState
 
-        mutating func sync(from headphones: HeadphonesState) {
-            mode = headphones.mode
-            ambientLevel = headphones.ambientLevel
-            maxAmbientLevel = headphones.maxAmbientLevel
-            focusOnVoice = headphones.focusOnVoice
-            focusOnVoiceAvailable = headphones.focusOnVoiceAvailable
+        init(
+            headphones: HeadphonesState = .init(
+                maxAmbientLevel: 20,
+                mode: .off,
+                ambientLevel: 10,
+                focusOnVoice: false,
+                focusOnVoiceAvailable: false
+            )
+        ) {
+            self.headphones = headphones
         }
     }
 
@@ -39,15 +39,15 @@ import SwiftUI
         Reduce { state, action in
             switch action {
                 case let .setMode(mode):
-                    state.mode = mode
+                    state.headphones.mode = mode
                     return .send(.delegate(.setMode(mode)))
 
                 case let .setLevel(level):
-                    state.ambientLevel = level
+                    state.headphones.ambientLevel = level
                     return .send(.delegate(.setLevel(level)))
 
                 case let .setFocusOnVoice(on):
-                    state.focusOnVoice = on
+                    state.headphones.focusOnVoice = on
                     return .send(.delegate(.setFocusOnVoice(on)))
 
                 case .delegate:
@@ -65,7 +65,7 @@ struct AmbientView: View {
     var body: some View {
         VStack(spacing: 16) {
             modeCard
-            if store.mode == .ambientSound {
+            if store.headphones.mode == .ambientSound {
                 levelCard
             }
         }
@@ -79,15 +79,15 @@ struct AmbientView: View {
             HStack(spacing: 0) {
                 ModeButton(
                     mode: .noiseCanceling,
-                    isSelected: store.mode == .noiseCanceling
+                    isSelected: store.headphones.mode == .noiseCanceling
                 ) { store.send(.setMode($0)) }
                 ModeButton(
                     mode: .ambientSound,
-                    isSelected: store.mode == .ambientSound
+                    isSelected: store.headphones.mode == .ambientSound
                 ) { store.send(.setMode($0)) }
                 ModeButton(
                     mode: .off,
-                    isSelected: store.mode == .off
+                    isSelected: store.headphones.mode == .off
                 ) { store.send(.setMode($0)) }
             }
         }
@@ -104,22 +104,22 @@ struct AmbientView: View {
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(Color(.foregroundSecondary))
                 Spacer()
-                Text("\(store.ambientLevel)")
+                Text("\(store.headphones.ambientLevel)")
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                     .foregroundColor(Color(.highlight))
             }
             Slider(
                 value: Binding(
-                    get: { Double(store.ambientLevel) },
+                    get: { Double(store.headphones.ambientLevel) },
                     set: { store.send(.setLevel(Int($0.rounded()))) }
                 ),
-                in: 1 ... Double(store.maxAmbientLevel),
+                in: 1 ... Double(store.headphones.maxAmbientLevel),
                 step: 1
             )
             .accentColor(Color(.highlight))
 
             Toggle(isOn: Binding(
-                get: { store.focusOnVoice },
+                get: { store.headphones.focusOnVoice },
                 set: { store.send(.setFocusOnVoice($0)) }
             )) {
                 Text("AmbientView.levelCard.focusOnVoice")
@@ -138,12 +138,14 @@ struct AmbientView: View {
 #Preview {
     AmbientView(
         store: Store(
-            initialState: AmbientReducer.State(
-                mode: .ambientSound,
-                ambientLevel: 10,
-                maxAmbientLevel: 20,
-                focusOnVoice: false,
-                focusOnVoiceAvailable: true
+            initialState: .init(
+                headphones: .init(
+                    maxAmbientLevel: 20,
+                    mode: .ambientSound,
+                    ambientLevel: 10,
+                    focusOnVoice: false,
+                    focusOnVoiceAvailable: true
+                )
             )
         ) {
             AmbientReducer()
@@ -154,12 +156,14 @@ struct AmbientView: View {
 #Preview {
     AmbientView(
         store: Store(
-            initialState: AmbientReducer.State(
-                mode: .noiseCanceling,
-                ambientLevel: 10,
-                maxAmbientLevel: 20,
-                focusOnVoice: false,
-                focusOnVoiceAvailable: false
+            initialState: .init(
+                headphones: .init(
+                    maxAmbientLevel: 20,
+                    mode: .noiseCanceling,
+                    ambientLevel: 10,
+                    focusOnVoice: false,
+                    focusOnVoiceAvailable: false
+                )
             )
         ) {
             AmbientReducer()

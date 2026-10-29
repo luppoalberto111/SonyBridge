@@ -6,11 +6,15 @@ import SwiftUI
 
 @Reducer struct DseeReducer {
     @ObservableState struct State: Equatable {
-        var dsee = false
+        var headphones: HeadphonesState
 
-        mutating func sync(from headphones: HeadphonesState) {
-            dsee = headphones.dsee
-        }
+//        init(dsee: Bool = false) {
+//            self.dsee = dsee
+//        }
+
+//        init(headphones: HeadphonesState) {
+//            self.init(dsee: headphones.dsee)
+//        }
     }
 
     enum Action {
@@ -26,7 +30,7 @@ import SwiftUI
         Reduce { state, action in
             switch action {
                 case let .setDsee(on):
-                    state.dsee = on
+                    state.headphones.dsee = on
                     return .send(.delegate(.setDsee(on)))
 
                 case .delegate:
@@ -43,7 +47,7 @@ struct DseeView: View {
 
     var body: some View {
         Toggle(isOn: Binding(
-            get: { store.dsee },
+            get: { store.headphones.dsee },
             set: { store.send(.setDsee($0)) }
         )) {
             VStack(alignment: .leading, spacing: 2) {
@@ -63,16 +67,12 @@ struct DseeView: View {
 
 #Preview {
     DseeView(
-        store: Store(initialState: DseeReducer.State(dsee: true)) {
-            DseeReducer()
-        }
+        store: Store(initialState: .init(headphones: .init(dsee: true)), reducer: DseeReducer.init)
     )
 }
 
 #Preview {
     DseeView(
-        store: Store(initialState: DseeReducer.State(dsee: false)) {
-            DseeReducer()
-        }
+        store: Store(initialState: .init(headphones: .init(dsee: false)), reducer: DseeReducer.init)
     )
 }

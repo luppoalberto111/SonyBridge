@@ -5,39 +5,39 @@ import Testing
 
 @MainActor struct SettingsReducerTests {
     @Test func setAdaptiveVolumeUpdatesStateAndDelegates() async {
-        let store = TestStore(initialState: SettingsReducer.State()) {
+        let store = TestStore(initialState: SettingsReducer.State(headphones: HeadphonesState())) {
             SettingsReducer()
         }
 
         await store.send(.setAdaptiveVolume(true)) {
-            $0.adaptiveVolume = true
+            $0.headphones.adaptiveVolume = true
         }
         await store.receive(\.delegate)
     }
 
     @Test func setSpeakToChatUpdatesStateAndDelegates() async {
-        let store = TestStore(initialState: SettingsReducer.State()) {
+        let store = TestStore(initialState: SettingsReducer.State(headphones: HeadphonesState())) {
             SettingsReducer()
         }
 
         await store.send(.setSpeakToChat(true)) {
-            $0.speakToChat = true
+            $0.headphones.speakToChat = true
         }
         await store.receive(\.delegate)
     }
 
     @Test func setAutoPowerOffUpdatesStateAndDelegates() async {
-        let store = TestStore(initialState: SettingsReducer.State()) {
+        let store = TestStore(initialState: SettingsReducer.State(headphones: HeadphonesState())) {
             SettingsReducer()
         }
 
         await store.send(.setAutoPowerOff(.thirtyMinutes)) {
-            $0.autoPowerOff = .thirtyMinutes
+            $0.headphones.autoPowerOff = AutoPowerOffOption.thirtyMinutes.rawValue
         }
         await store.receive(\.delegate)
     }
 
-    @Test func syncCopiesCapabilitiesAndFallsBackToOffForUnknownRawValue() {
+    @Test func initCopiesCapabilitiesFromHeadphones() {
         var headphones = HeadphonesState()
         headphones.hasAdaptiveVolume = true
         headphones.adaptiveVolume = true
@@ -46,14 +46,13 @@ import Testing
         headphones.hasAutoPowerOff = true
         headphones.autoPowerOff = 99
 
-        var state = SettingsReducer.State()
-        state.sync(from: headphones)
+        let state = SettingsReducer.State(headphones: headphones)
 
-        #expect(state.hasAdaptiveVolume)
-        #expect(state.adaptiveVolume)
-        #expect(state.hasSpeakToChat)
-        #expect(state.speakToChat)
-        #expect(state.hasAutoPowerOff)
-        #expect(state.autoPowerOff == .off)
+        #expect(state.headphones.hasAdaptiveVolume)
+        #expect(state.headphones.adaptiveVolume)
+        #expect(state.headphones.hasSpeakToChat)
+        #expect(state.headphones.speakToChat)
+        #expect(state.headphones.hasAutoPowerOff)
+        #expect(state.headphones.autoPowerOff == 99)
     }
 }

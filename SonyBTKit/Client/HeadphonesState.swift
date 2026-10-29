@@ -7,102 +7,165 @@ import Foundation
 /// Everything SwiftUI renders. A value type so it can hop between the actor
 /// and the MainActor store without data races.
 public struct HeadphonesState: Sendable, Equatable {
-    /// Creates an empty, disconnected snapshot (all defaults).
-    public init() {}
-
     /// True once a connection to a headset is established.
-    public var connected = false
+    public var connected: Bool
 
     /// True while a connection attempt is in flight (drives the "Connecting…" UI).
-    public var connecting = false
+    public var connecting: Bool
 
     /// The connected model, resolved from the advertised Bluetooth name.
     public var deviceModel: Either<DeviceModel, String>?
 
     /// Whether the v1-only surround/virtual-position commands are usable (v1 devices only).
-    public var supportsVpt = false
+    public var supportsVpt: Bool
 
     /// The maximum ambient level the slider should offer: 19 on v1, 20 on v2 devices.
-    public var maxAmbientLevel = 20
+    public var maxAmbientLevel: Int
 
     /// The current noise-control mode (off / noise cancelling / ambient sound).
-    public var mode: SHCAmbientMode = .off
+    public var mode: SHCAmbientMode
 
     /// The ambient-sound level, 1...`maxAmbientLevel`; 0 means ambient sound is off.
-    public var ambientLevel = 10
+    public var ambientLevel: Int
 
     /// Whether focus on voice (ambient sound emphasises voices) is on.
-    public var focusOnVoice = false
+    public var focusOnVoice: Bool
 
     /// Whether focus on voice is offered at the current level (ambient on, level above 2).
-    public var focusOnVoiceAvailable = false
+    public var focusOnVoiceAvailable: Bool
 
     /// Overall battery percentage, or -1 while still unknown.
-    public var batteryLevel = -1
+    public var batteryLevel: Int
 
     /// Whether the device reported itself as charging.
-    public var batteryCharging = false
+    public var batteryCharging: Bool
 
     /// True for TWS earbuds, which also report per-earbud and case levels.
-    public var hasDualBattery = false
+    public var hasDualBattery: Bool
 
     /// Left earbud percentage, or -1 if not applicable/unknown.
-    public var batteryLeft = -1
+    public var batteryLeft: Int
 
     /// Right earbud percentage, or -1 if not applicable/unknown.
-    public var batteryRight = -1
+    public var batteryRight: Int
 
     /// Charging-case percentage, or -1 if not applicable/unknown.
-    public var batteryCase = -1
+    public var batteryCase: Int
 
     /// The raw equalizer preset byte (`EQ_PRESET`, e.g. 0x00 Off, 0xA0 Manual).
-    public var eqPreset = 0
+    public var eqPreset: Int
 
     /// Whether the device exposes the equalizer (v2 protocol only).
-    public var supportsEqualizer = false
+    public var supportsEqualizer: Bool
 
     /// The 5 equalizer band gains in -10...10, ordered low to high frequency.
-    public var eqBands = [0, 0, 0, 0, 0]
+    public var eqBands: [Int]
 
     /// Clear-bass boost in -10...10.
-    public var clearBass = 0
+    public var clearBass: Int
 
     /// Whether DSEE (audio upsampling) is enabled.
-    public var dsee = false
+    public var dsee: Bool
 
     /// Whether the auto-power-off probe succeeded; if false, the setting must not be shown.
-    public var hasAutoPowerOff = false
+    public var hasAutoPowerOff: Bool
 
     /// Auto-power-off delay: 0=Off, 1=5 min, 2=30 min, 3=1 hour, 4=3 hours, 5=when taken off.
-    public var autoPowerOff = 0
+    public var autoPowerOff: Int
 
     /// The firmware version string, empty when unknown.
-    public var firmware = ""
+    public var firmware: String
 
     /// The active Bluetooth codec ("SBC", "AAC", "LDAC", "aptX", "aptX HD"), empty when unknown.
-    public var codec = ""
+    public var codec: String
 
     /// Whether the speak-to-chat probe succeeded; if false, the toggle must not be shown.
-    public var hasSpeakToChat = false
+    public var hasSpeakToChat: Bool
 
     /// Whether speak-to-chat is enabled on the device.
-    public var speakToChat = false
+    public var speakToChat: Bool
 
     /// Whether the adaptive-volume probe succeeded; if false, the toggle must not be shown.
-    public var hasAdaptiveVolume = false
+    public var hasAdaptiveVolume: Bool
 
     /// Whether adaptive volume is enabled on the device.
-    public var adaptiveVolume = false
+    public var adaptiveVolume: Bool
 
     /// The headset's MAC address, empty when not connected.
-    public var deviceMac = ""
+    public var deviceMac: String
 
     /// Which Sony protocol generation the headset speaks: "v1", "v2", or empty when not connected.
-    public var protocolVersion = ""
+    public var protocolVersion: String
 
     /// The last user-facing error message, or nil when the most recent operation succeeded.
     /// Rendered under the controls by `ConnectedView`.
     public var errorMessage: String?
+
+    public init(
+        connected: Bool = false,
+        connecting: Bool = false,
+        deviceModel: Either<DeviceModel, String>? = nil,
+        supportsVpt: Bool = false,
+        maxAmbientLevel: Int = 20,
+        mode: SHCAmbientMode = .off,
+        ambientLevel: Int = 10,
+        focusOnVoice: Bool = false,
+        focusOnVoiceAvailable: Bool = false,
+        batteryLevel: Int = -1,
+        batteryCharging: Bool = false,
+        hasDualBattery: Bool = false,
+        batteryLeft: Int = -1,
+        batteryRight: Int = -1,
+        batteryCase: Int = -1,
+        eqPreset: Int = 0,
+        supportsEqualizer: Bool = false,
+        eqBands: [Int] = [0, 0, 0, 0, 0],
+        clearBass: Int = 0,
+        dsee: Bool = false,
+        hasAutoPowerOff: Bool = false,
+        autoPowerOff: Int = 0,
+        firmware: String = "",
+        codec: String = "",
+        hasSpeakToChat: Bool = false,
+        speakToChat: Bool = false,
+        hasAdaptiveVolume: Bool = false,
+        adaptiveVolume: Bool = false,
+        deviceMac: String = "",
+        protocolVersion: String = "",
+        errorMessage: String? = nil
+    ) {
+        self.connected = connected
+        self.connecting = connecting
+        self.deviceModel = deviceModel
+        self.supportsVpt = supportsVpt
+        self.maxAmbientLevel = maxAmbientLevel
+        self.mode = mode
+        self.ambientLevel = ambientLevel
+        self.focusOnVoice = focusOnVoice
+        self.focusOnVoiceAvailable = focusOnVoiceAvailable
+        self.batteryLevel = batteryLevel
+        self.batteryCharging = batteryCharging
+        self.hasDualBattery = hasDualBattery
+        self.batteryLeft = batteryLeft
+        self.batteryRight = batteryRight
+        self.batteryCase = batteryCase
+        self.eqPreset = eqPreset
+        self.supportsEqualizer = supportsEqualizer
+        self.eqBands = eqBands
+        self.clearBass = clearBass
+        self.dsee = dsee
+        self.hasAutoPowerOff = hasAutoPowerOff
+        self.autoPowerOff = autoPowerOff
+        self.firmware = firmware
+        self.codec = codec
+        self.hasSpeakToChat = hasSpeakToChat
+        self.speakToChat = speakToChat
+        self.hasAdaptiveVolume = hasAdaptiveVolume
+        self.adaptiveVolume = adaptiveVolume
+        self.deviceMac = deviceMac
+        self.protocolVersion = protocolVersion
+        self.errorMessage = errorMessage
+    }
 }
 
 extension HeadphonesState {
@@ -126,7 +189,7 @@ extension HeadphonesState {
         updated.batteryLeft = bridge.batteryLeft
         updated.batteryRight = bridge.batteryRight
         updated.batteryCase = bridge.batteryCase
-        
+
         return updated
     }
 
@@ -139,7 +202,7 @@ extension HeadphonesState {
     /// - Parameter bridge: The bridge whose properties to mirror.
     /// - Returns: A new snapshot with the refreshed values.
     func updated(with bridge: HeadphonesBridge) -> Self {
-        var updated = self.updatedBattery(from: bridge)
+        var updated = updatedBattery(from: bridge)
         updated.eqPreset = bridge.eqPreset
         updated.clearBass = bridge.clearBass
         updated.dsee = bridge.dsee

@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import Foundation
 import SwiftUI
 
 @main struct SonyHeadphonesClientApp: App {
@@ -8,17 +9,29 @@ import SwiftUI
         AppFeature()
     }
 
+    /// Xcode's preview host launches the app entry point. The one-time
+    /// launch-at-login prompt cannot be presented in that host and crashes AppKit.
+    private var isRunningInPreview: Bool {
+        let environment = ProcessInfo.processInfo.environment
+        return environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+            || environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"
+    }
+
     var body: some Scene {
         WindowGroup {
             MainScreenView(store: store.scope(state: \.mainScreen, action: \.mainScreen))
-                .task { store.send(.launchAtLogin(.task)) }
+                .task {
+                    if !isRunningInPreview {
+                        store.send(.launchAtLogin(.task))
+                    }
+                }
                 .alert(
                     String(
                         localized: "LaunchAtLoginAlert.title",
                         defaultValue: "Launch at login?"
                     ),
                     isPresented: Binding(
-                        get: { store.launchAtLogin.promptVisible },
+                        get: { !isRunningInPreview && store.launchAtLogin.promptVisible },
                         set: { _ in }
                     )
                 ) {

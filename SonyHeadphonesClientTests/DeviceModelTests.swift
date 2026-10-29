@@ -1,5 +1,6 @@
 import Client
 import Either
+@testable import SonyHeadphonesClient
 import Testing
 
 struct DeviceModelTests {
@@ -10,7 +11,6 @@ struct DeviceModelTests {
         #expect(DeviceModel(rawValue: model.rawValue) == model)
         #expect(identifier == .left(model))
         #expect(identifier.displayName == model.rawValue)
-        #expect(identifier.image != nil)
     }
 
     @Test func renamedDeviceKeepsRawName() {
@@ -18,14 +18,17 @@ struct DeviceModelTests {
 
         #expect(identifier == .right("Marek's WH-1000XM5"))
         #expect(identifier.displayName == "Marek's WH-1000XM5")
-        #expect(identifier.image == nil)
+
+        var state = HeadphonesState()
+        state.deviceModel = identifier
+        #expect(state.deviceHeroModel.deviceImage == nil)
     }
 
     @Test func stateResolvesItsDeviceModel() {
         var state = HeadphonesState()
-        state.deviceName = "WF-1000XM4"
+        state.deviceModel = Either<DeviceModel, String>(deviceName: "WF-1000XM4")
 
         #expect(state.deviceModel == .left(.wf1000Xm4))
-        #expect(state.deviceImage != nil)
+        #expect(state.deviceHeroModel.deviceImage != nil)
     }
 }
