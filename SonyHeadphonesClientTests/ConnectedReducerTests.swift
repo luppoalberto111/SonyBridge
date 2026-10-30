@@ -13,7 +13,7 @@ import Testing
         return state
     }
 
-    @Test func snapshotReceivedFansOutToEveryChild() async {
+    @Test func snapshotReceivedUpdatesEverySharedChildState() async {
         var snapshot = connectedState()
         snapshot.mode = .ambientSound
         snapshot.ambientLevel = 12
@@ -29,8 +29,14 @@ import Testing
         }
 
         await store.send(.snapshotReceived(snapshot)) {
-            $0.sync(from: snapshot)
+            $0.$headphones.withLock { $0 = snapshot }
         }
+
+        #expect(store.state.deviceHero.headphones == snapshot)
+        #expect(store.state.ambient.headphones == snapshot)
+        #expect(store.state.equalizer.headphones == snapshot)
+        #expect(store.state.dsee.headphones == snapshot)
+        #expect(store.state.settings.headphones == snapshot)
     }
 
     @Test func setModeForwardsToClientAndAppliesSnapshot() async {
@@ -49,9 +55,10 @@ import Testing
                 $0.errorMessage = nil
             }
         }
-        await store.receive(\.snapshotReceived) {
-            $0.sync(from: $0.headphones)
-        }
+        await store.receive(\.snapshotReceived)
+
+        #expect(store.state.ambient.headphones.mode == .noiseCanceling)
+        #expect(store.state.deviceHero.headphones.mode == .noiseCanceling)
     }
 
     @Test func setBandIgnoresOutOfRangeIndex() async {
@@ -81,9 +88,10 @@ import Testing
                 $0.errorMessage = nil
             }
         }
-        await store.receive(\.snapshotReceived) {
-            $0.sync(from: $0.headphones)
-        }
+        await store.receive(\.snapshotReceived)
+
+        #expect(store.state.equalizer.headphones.eqBands[0] == 5)
+        #expect(store.state.equalizer.headphones.eqPreset == EqPreset.manual.rawValue)
     }
 
     @Test func disconnectButtonTappedDelegatesDidDisconnect() async {
@@ -112,8 +120,10 @@ import Testing
 
         await store.send(.watchTick)
         await store.receive(\.watchTickResponse) {
-            $0.sync(from: HeadphonesState())
+            $0.$headphones.withLock { $0 = HeadphonesState() }
         }
         await store.receive(\.delegate)
+
+        #expect(store.state.ambient.headphones.connected == false)
     }
 }

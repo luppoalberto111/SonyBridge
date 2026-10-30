@@ -128,12 +128,14 @@ enum SnapshotFixtures {
     ) -> StoreOf<AmbientReducer> {
         Store(
             initialState: AmbientReducer.State(
-                headphones: .init(
-                    maxAmbientLevel: 20,
-                    mode: mode,
-                    ambientLevel: 10,
-                    focusOnVoice: false,
-                    focusOnVoiceAvailable: focusOnVoiceAvailable
+                headphones: Shared(
+                    value: .init(
+                        maxAmbientLevel: 20,
+                        mode: mode,
+                        ambientLevel: 10,
+                        focusOnVoice: false,
+                        focusOnVoiceAvailable: focusOnVoiceAvailable
+                    )
                 )
             )
         ) {
@@ -144,10 +146,12 @@ enum SnapshotFixtures {
     static func equalizerStore(preset: EqPreset) -> StoreOf<EqualizerReducer> {
         Store(
             initialState: EqualizerReducer.State(
-                headphones: .init(
-                    eqPreset: preset.rawValue,
-                    eqBands: [2, -1, 0, 3, -2],
-                    clearBass: 5
+                headphones: Shared(
+                    value: .init(
+                        eqPreset: preset.rawValue,
+                        eqBands: [2, -1, 0, 3, -2],
+                        clearBass: 5
+                    )
                 )
             )
         ) {
@@ -158,13 +162,15 @@ enum SnapshotFixtures {
     static func settingsStore() -> StoreOf<SettingsReducer> {
         Store(
             initialState: SettingsReducer.State(
-                headphones: .init(
-                    hasAutoPowerOff: true,
-                    autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue,
-                    hasSpeakToChat: true,
-                    speakToChat: false,
-                    hasAdaptiveVolume: true,
-                    adaptiveVolume: true
+                headphones: Shared(
+                    value: .init(
+                        hasAutoPowerOff: true,
+                        autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue,
+                        hasSpeakToChat: true,
+                        speakToChat: false,
+                        hasAdaptiveVolume: true,
+                        adaptiveVolume: true
+                    )
                 )
             )
         ) {
@@ -175,7 +181,7 @@ enum SnapshotFixtures {
     static func deviceHeroStore(
         headphones: HeadphonesState
     ) -> StoreOf<DeviceHeroReducer> {
-        Store(initialState: DeviceHeroReducer.State(headphones: headphones)) {
+        Store(initialState: DeviceHeroReducer.State(headphones: Shared(value: headphones))) {
             DeviceHeroReducer()
         }
     }

@@ -1,10 +1,15 @@
+import Client
 import ComposableArchitecture
 @testable import SonyHeadphonesClient
 import Testing
 
 @MainActor struct DeviceHeroReducerTests {
     @Test func showAboutChangedTogglesPopover() async {
-        let store = TestStore(initialState: DeviceHeroReducer.State()) {
+        let store = TestStore(
+            initialState: DeviceHeroReducer.State(
+                headphones: Shared(value: HeadphonesState())
+            )
+        ) {
             DeviceHeroReducer()
         }
 
@@ -17,7 +22,11 @@ import Testing
     }
 
     @Test func disconnectTappedDelegatesRequest() async {
-        let store = TestStore(initialState: DeviceHeroReducer.State()) {
+        let store = TestStore(
+            initialState: DeviceHeroReducer.State(
+                headphones: Shared(value: HeadphonesState())
+            )
+        ) {
             DeviceHeroReducer()
         }
 
