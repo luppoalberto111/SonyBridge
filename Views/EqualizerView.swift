@@ -6,28 +6,8 @@ import SwiftUI
 
 @Reducer struct EqualizerReducer {
     @ObservableState struct State: Equatable {
+        @Shared
         var headphones: HeadphonesState
-//        var eqPreset: Int
-//        var eqBands: [Int]
-//        var clearBass: Int
-//
-//        init(
-//            eqPreset: Int = 0,
-//            eqBands: [Int] = [0, 0, 0, 0, 0],
-//            clearBass: Int = 0
-//        ) {
-//            self.eqPreset = eqPreset
-//            self.eqBands = eqBands
-//            self.clearBass = clearBass
-//        }
-//
-//        init(headphones: HeadphonesState) {
-//            self.init(
-//                eqPreset: headphones.eqPreset,
-//                eqBands: headphones.eqBands,
-//                clearBass: headphones.clearBass
-//            )
-//        }
     }
 
     enum Action {
@@ -47,18 +27,18 @@ import SwiftUI
         Reduce { state, action in
             switch action {
                 case let .setEqualizer(preset):
-                    state.headphones.eqPreset = preset
+                    state.$headphones.withLock { $0.eqPreset = preset }
                     return .send(.delegate(.setEqualizer(preset)))
 
                 case let .setBand(index, value):
                     guard state.headphones.eqBands.indices.contains(index) else { return .none }
-                    state.headphones.eqBands[index] = value
-                    state.headphones.eqPreset = 0xA0
+                    state.$headphones.withLock { $0.eqBands[index] = value }
+                    state.$headphones.withLock { $0.eqPreset = 0xA0 }
                     return .send(.delegate(.setBand(index, value)))
 
                 case let .setClearBass(value):
-                    state.headphones.clearBass = value
-                    state.headphones.eqPreset = 0xA0
+                    state.$headphones.withLock { $0.clearBass = value }
+                    state.$headphones.withLock { $0.eqPreset = 0xA0 }
                     return .send(.delegate(.setClearBass(value)))
 
                 case .delegate:
@@ -147,30 +127,38 @@ struct EqualizerView: View {
     }
 }
 
-// #Preview {
-//    EqualizerView(
-//        store: Store(
-//            initialState: EqualizerReducer.State(
-//                eqPreset: EqPreset.excited.rawValue,
-//                eqBands: [0, 0, 0, 0, 0],
-//                clearBass: 0
-//            )
-//        ) {
-//            EqualizerReducer()
-//        }
-//    )
-// }
-//
-// #Preview {
-//    EqualizerView(
-//        store: Store(
-//            initialState: EqualizerReducer.State(
-//                eqPreset: EqPreset.manual.rawValue,
-//                eqBands: [2, -1, 0, 3, -2],
-//                clearBass: 5
-//            )
-//        ) {
-//            EqualizerReducer()
-//        }
-//    )
-// }
+#Preview {
+    EqualizerView(
+        store: Store(
+            initialState: EqualizerReducer.State(
+                headphones: Shared(
+                    value: .init(
+                        eqPreset: EqPreset.excited.rawValue,
+                        eqBands: [0, 0, 0, 0, 0],
+                        clearBass: 0
+                    )
+                )
+            )
+        ) {
+            EqualizerReducer()
+        }
+    )
+}
+
+#Preview {
+    EqualizerView(
+        store: Store(
+            initialState: EqualizerReducer.State(
+                headphones: Shared(
+                    value: .init(
+                        eqPreset: EqPreset.manual.rawValue,
+                        eqBands: [2, -1, 0, 3, -2],
+                        clearBass: 5
+                    )
+                )
+            )
+        ) {
+            EqualizerReducer()
+        }
+    )
+}

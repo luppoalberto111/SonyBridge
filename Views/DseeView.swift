@@ -6,15 +6,8 @@ import SwiftUI
 
 @Reducer struct DseeReducer {
     @ObservableState struct State: Equatable {
+        @Shared
         var headphones: HeadphonesState
-
-//        init(dsee: Bool = false) {
-//            self.dsee = dsee
-//        }
-
-//        init(headphones: HeadphonesState) {
-//            self.init(dsee: headphones.dsee)
-//        }
     }
 
     enum Action {
@@ -30,7 +23,7 @@ import SwiftUI
         Reduce { state, action in
             switch action {
                 case let .setDsee(on):
-                    state.headphones.dsee = on
+                    state.$headphones.withLock { $0.dsee = on }
                     return .send(.delegate(.setDsee(on)))
 
                 case .delegate:
@@ -67,12 +60,18 @@ struct DseeView: View {
 
 #Preview {
     DseeView(
-        store: Store(initialState: .init(headphones: .init(dsee: true)), reducer: DseeReducer.init)
+        store: Store(
+            initialState: .init(headphones: .init(value: .init(dsee: true))),
+            reducer: DseeReducer.init
+        )
     )
 }
 
 #Preview {
     DseeView(
-        store: Store(initialState: .init(headphones: .init(dsee: false)), reducer: DseeReducer.init)
+        store: Store(
+            initialState: .init(headphones: .init(value: .init(dsee: false))),
+            reducer: DseeReducer.init
+        )
     )
 }

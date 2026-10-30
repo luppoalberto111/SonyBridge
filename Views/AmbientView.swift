@@ -7,19 +7,8 @@ import SwiftUI
 
 @Reducer struct AmbientReducer {
     @ObservableState struct State: Equatable {
+        @Shared
         var headphones: HeadphonesState
-
-        init(
-            headphones: HeadphonesState = .init(
-                maxAmbientLevel: 20,
-                mode: .off,
-                ambientLevel: 10,
-                focusOnVoice: false,
-                focusOnVoiceAvailable: false
-            )
-        ) {
-            self.headphones = headphones
-        }
     }
 
     enum Action {
@@ -39,15 +28,15 @@ import SwiftUI
         Reduce { state, action in
             switch action {
                 case let .setMode(mode):
-                    state.headphones.mode = mode
+                    state.$headphones.withLock { $0.mode = mode }
                     return .send(.delegate(.setMode(mode)))
 
                 case let .setLevel(level):
-                    state.headphones.ambientLevel = level
+                    state.$headphones.withLock { $0.ambientLevel = level }
                     return .send(.delegate(.setLevel(level)))
 
                 case let .setFocusOnVoice(on):
-                    state.headphones.focusOnVoice = on
+                    state.$headphones.withLock { $0.focusOnVoice = on }
                     return .send(.delegate(.setFocusOnVoice(on)))
 
                 case .delegate:
@@ -139,12 +128,14 @@ struct AmbientView: View {
     AmbientView(
         store: Store(
             initialState: .init(
-                headphones: .init(
-                    maxAmbientLevel: 20,
-                    mode: .ambientSound,
-                    ambientLevel: 10,
-                    focusOnVoice: false,
-                    focusOnVoiceAvailable: true
+                headphones: Shared(
+                    value: .init(
+                        maxAmbientLevel: 20,
+                        mode: .ambientSound,
+                        ambientLevel: 10,
+                        focusOnVoice: false,
+                        focusOnVoiceAvailable: true
+                    )
                 )
             )
         ) {
@@ -157,12 +148,14 @@ struct AmbientView: View {
     AmbientView(
         store: Store(
             initialState: .init(
-                headphones: .init(
-                    maxAmbientLevel: 20,
-                    mode: .noiseCanceling,
-                    ambientLevel: 10,
-                    focusOnVoice: false,
-                    focusOnVoiceAvailable: false
+                headphones: Shared(
+                    value: .init(
+                        maxAmbientLevel: 20,
+                        mode: .noiseCanceling,
+                        ambientLevel: 10,
+                        focusOnVoice: false,
+                        focusOnVoiceAvailable: false
+                    )
                 )
             )
         ) {

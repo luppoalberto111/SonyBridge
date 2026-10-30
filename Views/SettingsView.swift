@@ -6,6 +6,7 @@ import SwiftUI
 
 @Reducer struct SettingsReducer {
     @ObservableState struct State: Equatable {
+        @Shared
         var headphones: HeadphonesState
     }
 
@@ -26,15 +27,15 @@ import SwiftUI
         Reduce { state, action in
             switch action {
                 case let .setAdaptiveVolume(on):
-                    state.headphones.adaptiveVolume = on
+                    state.$headphones.withLock { $0.adaptiveVolume = on }
                     return .send(.delegate(.setAdaptiveVolume(on)))
 
                 case let .setSpeakToChat(on):
-                    state.headphones.speakToChat = on
+                    state.$headphones.withLock { $0.speakToChat = on }
                     return .send(.delegate(.setSpeakToChat(on)))
 
                 case let .setAutoPowerOff(option):
-                    state.headphones.autoPowerOff = option.rawValue
+                    state.$headphones.withLock { $0.autoPowerOff = option.rawValue }
                     return .send(.delegate(.setAutoPowerOff(option)))
 
                 case .delegate:
@@ -123,13 +124,15 @@ struct SettingsView: View {
     SettingsView(
         store: Store(
             initialState: .init(
-                headphones: .init(
-                    hasAutoPowerOff: true,
-                    autoPowerOff: 2,
-                    hasSpeakToChat: true,
-                    speakToChat: false,
-                    hasAdaptiveVolume: true,
-                    adaptiveVolume: true,
+                headphones: Shared(
+                    value: .init(
+                        hasAutoPowerOff: true,
+                        autoPowerOff: 2,
+                        hasSpeakToChat: true,
+                        speakToChat: false,
+                        hasAdaptiveVolume: true,
+                        adaptiveVolume: true,
+                    )
                 )
             ),
             reducer: SettingsReducer.init
@@ -141,13 +144,15 @@ struct SettingsView: View {
     SettingsView(
         store: Store(
             initialState: .init(
-                headphones: .init(
-                    hasAutoPowerOff: false,
-                    autoPowerOff: 0,
-                    hasSpeakToChat: true,
-                    speakToChat: true,
-                    hasAdaptiveVolume: false,
-                    adaptiveVolume: false
+                headphones: Shared(
+                    value: .init(
+                        hasAutoPowerOff: false,
+                        autoPowerOff: 0,
+                        hasSpeakToChat: true,
+                        speakToChat: true,
+                        hasAdaptiveVolume: false,
+                        adaptiveVolume: false
+                    )
                 )
             ),
             reducer: SettingsReducer.init

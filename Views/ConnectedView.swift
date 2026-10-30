@@ -8,6 +8,7 @@ import SwiftUI
 
 @Reducer struct ConnectedReducer {
     @ObservableState struct State: Equatable {
+        @Shared
         var headphones: HeadphonesState
         var deviceHero: DeviceHeroReducer.State
         var ambient: AmbientReducer.State
@@ -19,12 +20,13 @@ import SwiftUI
             headphones: HeadphonesState,
             showAbout: Bool
         ) {
-            self.headphones = headphones
-            self.deviceHero = .init(headphones: headphones, showAbout: showAbout)
-            self.ambient = .init(headphones: headphones)
-            self.equalizer = .init(headphones: headphones)
-            self.dsee = .init(headphones: headphones)
-            self.settings = .init(headphones: headphones)
+            let shared = Shared(value: headphones)
+            self._headphones = shared
+            self.deviceHero = .init(headphones: shared, showAbout: showAbout)
+            self.ambient = .init(headphones: shared)
+            self.equalizer = .init(headphones: shared)
+            self.dsee = .init(headphones: shared)
+            self.settings = .init(headphones: shared)
         }
     }
 
@@ -127,79 +129,96 @@ import SwiftUI
                     }
 
                 case let .snapshotReceived(snap):
-                    state = .init(headphones: snap, showAbout: state.deviceHero.showAbout)
+                    state.$headphones.withLock { $0 = snap }
                     return .none
 
                 case .disconnectButtonTapped:
                     return disconnectEffect()
 
                 case let .setMode(mode):
-                    state.headphones.mode = mode
-                    state.headphones.errorMessage = nil
+                    state.$headphones.withLock {
+                        $0.mode = mode
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         await send(.snapshotReceived(client.setMode(mode)))
                     }
 
                 case let .setLevel(level):
-                    state.headphones.ambientLevel = level
+                    state.$headphones.withLock { $0.ambientLevel = level }
                     return .run { send in
                         await send(.snapshotReceived(client.setLevel(level)))
                     }
 
                 case let .setFocusOnVoice(on):
-                    state.headphones.focusOnVoice = on
-                    state.headphones.errorMessage = nil
+                    state.$headphones.withLock {
+                        $0.focusOnVoice = on
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         await send(.snapshotReceived(client.setFocusOnVoice(on)))
                     }
 
                 case let .setEqualizer(preset):
-                    state.headphones.eqPreset = preset
-                    state.headphones.errorMessage = nil
+                    state.$headphones.withLock {
+                        $0.eqPreset = preset
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         await send(.snapshotReceived(client.setEqualizer(preset)))
                     }
 
                 case let .setBand(index, value):
                     guard state.headphones.eqBands.indices.contains(index) else { return .none }
-                    state.headphones.eqBands[index] = value
-                    state.headphones.eqPreset = 0xA0
-                    state.headphones.errorMessage = nil
-                    return customEqEffect(
-                        bass: state.headphones.clearBass,
-                        bands: state.headphones.eqBands
-                    )
+                    let (bass, bands) = state.$headphones.withLock { headphones -> (Int, [Int]) in
+                        headphones.eqBands[index] = value
+                        headphones.eqPreset = 0xA0
+                        headphones.errorMessage = nil
+                        return (headphones.clearBass, headphones.eqBands)
+                    }
+                    return customEqEffect(bass: bass, bands: bands)
 
                 case let .setClearBass(value):
-                    state.headphones.clearBass = value
-                    state.headphones.eqPreset = 0xA0
-                    state.headphones.errorMessage = nil
-                    return customEqEffect(bass: value, bands: state.headphones.eqBands)
+                    let bands = state.$headphones.withLock { headphones -> [Int] in
+                        headphones.clearBass = value
+                        headphones.eqPreset = 0xA0
+                        headphones.errorMessage = nil
+                        return headphones.eqBands
+                    }
+                    return customEqEffect(bass: value, bands: bands)
 
                 case let .setDsee(on):
-                    state.headphones.dsee = on
-                    state.headphones.errorMessage = nil
+                    state.$headphones.withLock {
+                        $0.dsee = on
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         await send(.snapshotReceived(client.setDsee(on)))
                     }
 
                 case let .setAutoPowerOff(option):
-                    state.headphones.autoPowerOff = option.rawValue
-                    state.headphones.errorMessage = nil
+                    state.$headphones.withLock {
+                        $0.autoPowerOff = option.rawValue
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         await send(.snapshotReceived(client.setAutoPowerOff(option.rawValue)))
                     }
 
                 case let .setSpeakToChat(on):
-                    state.headphones.speakToChat = on
-                    state.headphones.errorMessage = nil
+                    state.$headphones.withLock {
+                        $0.speakToChat = on
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         await send(.snapshotReceived(client.setSpeakToChat(on)))
                     }
 
                 case let .setAdaptiveVolume(on):
-                    state.headphones.adaptiveVolume = on
-                    state.headphones.errorMessage = nil
+                    state.$headphones.withLock {
+                        $0.adaptiveVolume = on
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         await send(.snapshotReceived(client.setAdaptiveVolume(on)))
                     }
@@ -210,7 +229,7 @@ import SwiftUI
                     }
 
                 case let .dynamicTickResponse(snap):
-                    state = .init(headphones: snap, showAbout: state.deviceHero.showAbout)
+                    state.$headphones.withLock { $0 = snap }
                     return .none
 
                 case .watchTick:
@@ -219,7 +238,7 @@ import SwiftUI
                     }
 
                 case let .watchTickResponse(snap):
-                    state = .init(headphones: snap, showAbout: state.deviceHero.showAbout)
+                    state.$headphones.withLock { $0 = snap }
                     if snap.connected {
                         return .none
                     }

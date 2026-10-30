@@ -6,7 +6,8 @@ import SwiftUI
 
 @Reducer struct DeviceHeroReducer {
     @ObservableState struct State: Equatable {
-        var headphones = HeadphonesState()
+        @Shared
+        var headphones: HeadphonesState
         var showAbout = false
     }
 
@@ -177,9 +178,10 @@ private func previewHeadphones() -> HeadphonesState {
 
 #Preview {
     DeviceHeroView(
-        store: Store(initialState: DeviceHeroReducer.State(headphones: previewHeadphones())) {
-            DeviceHeroReducer()
-        }
+        store: Store(
+            initialState: .init(headphones: .init(value: previewHeadphones())),
+            reducer: DeviceHeroReducer.init
+        )
     )
 }
 
@@ -193,8 +195,9 @@ private func previewHeadphones() -> HeadphonesState {
     dual.batteryLevel = -1
     dual.codec = ""
     return DeviceHeroView(
-        store: Store(initialState: DeviceHeroReducer.State(headphones: dual)) {
-            DeviceHeroReducer()
-        }
+        store: Store(
+            initialState: .init(headphones: .init(value: dual)),
+            reducer: DeviceHeroReducer.init
+        )
     )
 }

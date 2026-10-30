@@ -9,9 +9,7 @@ final class MenuBarAppDelegate: NSObject, NSApplicationDelegate {
     private var statusMenuController: StatusMenuController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        let store = Store(initialState: MenuBarFeature.State()) {
-            MenuBarFeature()
-        }
+        let store = Store(initialState: MenuBarFeature.State(), reducer: MenuBarFeature.init)
         statusMenuController = StatusMenuController(store: store)
     }
 }

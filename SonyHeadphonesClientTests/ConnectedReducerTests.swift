@@ -29,8 +29,7 @@ import Testing
         }
 
         await store.send(.snapshotReceived(snapshot)) {
-            let showAbout = $0.deviceHero.showAbout
-            $0 = .init(headphones: snapshot, showAbout: showAbout)
+            $0.sync(from: snapshot)
         }
     }
 
@@ -45,12 +44,13 @@ import Testing
         }
 
         await store.send(.setMode(.noiseCanceling)) {
-            $0.headphones.mode = .noiseCanceling
-            $0.headphones.errorMessage = nil
+            $0.$headphones.withLock {
+                $0.mode = .noiseCanceling
+                $0.errorMessage = nil
+            }
         }
         await store.receive(\.snapshotReceived) {
-            let showAbout = $0.deviceHero.showAbout
-            $0 = .init(headphones: $0.headphones, showAbout: showAbout)
+            $0.sync(from: $0.headphones)
         }
     }
 
@@ -75,13 +75,14 @@ import Testing
         }
 
         await store.send(.setBand(0, 5)) {
-            $0.headphones.eqBands[0] = 5
-            $0.headphones.eqPreset = EqPreset.manual.rawValue
-            $0.headphones.errorMessage = nil
+            $0.$headphones.withLock {
+                $0.eqBands[0] = 5
+                $0.eqPreset = EqPreset.manual.rawValue
+                $0.errorMessage = nil
+            }
         }
         await store.receive(\.snapshotReceived) {
-            let showAbout = $0.deviceHero.showAbout
-            $0 = .init(headphones: $0.headphones, showAbout: showAbout)
+            $0.sync(from: $0.headphones)
         }
     }
 
@@ -111,7 +112,7 @@ import Testing
 
         await store.send(.watchTick)
         await store.receive(\.watchTickResponse) {
-            $0 = ConnectedReducer.State(headphones: HeadphonesState(), showAbout: false)
+            $0.sync(from: HeadphonesState())
         }
         await store.receive(\.delegate)
     }
