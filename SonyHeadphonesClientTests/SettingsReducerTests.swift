@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct SettingsReducerTests {
-    @Test func setAdaptiveVolumeUpdatesStateAndDelegates() async {
+    @Test func setAdaptiveVolumeDelegates() async {
         let store = TestStore(
             initialState: SettingsReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -13,13 +13,11 @@ import Testing
             SettingsReducer()
         }
 
-        await store.send(.setAdaptiveVolume(true)) {
-            $0.$headphones.withLock { $0.adaptiveVolume = true }
-        }
+        await store.send(.setAdaptiveVolume(true))
         await store.receive(\.delegate)
     }
 
-    @Test func setSpeakToChatUpdatesStateAndDelegates() async {
+    @Test func setSpeakToChatDelegates() async {
         let store = TestStore(
             initialState: SettingsReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -28,13 +26,11 @@ import Testing
             SettingsReducer()
         }
 
-        await store.send(.setSpeakToChat(true)) {
-            $0.$headphones.withLock { $0.speakToChat = true }
-        }
+        await store.send(.setSpeakToChat(true))
         await store.receive(\.delegate)
     }
 
-    @Test func setAutoPowerOffUpdatesStateAndDelegates() async {
+    @Test func setAutoPowerOffDelegates() async {
         let store = TestStore(
             initialState: SettingsReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -43,9 +39,7 @@ import Testing
             SettingsReducer()
         }
 
-        await store.send(.setAutoPowerOff(.thirtyMinutes)) {
-            $0.$headphones.withLock { $0.autoPowerOff = AutoPowerOffOption.thirtyMinutes.rawValue }
-        }
+        await store.send(.setAutoPowerOff(.thirtyMinutes))
         await store.receive(\.delegate)
     }
 

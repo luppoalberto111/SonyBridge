@@ -24,18 +24,15 @@ import SwiftUI
     }
 
     var body: some ReducerOf<Self> {
-        Reduce { state, action in
+        Reduce { _, action in
             switch action {
                 case let .setAdaptiveVolume(on):
-                    state.$headphones.withLock { $0.adaptiveVolume = on }
                     return .send(.delegate(.setAdaptiveVolume(on)))
 
                 case let .setSpeakToChat(on):
-                    state.$headphones.withLock { $0.speakToChat = on }
                     return .send(.delegate(.setSpeakToChat(on)))
 
                 case let .setAutoPowerOff(option):
-                    state.$headphones.withLock { $0.autoPowerOff = option.rawValue }
                     return .send(.delegate(.setAutoPowerOff(option)))
 
                 case .delegate:

@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct EqualizerReducerTests {
-    @Test func setEqualizerUpdatesPresetAndDelegates() async {
+    @Test func setEqualizerDelegates() async {
         let store = TestStore(
             initialState: EqualizerReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -13,13 +13,11 @@ import Testing
             EqualizerReducer()
         }
 
-        await store.send(.setEqualizer(EqPreset.excited.rawValue)) {
-            $0.$headphones.withLock { $0.eqPreset = EqPreset.excited.rawValue }
-        }
+        await store.send(.setEqualizer(EqPreset.excited.rawValue))
         await store.receive(\.delegate)
     }
 
-    @Test func setBandSwitchesToManualPreset() async {
+    @Test func setBandDelegates() async {
         let store = TestStore(
             initialState: EqualizerReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -28,12 +26,7 @@ import Testing
             EqualizerReducer()
         }
 
-        await store.send(.setBand(2, 4)) {
-            $0.$headphones.withLock {
-                $0.eqBands[2] = 4
-                $0.eqPreset = EqPreset.manual.rawValue
-            }
-        }
+        await store.send(.setBand(2, 4))
         await store.receive(\.delegate)
     }
 
@@ -49,7 +42,7 @@ import Testing
         await store.send(.setBand(9, 4))
     }
 
-    @Test func setClearBassSwitchesToManualPreset() async {
+    @Test func setClearBassDelegates() async {
         let store = TestStore(
             initialState: EqualizerReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -58,12 +51,7 @@ import Testing
             EqualizerReducer()
         }
 
-        await store.send(.setClearBass(6)) {
-            $0.$headphones.withLock {
-                $0.clearBass = 6
-                $0.eqPreset = EqPreset.manual.rawValue
-            }
-        }
+        await store.send(.setClearBass(6))
         await store.receive(\.delegate)
     }
 

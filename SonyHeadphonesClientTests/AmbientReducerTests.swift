@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct AmbientReducerTests {
-    @Test func setModeUpdatesStateAndDelegates() async {
+    @Test func setModeDelegates() async {
         let store = TestStore(
             initialState: AmbientReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -13,13 +13,11 @@ import Testing
             AmbientReducer()
         }
 
-        await store.send(.setMode(.noiseCanceling)) {
-            $0.$headphones.withLock { $0.mode = .noiseCanceling }
-        }
+        await store.send(.setMode(.noiseCanceling))
         await store.receive(\.delegate)
     }
 
-    @Test func setLevelUpdatesStateAndDelegates() async {
+    @Test func setLevelDelegates() async {
         let store = TestStore(
             initialState: AmbientReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -28,13 +26,11 @@ import Testing
             AmbientReducer()
         }
 
-        await store.send(.setLevel(17)) {
-            $0.$headphones.withLock { $0.ambientLevel = 17 }
-        }
+        await store.send(.setLevel(17))
         await store.receive(\.delegate)
     }
 
-    @Test func setFocusOnVoiceUpdatesStateAndDelegates() async {
+    @Test func setFocusOnVoiceDelegates() async {
         let store = TestStore(
             initialState: AmbientReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -43,9 +39,7 @@ import Testing
             AmbientReducer()
         }
 
-        await store.send(.setFocusOnVoice(true)) {
-            $0.$headphones.withLock { $0.focusOnVoice = true }
-        }
+        await store.send(.setFocusOnVoice(true))
         await store.receive(\.delegate)
     }
 

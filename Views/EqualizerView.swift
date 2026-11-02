@@ -27,18 +27,13 @@ import SwiftUI
         Reduce { state, action in
             switch action {
                 case let .setEqualizer(preset):
-                    state.$headphones.withLock { $0.eqPreset = preset }
                     return .send(.delegate(.setEqualizer(preset)))
 
                 case let .setBand(index, value):
                     guard state.headphones.eqBands.indices.contains(index) else { return .none }
-                    state.$headphones.withLock { $0.eqBands[index] = value }
-                    state.$headphones.withLock { $0.eqPreset = 0xA0 }
                     return .send(.delegate(.setBand(index, value)))
 
                 case let .setClearBass(value):
-                    state.$headphones.withLock { $0.clearBass = value }
-                    state.$headphones.withLock { $0.eqPreset = 0xA0 }
                     return .send(.delegate(.setClearBass(value)))
 
                 case .delegate:

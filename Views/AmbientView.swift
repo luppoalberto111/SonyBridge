@@ -25,18 +25,15 @@ import SwiftUI
     }
 
     var body: some ReducerOf<Self> {
-        Reduce { state, action in
+        Reduce { _, action in
             switch action {
                 case let .setMode(mode):
-                    state.$headphones.withLock { $0.mode = mode }
                     return .send(.delegate(.setMode(mode)))
 
                 case let .setLevel(level):
-                    state.$headphones.withLock { $0.ambientLevel = level }
                     return .send(.delegate(.setLevel(level)))
 
                 case let .setFocusOnVoice(on):
-                    state.$headphones.withLock { $0.focusOnVoice = on }
                     return .send(.delegate(.setFocusOnVoice(on)))
 
                 case .delegate:

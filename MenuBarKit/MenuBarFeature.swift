@@ -1,4 +1,5 @@
 import Bridge
+import Client
 import Cocoa
 import ComposableArchitecture
 import Dependencies
@@ -13,18 +14,8 @@ import Dependencies
 /// the host app is free to handle.
 @Reducer public struct MenuBarFeature {
     @ObservableState public struct State: Equatable {
-        @Shared(.isConnected)
-        public var isConnected: Bool
-        @Shared(.ambientMode)
-        public var ambientMode: SHCAmbientMode
-        @Shared(.ambientLevel)
-        public var ambientLevel: Int
-        @Shared(.maxAmbientLevel)
-        public var maxAmbientLevel: Int
-        @Shared(.focusOnVoice)
-        public var focusOnVoice: Bool
-        @Shared(.batteryLevel)
-        public var batteryLevel: Int
+        @Shared(.headphonesState)
+        public var headphones: HeadphonesState
     }
 
     public enum Action {
@@ -200,27 +191,27 @@ func batteryMenuTitle(level: Int) -> String {
     }
 
     public func menuWillOpen(_ menu: NSMenu) {
-        let connected = store.state.isConnected
-        let ambientSelected = connected && store.state.ambientMode == .ambientSound
+        let connected = store.state.headphones.connected
+        let ambientSelected = connected && store.state.headphones.mode == .ambientSound
         batteryItem.isHidden = !connected
-        batteryItem.title = batteryMenuTitle(level: store.state.batteryLevel)
+        batteryItem.title = batteryMenuTitle(level: store.state.headphones.batteryLevel)
         connectItem.isHidden = connected
         disconnectItem.isHidden = !connected
         ambientItem.isHidden = !connected
         ambientLevelItem.isHidden = !ambientSelected
         focusOnVoiceItem.isHidden = !ambientSelected
-        let currentMode = store.state.ambientMode
+        let currentMode = store.state.headphones.mode
         for (index, item) in ambientModeItems.enumerated() {
             item.state = ambientModes[index] == currentMode ? .on : .off
         }
-        ambientLevelSlider.maxValue = Double(max(store.state.maxAmbientLevel, 1))
+        ambientLevelSlider.maxValue = Double(max(store.state.headphones.maxAmbientLevel, 1))
         let sliderLevel = min(
-            max(store.state.ambientLevel, 1),
-            store.state.maxAmbientLevel
+            max(store.state.headphones.ambientLevel, 1),
+            store.state.headphones.maxAmbientLevel
         )
         ambientLevelSlider.integerValue = sliderLevel
         lastSentAmbientLevel = sliderLevel
-        focusOnVoiceItem.state = store.state.focusOnVoice ? .on : .off
+        focusOnVoiceItem.state = store.state.headphones.focusOnVoice ? .on : .off
     }
 
     @objc private func handleConnect() {
@@ -247,7 +238,7 @@ func batteryMenuTitle(level: Int) -> String {
     }
 
     @objc private func handleFocusOnVoice() {
-        store.send(.focusOnVoicePicked(!store.state.focusOnVoice))
+        store.send(.focusOnVoicePicked(!store.state.headphones.focusOnVoice))
     }
 
     @objc private func handleQuit() {

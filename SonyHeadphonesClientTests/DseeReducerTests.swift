@@ -4,7 +4,7 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct DseeReducerTests {
-    @Test func setDseeUpdatesStateAndDelegates() async {
+    @Test func setDseeDelegates() async {
         let store = TestStore(
             initialState: DseeReducer.State(
                 headphones: Shared(value: HeadphonesState())
@@ -13,9 +13,7 @@ import Testing
             DseeReducer()
         }
 
-        await store.send(.setDsee(true)) {
-            $0.$headphones.withLock { $0.dsee = true }
-        }
+        await store.send(.setDsee(true))
         await store.receive(\.delegate)
     }
 

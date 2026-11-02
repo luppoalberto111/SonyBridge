@@ -20,10 +20,9 @@ import SwiftUI
     }
 
     var body: some ReducerOf<Self> {
-        Reduce { state, action in
+        Reduce { _, action in
             switch action {
                 case let .setDsee(on):
-                    state.$headphones.withLock { $0.dsee = on }
                     return .send(.delegate(.setDsee(on)))
 
                 case .delegate:
