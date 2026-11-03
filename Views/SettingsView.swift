@@ -47,6 +47,14 @@ import SwiftUI
 struct SettingsView: View {
     let store: StoreOf<SettingsReducer>
 
+    /// True while the device is still applying an adaptive-volume change; that toggle is disabled
+    /// and keeps its previous value until the write is confirmed.
+    var adaptiveVolumeLoading = false
+
+    /// True while the device is still applying an auto-power-off change; that picker is disabled
+    /// and keeps its previous value until the write is confirmed.
+    var autoPowerOffLoading = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("SettingsView.title")
@@ -56,7 +64,8 @@ struct SettingsView: View {
                 settingToggle(
                     "SettingsView.adaptiveVolume.title",
                     "SettingsView.adaptiveVolume.subtitle",
-                    on: store.headphones.adaptiveVolume
+                    on: store.headphones.adaptiveVolume,
+                    loading: adaptiveVolumeLoading
                 ) { store.send(.setAdaptiveVolume($0)) }
             }
             if store.headphones.hasSpeakToChat {
@@ -77,6 +86,10 @@ struct SettingsView: View {
                             .foregroundColor(Color(.foregroundSecondary))
                     }
                     Spacer()
+                    if autoPowerOffLoading {
+                        ProgressView()
+                            .controlSize(.mini)
+                    }
                     Picker(
                         "",
                         selection: Binding(
@@ -91,6 +104,7 @@ struct SettingsView: View {
                     .pickerStyle(MenuPickerStyle())
                     .frame(width: 130)
                     .accentColor(.highlight)
+                    .disabled(autoPowerOffLoading)
                 }
             }
         }
@@ -104,16 +118,25 @@ struct SettingsView: View {
         _ title: LocalizedStringKey,
         _ subtitle: LocalizedStringKey,
         on: Bool,
+        loading: Bool = false,
         action: @escaping (Bool) -> Void
     ) -> some View {
-        Toggle(isOn: Binding(get: { on }, set: { action($0) })) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.foreground)
-                Text(subtitle).font(.system(size: 11)).foregroundColor(.foregroundSecondary)
+        HStack(spacing: 8) {
+            Toggle(isOn: Binding(get: { on }, set: { action($0) })) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.foreground)
+                    Text(subtitle).font(.system(size: 11)).foregroundColor(.foregroundSecondary)
+                }
+            }
+            .toggleStyle(SwitchToggleStyle(tint: .highlight))
+            .disabled(loading)
+
+            if loading {
+                ProgressView()
+                    .controlSize(.mini)
             }
         }
-        .toggleStyle(SwitchToggleStyle(tint: .highlight))
     }
 }
 

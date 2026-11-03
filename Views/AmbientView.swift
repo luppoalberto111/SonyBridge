@@ -48,6 +48,10 @@ import SwiftUI
 struct AmbientView: View {
     let store: StoreOf<AmbientReducer>
 
+    /// True while the device is still applying a focus-on-voice change; the toggle is disabled and
+    /// keeps its previous value until the write is confirmed.
+    var focusOnVoiceLoading = false
+
     var body: some View {
         VStack(spacing: 16) {
             modeCard
@@ -104,15 +108,23 @@ struct AmbientView: View {
             )
             .accentColor(Color(.highlight))
 
-            Toggle(isOn: Binding(
-                get: { store.headphones.focusOnVoice },
-                set: { store.send(.setFocusOnVoice($0)) }
-            )) {
-                Text("AmbientView.levelCard.focusOnVoice")
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundColor(Color(.foreground))
+            HStack(spacing: 8) {
+                Toggle(isOn: Binding(
+                    get: { store.headphones.focusOnVoice },
+                    set: { store.send(.setFocusOnVoice($0)) }
+                )) {
+                    Text("AmbientView.levelCard.focusOnVoice")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(Color(.foreground))
+                }
+                .toggleStyle(SwitchToggleStyle(tint: Color(.highlight)))
+                .disabled(focusOnVoiceLoading)
+
+                if focusOnVoiceLoading {
+                    ProgressView()
+                        .controlSize(.mini)
+                }
             }
-            .toggleStyle(SwitchToggleStyle(tint: Color(.highlight)))
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)

@@ -26,7 +26,7 @@ public struct HeadphonesState: Sendable, Equatable {
     public var ambientLevel: Int
 
     /// Whether focus on voice (ambient sound emphasises voices) is on.
-    public var focusOnVoice: Bool
+    public internal(set) var focusOnVoice: Bool
 
     /// Whether focus on voice is offered at the current level (ambient on, level above 2).
     public internal(set) var focusOnVoiceAvailable: Bool
@@ -62,13 +62,13 @@ public struct HeadphonesState: Sendable, Equatable {
     public var clearBass: Int
 
     /// Whether DSEE (audio upsampling) is enabled.
-    public var dsee: Bool
+    public internal(set) var dsee: Bool
 
     /// Whether the auto-power-off probe succeeded; if false, the setting must not be shown.
     public internal(set) var hasAutoPowerOff: Bool
 
     /// Auto-power-off delay: 0=Off, 1=5 min, 2=30 min, 3=1 hour, 4=3 hours, 5=when taken off.
-    public var autoPowerOff: Int
+    public internal(set) var autoPowerOff: Int
 
     /// The firmware version string, empty when unknown.
     public internal(set) var firmware: String
@@ -86,7 +86,7 @@ public struct HeadphonesState: Sendable, Equatable {
     public internal(set) var hasAdaptiveVolume: Bool
 
     /// Whether adaptive volume is enabled on the device.
-    public var adaptiveVolume: Bool
+    public internal(set) var adaptiveVolume: Bool
 
     /// The headset's MAC address, empty when not connected.
     public internal(set) var deviceMac: String

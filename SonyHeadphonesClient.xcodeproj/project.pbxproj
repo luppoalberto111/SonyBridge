@@ -26,6 +26,7 @@
 		AA0000000000000000000110 /* DeviceHeroViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000210 /* DeviceHeroViewSnapshotTests.swift */; };
 		AA0000000000000000000111 /* ConnectedViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */; };
 		AA0000000000000000000112 /* MainScreenViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */; };
+		AA0000000000000000000118 /* DseeViewSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000217 /* DseeViewSnapshotTests.swift */; };
 		AA0000000000000000000113 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000303 /* SnapshotTesting */; };
 		AA0000000000000000000115 /* LaunchAtLoginFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000215 /* LaunchAtLoginFeatureTests.swift */; };
 		AA0000000000000000000116 /* DseeReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000213 /* DseeReducerTests.swift */; };
@@ -109,6 +110,7 @@
 		AA0000000000000000000210 /* DeviceHeroViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceHeroViewSnapshotTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedViewSnapshotTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewSnapshotTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000217 /* DseeViewSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DseeViewSnapshotTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000213 /* DseeReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DseeReducerTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000215 /* LaunchAtLoginFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLoginFeatureTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000216 /* DeviceModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModelTests.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 				AA0000000000000000000210 /* DeviceHeroViewSnapshotTests.swift */,
 				AA0000000000000000000211 /* ConnectedViewSnapshotTests.swift */,
 				AA0000000000000000000212 /* MainScreenViewSnapshotTests.swift */,
+				AA0000000000000000000217 /* DseeViewSnapshotTests.swift */,
 			);
 			path = SonyHeadphonesClientSnapshotTests;
 			sourceTree = "<group>";
@@ -607,6 +610,7 @@
 				AA0000000000000000000110 /* DeviceHeroViewSnapshotTests.swift in Sources */,
 				AA0000000000000000000111 /* ConnectedViewSnapshotTests.swift in Sources */,
 				AA0000000000000000000112 /* MainScreenViewSnapshotTests.swift in Sources */,
+				AA0000000000000000000118 /* DseeViewSnapshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

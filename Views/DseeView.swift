@@ -37,19 +37,31 @@ import SwiftUI
 struct DseeView: View {
     let store: StoreOf<DseeReducer>
 
+    /// True while the device is still applying a DSEE change; the toggle is disabled and keeps its
+    /// previous value until the write is confirmed.
+    var dseeLoading = false
+
     var body: some View {
-        Toggle(isOn: Binding(
-            get: { store.headphones.dsee },
-            set: { store.send(.setDsee($0)) }
-        )) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("DseeView.title").font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(Color(.foreground))
-                Text("DseeView.subtitle").font(.system(size: 11))
-                    .foregroundColor(Color(.foregroundSecondary))
+        HStack(spacing: 8) {
+            Toggle(isOn: Binding(
+                get: { store.headphones.dsee },
+                set: { store.send(.setDsee($0)) }
+            )) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("DseeView.title").font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(Color(.foreground))
+                    Text("DseeView.subtitle").font(.system(size: 11))
+                        .foregroundColor(Color(.foregroundSecondary))
+                }
+            }
+            .toggleStyle(SwitchToggleStyle(tint: Color.highlight))
+            .disabled(dseeLoading)
+
+            if dseeLoading {
+                ProgressView()
+                    .controlSize(.mini)
             }
         }
-        .toggleStyle(SwitchToggleStyle(tint: Color.highlight))
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.card)

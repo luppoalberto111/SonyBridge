@@ -64,6 +64,176 @@ import Testing
         #expect(store.state.deviceHero.headphones.mode == .noiseCanceling)
     }
 
+    @Test func setFocusOnVoiceWaitsForSnapshotInsteadOfUpdatingOptimistically() async {
+        let client = HeadphonesTestClient(state: connectedState())
+        await client.suspendWrites()
+        let store = TestStore(
+            initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)
+        ) {
+            ConnectedReducer()
+        } withDependencies: {
+            $0.headphonesClient = client
+        }
+
+        await store.send(.setFocusOnVoice(true)) {
+            $0.uiState.focusOnVoiceLoading = true
+            $0.uiState.errorMessage = nil
+        }
+        // The write is still in flight, so the toggle keeps its old value until the device confirms.
+        #expect(store.state.headphones.focusOnVoice == false)
+        #expect(store.state.ambient.headphones.focusOnVoice == false)
+        #expect(store.state.uiState.focusOnVoiceLoading)
+
+        await client.releaseWrites()
+        let confirmed = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            focusOnVoice: true,
+            supportsEqualizer: true
+        )
+        await store.receive(\.snapshotReceived) {
+            $0.$headphones.withLock { $0 = confirmed }
+            $0.uiState.focusOnVoiceLoading = false
+        }
+
+        #expect(store.state.headphones.focusOnVoice)
+        #expect(store.state.ambient.headphones.focusOnVoice)
+        #expect(store.state.uiState.focusOnVoiceLoading == false)
+    }
+
+    @Test func setAdaptiveVolumeWaitsForSnapshotInsteadOfUpdatingOptimistically() async {
+        let state = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            supportsEqualizer: true,
+            hasAdaptiveVolume: true
+        )
+        let client = HeadphonesTestClient(state: state)
+        await client.suspendWrites()
+        let store = TestStore(
+            initialState: ConnectedReducer.State(headphones: state, showAbout: false)
+        ) {
+            ConnectedReducer()
+        } withDependencies: {
+            $0.headphonesClient = client
+        }
+
+        await store.send(.setAdaptiveVolume(true)) {
+            $0.uiState.adaptiveVolumeLoading = true
+            $0.uiState.errorMessage = nil
+        }
+        // The write is still in flight, so the toggle keeps its old value until the device confirms.
+        #expect(store.state.headphones.adaptiveVolume == false)
+        #expect(store.state.settings.headphones.adaptiveVolume == false)
+        #expect(store.state.uiState.adaptiveVolumeLoading)
+
+        await client.releaseWrites()
+        let confirmed = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            supportsEqualizer: true,
+            hasAdaptiveVolume: true,
+            adaptiveVolume: true
+        )
+        await store.receive(\.snapshotReceived) {
+            $0.$headphones.withLock { $0 = confirmed }
+            $0.uiState.adaptiveVolumeLoading = false
+        }
+
+        #expect(store.state.headphones.adaptiveVolume)
+        #expect(store.state.settings.headphones.adaptiveVolume)
+        #expect(store.state.uiState.adaptiveVolumeLoading == false)
+    }
+
+    @Test func setAutoPowerOffWaitsForSnapshotInsteadOfUpdatingOptimistically() async {
+        let state = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            supportsEqualizer: true,
+            hasAutoPowerOff: true
+        )
+        let client = HeadphonesTestClient(state: state)
+        await client.suspendWrites()
+        let store = TestStore(
+            initialState: ConnectedReducer.State(headphones: state, showAbout: false)
+        ) {
+            ConnectedReducer()
+        } withDependencies: {
+            $0.headphonesClient = client
+        }
+
+        await store.send(.setAutoPowerOff(.thirtyMinutes)) {
+            $0.uiState.autoPowerOffLoading = true
+            $0.uiState.errorMessage = nil
+        }
+        // The write is still in flight, so the picker keeps its old value until the device confirms.
+        #expect(store.state.headphones.autoPowerOff == AutoPowerOffOption.off.rawValue)
+        #expect(store.state.settings.headphones.autoPowerOff == AutoPowerOffOption.off.rawValue)
+        #expect(store.state.uiState.autoPowerOffLoading)
+
+        await client.releaseWrites()
+        let confirmed = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            supportsEqualizer: true,
+            hasAutoPowerOff: true,
+            autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue
+        )
+        await store.receive(\.snapshotReceived) {
+            $0.$headphones.withLock { $0 = confirmed }
+            $0.uiState.autoPowerOffLoading = false
+        }
+
+        #expect(store.state.headphones.autoPowerOff == AutoPowerOffOption.thirtyMinutes.rawValue)
+        #expect(
+            store.state.settings.headphones.autoPowerOff
+                == AutoPowerOffOption.thirtyMinutes.rawValue
+        )
+        #expect(store.state.uiState.autoPowerOffLoading == false)
+    }
+
+    @Test func setDseeWaitsForSnapshotInsteadOfUpdatingOptimistically() async {
+        let state = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            supportsEqualizer: true
+        )
+        let client = HeadphonesTestClient(state: state)
+        await client.suspendWrites()
+        let store = TestStore(
+            initialState: ConnectedReducer.State(headphones: state, showAbout: false)
+        ) {
+            ConnectedReducer()
+        } withDependencies: {
+            $0.headphonesClient = client
+        }
+
+        await store.send(.setDsee(true)) {
+            $0.uiState.dseeLoading = true
+            $0.uiState.errorMessage = nil
+        }
+        // The write is still in flight, so the toggle keeps its old value until the device confirms.
+        #expect(store.state.headphones.dsee == false)
+        #expect(store.state.dsee.headphones.dsee == false)
+        #expect(store.state.uiState.dseeLoading)
+
+        await client.releaseWrites()
+        let confirmed = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            supportsEqualizer: true,
+            dsee: true
+        )
+        await store.receive(\.snapshotReceived) {
+            $0.$headphones.withLock { $0 = confirmed }
+            $0.uiState.dseeLoading = false
+        }
+
+        #expect(store.state.headphones.dsee)
+        #expect(store.state.dsee.headphones.dsee)
+        #expect(store.state.uiState.dseeLoading == false)
+    }
+
     @Test func setBandIgnoresOutOfRangeIndex() async {
         let store = TestStore(
             initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)

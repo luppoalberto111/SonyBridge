@@ -19,4 +19,36 @@ import Testing
             )
         )
     }
+
+    @Test func adaptiveVolumeLoading() {
+        assertSnapshot(
+            of: SnapshotFixtures.hostingController(
+                SettingsView(
+                    store: SnapshotFixtures.settingsStore(),
+                    adaptiveVolumeLoading: true
+                )
+            ),
+            as: .image(
+                precision: 0.95,
+                perceptualPrecision: 0.95,
+                size: CGSize(width: 380, height: 260)
+            )
+        )
+    }
+
+    @Test func autoPowerOffLoading() {
+        assertSnapshot(
+            of: SnapshotFixtures.hostingController(
+                SettingsView(
+                    store: SnapshotFixtures.settingsStore(),
+                    autoPowerOffLoading: true
+                )
+            ),
+            as: .image(
+                precision: 0.95,
+                perceptualPrecision: 0.95,
+                size: CGSize(width: 380, height: 260)
+            )
+        )
+    }
 }

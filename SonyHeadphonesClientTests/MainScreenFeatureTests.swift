@@ -21,6 +21,11 @@ import Testing
         }
     }
 
+    @Test func defaultUIStateHasNoLoadingFlags() {
+        #expect(DisconnectedReducer.State().uiState.autoPowerOffLoading == false)
+        #expect(HeadphonesUIState().autoPowerOffLoading == false)
+    }
+
     @Test func didDisconnectSwapsBackToDisconnectedScreen() async {
         let snapshot = HeadphonesState(connected: true)
 

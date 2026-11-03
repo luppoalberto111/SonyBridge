@@ -134,10 +134,18 @@ import SwiftUI
                 case let .snapshotReceived(snap):
                     state.$headphones.withLock { $0 = snap }
                     state.uiState.errorMessage = nil
+                    state.uiState.focusOnVoiceLoading = false
+                    state.uiState.adaptiveVolumeLoading = false
+                    state.uiState.autoPowerOffLoading = false
+                    state.uiState.dseeLoading = false
                     return .none
 
                 case let .setError(message):
                     state.uiState.errorMessage = message
+                    state.uiState.focusOnVoiceLoading = false
+                    state.uiState.adaptiveVolumeLoading = false
+                    state.uiState.autoPowerOffLoading = false
+                    state.uiState.dseeLoading = false
                     return .none
 
                 case .disconnectButtonTapped:
@@ -166,7 +174,7 @@ import SwiftUI
                     }
 
                 case let .setFocusOnVoice(on):
-                    state.$headphones.withLock { $0.focusOnVoice = on }
+                    state.uiState.focusOnVoiceLoading = true
                     state.uiState.errorMessage = nil
                     return .run { send in
                         do {
@@ -207,7 +215,7 @@ import SwiftUI
                     return customEqEffect(bass: value, bands: bands)
 
                 case let .setDsee(on):
-                    state.$headphones.withLock { $0.dsee = on }
+                    state.uiState.dseeLoading = true
                     state.uiState.errorMessage = nil
                     return .run { send in
                         do {
@@ -218,7 +226,7 @@ import SwiftUI
                     }
 
                 case let .setAutoPowerOff(option):
-                    state.$headphones.withLock { $0.autoPowerOff = option.rawValue }
+                    state.uiState.autoPowerOffLoading = true
                     state.uiState.errorMessage = nil
                     return .run { send in
                         do {
@@ -241,7 +249,7 @@ import SwiftUI
                     }
 
                 case let .setAdaptiveVolume(on):
-                    state.$headphones.withLock { $0.adaptiveVolume = on }
+                    state.uiState.adaptiveVolumeLoading = true
                     state.uiState.errorMessage = nil
                     return .run { send in
                         do {
@@ -366,20 +374,24 @@ struct ConnectedView: View {
                     store: store.scope(state: \.deviceHero, action: \.deviceHero)
                 )
                 AmbientView(
-                    store: store.scope(state: \.ambient, action: \.ambient)
+                    store: store.scope(state: \.ambient, action: \.ambient),
+                    focusOnVoiceLoading: store.uiState.focusOnVoiceLoading
                 )
                 if store.headphones.supportsEqualizer {
                     EqualizerView(
                         store: store.scope(state: \.equalizer, action: \.equalizer)
                     )
                     DseeView(
-                        store: store.scope(state: \.dsee, action: \.dsee)
+                        store: store.scope(state: \.dsee, action: \.dsee),
+                        dseeLoading: store.uiState.dseeLoading
                     )
                 }
                 if store.headphones.hasAdaptiveVolume || store.headphones.hasSpeakToChat
                     || store.headphones.hasAutoPowerOff {
                     SettingsView(
-                        store: store.scope(state: \.settings, action: \.settings)
+                        store: store.scope(state: \.settings, action: \.settings),
+                        adaptiveVolumeLoading: store.uiState.adaptiveVolumeLoading,
+                        autoPowerOffLoading: store.uiState.autoPowerOffLoading
                     )
                 }
                 if let error = store.uiState.errorMessage {
@@ -394,27 +406,25 @@ struct ConnectedView: View {
     }
 }
 
-private func previewState() -> HeadphonesState {
-    var state = HeadphonesState(
-        connected: true,
-        deviceModel: .left(.wh1000Xm5),
-        batteryLevel: 80,
-        supportsEqualizer: true,
-        hasAutoPowerOff: true,
-        codec: "LDAC",
-        hasSpeakToChat: true,
-        hasAdaptiveVolume: true
-    )
-    state.eqPreset = EqPreset.excited.rawValue
-    state.adaptiveVolume = true
-    state.autoPowerOff = AutoPowerOffOption.thirtyMinutes.rawValue
-    return state
-}
-
 #Preview {
     ConnectedView(
         store: Store(
-            initialState: .init(headphones: previewState(), showAbout: false),
+            initialState: .init(
+                headphones: HeadphonesState(
+                    connected: true,
+                    deviceModel: .left(.wh1000Xm5),
+                    batteryLevel: 80,
+                    eqPreset: EqPreset.excited.rawValue,
+                    supportsEqualizer: true,
+                    hasAutoPowerOff: true,
+                    autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue,
+                    codec: "LDAC",
+                    hasSpeakToChat: true,
+                    hasAdaptiveVolume: true,
+                    adaptiveVolume: true
+                ),
+                showAbout: false
+            ),
             reducer: ConnectedReducer.init
         )
     )

@@ -38,6 +38,25 @@ import Testing
         )
     }
 
+    @Test func ambientSoundWithFocusOnVoiceLoading() {
+        assertSnapshot(
+            of: SnapshotFixtures.hostingController(
+                AmbientView(
+                    store: SnapshotFixtures.ambientStore(
+                        mode: .ambientSound,
+                        focusOnVoiceAvailable: true
+                    ),
+                    focusOnVoiceLoading: true
+                )
+            ),
+            as: .image(
+                precision: 0.95,
+                perceptualPrecision: 0.95,
+                size: CGSize(width: 380, height: 320)
+            )
+        )
+    }
+
     @Test func off() {
         assertSnapshot(
             of: SnapshotFixtures.hostingController(

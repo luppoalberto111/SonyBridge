@@ -17,17 +17,16 @@ import SwiftUI
 // MARK: - SnapshotFixtures
 
 /// Deterministic `HeadphonesState` values shared by the snapshot tests.
-enum SnapshotFixtures {
+@MainActor enum SnapshotFixtures {
     /// Wraps a SwiftUI view for image snapshotting on macOS.
     ///
     /// swift-snapshot-testing only ships `NSView`/`NSViewController` image
     /// strategies on macOS, so views go through an `NSHostingController`
     /// upcast to `NSViewController`. The color scheme is pinned to Dark so
     /// references stay deterministic regardless of the host Mac's setting.
-    @MainActor
     private static var snapshotWindows: [NSWindow] = []
 
-    @MainActor static func hostingController(_ view: some View) -> NSViewController {
+    static func hostingController(_ view: some View) -> NSViewController {
         let controller = NSHostingController(
             rootView: AnyView(
                 view
@@ -157,6 +156,16 @@ enum SnapshotFixtures {
             )
         ) {
             EqualizerReducer()
+        }
+    }
+
+    static func dseeStore() -> StoreOf<DseeReducer> {
+        Store(
+            initialState: DseeReducer.State(
+                headphones: Shared(value: .init(dsee: false))
+            )
+        ) {
+            DseeReducer()
         }
     }
 
