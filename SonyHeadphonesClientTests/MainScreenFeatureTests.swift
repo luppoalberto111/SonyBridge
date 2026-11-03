@@ -5,9 +5,10 @@ import Testing
 
 @MainActor struct MainScreenFeatureTests {
     @Test func didConnectSwapsToConnectedScreen() async {
-        var snapshot = HeadphonesState()
-        snapshot.connected = true
-        snapshot.deviceModel = .left(.wh1000Xm5)
+        let snapshot = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5)
+        )
 
         let store = TestStore(
             initialState: MainScreenFeature.State.disconnected(DisconnectedReducer.State())
@@ -21,8 +22,7 @@ import Testing
     }
 
     @Test func didDisconnectSwapsBackToDisconnectedScreen() async {
-        var snapshot = HeadphonesState()
-        snapshot.connected = true
+        let snapshot = HeadphonesState(connected: true)
 
         let store = TestStore(
             initialState: MainScreenFeature.State.connected(

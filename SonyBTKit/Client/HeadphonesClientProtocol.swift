@@ -22,14 +22,14 @@ public protocol HeadphonesClientProtocol: Sendable {
     ///
     /// - Returns: The updated snapshot; the caller distinguishes "nothing found" (still disconnected,
     ///            no `errorMessage`) from a real failure (non-nil `errorMessage`).
-    func connectToAutoDevice() async -> HeadphonesState
+    func connectToAutoDevice() async throws -> HeadphonesState
 
     /// Connects to the paired device with the given Bluetooth address.
     ///
     /// - Parameter address: Colon-separated MAC address, as returned by ``pairedDevices()``.
     /// - Returns: The updated snapshot, with `connected` and the capability flags set on success, or
     ///            `errorMessage` filled with user-facing copy on failure.
-    func connect(address: String) async -> HeadphonesState
+    func connect(address: String) async throws -> HeadphonesState
 
     /// Closes the connection and clears the device name.
     ///
@@ -67,19 +67,19 @@ public protocol HeadphonesClientProtocol: Sendable {
     ///
     /// - Parameter newMode: The `SHCAmbientMode` to apply.
     /// - Returns: The snapshot re-synced from the device, or with `errorMessage` set.
-    func setMode(_ newMode: SHCAmbientMode) async -> HeadphonesState
+    func setMode(_ newMode: SHCAmbientMode) async throws -> HeadphonesState
 
     /// Sets the ambient-sound level (only written to the device while ambient mode is active).
     ///
     /// - Parameter level: 1...`maxAmbientLevel`; 0 means "no ambient sound".
     /// - Returns: The updated snapshot.
-    func setLevel(_ level: Int) async -> HeadphonesState
+    func setLevel(_ level: Int) async throws -> HeadphonesState
 
     /// Toggles focus on voice (ambient sound emphasises voices).
     ///
     /// - Parameter on: True to enable, false to disable.
     /// - Returns: The snapshot re-synced from the device, or with `errorMessage` set.
-    func setFocusOnVoice(_ on: Bool) async -> HeadphonesState
+    func setFocusOnVoice(_ on: Bool) async throws -> HeadphonesState
 
     // MARK: Equalizer / DSEE
 
@@ -87,7 +87,7 @@ public protocol HeadphonesClientProtocol: Sendable {
     ///
     /// - Parameter preset: The raw `EQ_PRESET` byte, e.g. `EqPreset.excited.rawValue`.
     /// - Returns: The updated snapshot, or with `errorMessage` set.
-    func setEqualizer(_ preset: Int) async -> HeadphonesState
+    func setEqualizer(_ preset: Int) async throws -> HeadphonesState
 
     /// Manual EQ (preset byte 0xA0 = 160).
     /// Pushes a custom equalizer curve and selects the MANUAL preset.
@@ -96,13 +96,13 @@ public protocol HeadphonesClientProtocol: Sendable {
     ///   - bass: Clear-bass boost in -10...10.
     ///   - bands: The 5 frequency-band gains in -10...10.
     /// - Returns: The updated snapshot, or with `errorMessage` set.
-    func setCustomEq(bass: Int, bands: [Int]) async -> HeadphonesState
+    func setCustomEq(bass: Int, bands: [Int]) async throws -> HeadphonesState
 
     /// Toggles DSEE / audio upsampling (v2 devices only).
     ///
     /// - Parameter on: True to enable, false to disable.
     /// - Returns: The updated snapshot, or with `errorMessage` set.
-    func setDsee(_ on: Bool) async -> HeadphonesState
+    func setDsee(_ on: Bool) async throws -> HeadphonesState
 
     // MARK: Optional features
 
@@ -110,17 +110,17 @@ public protocol HeadphonesClientProtocol: Sendable {
     ///
     /// - Parameter index: 0=Off, 1=5 min, 2=30 min, 3=1 hour, 4=3 hours, 5=when taken off.
     /// - Returns: The updated snapshot, or with `errorMessage` set.
-    func setAutoPowerOff(_ index: Int) async -> HeadphonesState
+    func setAutoPowerOff(_ index: Int) async throws -> HeadphonesState
 
     /// Toggles speak-to-chat.
     ///
     /// - Parameter on: True to enable, false to disable.
     /// - Returns: The updated snapshot, or with `errorMessage` set.
-    func setSpeakToChat(_ on: Bool) async -> HeadphonesState
+    func setSpeakToChat(_ on: Bool) async throws -> HeadphonesState
 
     /// Toggles adaptive volume.
     ///
     /// - Parameter on: True to enable, false to disable.
     /// - Returns: The updated snapshot, or with `errorMessage` set.
-    func setAdaptiveVolume(_ on: Bool) async -> HeadphonesState
+    func setAdaptiveVolume(_ on: Bool) async throws -> HeadphonesState
 }

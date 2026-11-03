@@ -9,9 +9,10 @@ import Testing
     }
 
     @Test func autoConnectSuccessDelegatesDidConnect() async {
-        var connected = HeadphonesState()
-        connected.connected = true
-        connected.deviceModel = .left(.wh1000Xm5)
+        let connected = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5)
+        )
 
         let store = TestStore(initialState: DisconnectedReducer.State()) {
             DisconnectedReducer()
@@ -20,10 +21,10 @@ import Testing
         }
 
         await store.send(.connectButtonTapped) {
-            $0.connecting = true
+            $0.uiState.connecting = true
         }
         await store.receive(\.autoConnectResponse) {
-            $0.connecting = false
+            $0.uiState.connecting = false
         }
         await store.receive(\.delegate)
     }
@@ -38,13 +39,13 @@ import Testing
         }
 
         await store.send(.connectButtonTapped) {
-            $0.connecting = true
+            $0.uiState.connecting = true
         }
         await store.receive(\.autoConnectResponse) {
-            $0.connecting = false
+            $0.uiState.connecting = false
         }
         await store.receive(\.devicesResponse) {
-            $0.errorMessage = String(
+            $0.uiState.errorMessage = String(
                 localized: "DisconnectedView.emptyListHint",
                 defaultValue: emptyListHintDefault
             )
@@ -65,11 +66,11 @@ import Testing
         }
 
         await store.send(.deviceTapped(device)) {
-            $0.connecting = true
-            $0.errorMessage = nil
+            $0.uiState.connecting = true
+            $0.uiState.errorMessage = nil
         }
         await store.receive(\.connectionResponse) {
-            $0.connecting = false
+            $0.uiState.connecting = false
             $0.devices = []
         }
         await store.receive(\.delegate)
@@ -90,12 +91,12 @@ import Testing
         }
 
         await store.send(.deviceTapped(device)) {
-            $0.connecting = true
-            $0.errorMessage = nil
+            $0.uiState.connecting = true
+            $0.uiState.errorMessage = nil
         }
-        await store.receive(\.connectionResponse) {
-            $0.connecting = false
-            $0.errorMessage = "Could not connect."
+        await store.receive(\.connectionFailed) {
+            $0.uiState.connecting = false
+            $0.uiState.errorMessage = "Could not connect."
         }
     }
 
@@ -111,15 +112,15 @@ import Testing
         }
 
         await store.send(.connectButtonTapped) {
-            $0.connecting = true
-            $0.errorMessage = nil
+            $0.uiState.connecting = true
+            $0.uiState.errorMessage = nil
             $0.devices = []
         }
         await store.receive(\.autoConnectResponse) {
-            $0.connecting = false
+            $0.uiState.connecting = false
         }
         await store.receive(\.devicesResponse) {
-            $0.errorMessage = String(
+            $0.uiState.errorMessage = String(
                 localized: "DisconnectedView.emptyListHint",
                 defaultValue: emptyListHintDefault
             )

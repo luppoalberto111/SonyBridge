@@ -6,21 +6,24 @@ import Testing
 
 @MainActor struct ConnectedReducerTests {
     private func connectedState() -> HeadphonesState {
-        var state = HeadphonesState()
-        state.connected = true
-        state.deviceModel = .left(.wh1000Xm5)
-        state.supportsEqualizer = true
-        return state
+        HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            supportsEqualizer: true
+        )
     }
 
     @Test func snapshotReceivedUpdatesEverySharedChildState() async {
-        var snapshot = connectedState()
-        snapshot.mode = .ambientSound
-        snapshot.ambientLevel = 12
-        snapshot.eqPreset = EqPreset.bass.rawValue
-        snapshot.dsee = true
-        snapshot.hasAdaptiveVolume = true
-        snapshot.adaptiveVolume = true
+        let snapshot = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            mode: .ambientSound,
+            ambientLevel: 12,
+            eqPreset: EqPreset.bass.rawValue,
+            dsee: true,
+            hasAdaptiveVolume: true,
+            adaptiveVolume: true
+        )
 
         let store = TestStore(
             initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)
@@ -52,8 +55,8 @@ import Testing
         await store.send(.setMode(.noiseCanceling)) {
             $0.$headphones.withLock {
                 $0.mode = .noiseCanceling
-                $0.errorMessage = nil
             }
+            $0.uiState.errorMessage = nil
         }
         await store.receive(\.snapshotReceived)
 
@@ -85,8 +88,8 @@ import Testing
             $0.$headphones.withLock {
                 $0.eqBands[0] = 5
                 $0.eqPreset = EqPreset.manual.rawValue
-                $0.errorMessage = nil
             }
+            $0.uiState.errorMessage = nil
         }
         await store.receive(\.snapshotReceived)
 

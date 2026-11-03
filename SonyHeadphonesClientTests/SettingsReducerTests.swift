@@ -44,13 +44,14 @@ import Testing
     }
 
     @Test func initSharesCapabilitiesFromHeadphones() {
-        var headphones = HeadphonesState()
-        headphones.hasAdaptiveVolume = true
-        headphones.adaptiveVolume = true
-        headphones.hasSpeakToChat = true
-        headphones.speakToChat = true
-        headphones.hasAutoPowerOff = true
-        headphones.autoPowerOff = 99
+        let headphones = HeadphonesState(
+            hasAutoPowerOff: true,
+            autoPowerOff: 99,
+            hasSpeakToChat: true,
+            speakToChat: true,
+            hasAdaptiveVolume: true,
+            adaptiveVolume: true
+        )
 
         let state = SettingsReducer.State(headphones: Shared(value: headphones))
 

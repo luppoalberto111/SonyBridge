@@ -60,34 +60,35 @@ enum SnapshotFixtures {
     }
 
     static func singleBatteryHeadphones() -> HeadphonesState {
-        var state = HeadphonesState()
-        state.connected = true
-        state.deviceModel = .left(.wh1000Xm5)
-        state.batteryLevel = 80
-        state.codec = "LDAC"
-        state.firmware = "2.0.0"
-        state.protocolVersion = "v2"
-        state.deviceMac = "AA:BB:CC:DD:EE:FF"
-        state.supportsEqualizer = true
-        state.eqPreset = EqPreset.excited.rawValue
-        state.hasAdaptiveVolume = true
-        state.adaptiveVolume = true
-        state.hasSpeakToChat = true
-        state.hasAutoPowerOff = true
-        state.autoPowerOff = AutoPowerOffOption.thirtyMinutes.rawValue
-        return state
+        HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            batteryLevel: 80,
+            eqPreset: EqPreset.excited.rawValue,
+            supportsEqualizer: true,
+            hasAutoPowerOff: true,
+            autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue,
+            firmware: "2.0.0",
+            codec: "LDAC",
+            hasSpeakToChat: true,
+            hasAdaptiveVolume: true,
+            adaptiveVolume: true,
+            deviceMac: "AA:BB:CC:DD:EE:FF",
+            protocolVersion: "v2"
+        )
     }
 
     static func dualBatteryHeadphones() -> HeadphonesState {
-        var state = HeadphonesState()
-        state.connected = true
-        state.deviceModel = .left(.wf1000Xm5)
-        state.hasDualBattery = true
-        state.batteryLeft = 80
-        state.batteryRight = 75
-        state.batteryCase = 50
-        state.batteryLevel = -1
-        state.codec = "AAC"
+        let state = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wf1000Xm5),
+            batteryLevel: -1,
+            hasDualBattery: true,
+            batteryLeft: 80,
+            batteryRight: 75,
+            batteryCase: 50,
+            codec: "AAC"
+        )
         return state
     }
 

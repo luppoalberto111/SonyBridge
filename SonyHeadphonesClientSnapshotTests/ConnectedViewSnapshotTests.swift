@@ -25,9 +25,7 @@ import Testing
     }
 
     @Test func minimalHeadphones() {
-        var headphones = HeadphonesState()
-        headphones.connected = true
-        headphones.deviceModel = .left(.whCh720N)
+        let headphones = HeadphonesState(connected: true, deviceModel: .left(.whCh720N))
 
         assertSnapshot(
             of: SnapshotFixtures.hostingController(

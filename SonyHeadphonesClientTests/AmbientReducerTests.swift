@@ -44,12 +44,13 @@ import Testing
     }
 
     @Test func initSharesEveryAmbientFieldFromHeadphones() {
-        var headphones = HeadphonesState()
-        headphones.mode = .ambientSound
-        headphones.ambientLevel = 14
-        headphones.maxAmbientLevel = 18
-        headphones.focusOnVoice = true
-        headphones.focusOnVoiceAvailable = true
+        let headphones = HeadphonesState(
+            maxAmbientLevel: 18,
+            mode: .ambientSound,
+            ambientLevel: 14,
+            focusOnVoice: true,
+            focusOnVoiceAvailable: true
+        )
 
         let state = AmbientReducer.State(headphones: Shared(value: headphones))
 

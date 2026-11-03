@@ -165,15 +165,15 @@ struct DeviceHeroView: View {
 }
 
 private func previewHeadphones() -> HeadphonesState {
-    var state = HeadphonesState()
-    state.connected = true
-    state.deviceModel = .left(.wh1000Xm5)
-    state.batteryLevel = 80
-    state.codec = "LDAC"
-    state.firmware = "2.0.0"
-    state.protocolVersion = "v2"
-    state.deviceMac = "AA:BB:CC:DD:EE:FF"
-    return state
+    HeadphonesState(
+        connected: true,
+        deviceModel: .left(.wh1000Xm5),
+        batteryLevel: 80,
+        firmware: "2.0.0",
+        codec: "LDAC",
+        deviceMac: "AA:BB:CC:DD:EE:FF",
+        protocolVersion: "v2"
+    )
 }
 
 #Preview {
@@ -185,19 +185,4 @@ private func previewHeadphones() -> HeadphonesState {
     )
 }
 
-#Preview {
-    var dual = previewHeadphones()
-    dual.deviceModel = .left(.wh1000Xm5)
-    dual.hasDualBattery = true
-    dual.batteryLeft = 80
-    dual.batteryRight = 75
-    dual.batteryCase = 50
-    dual.batteryLevel = -1
-    dual.codec = ""
-    return DeviceHeroView(
-        store: Store(
-            initialState: .init(headphones: .init(value: dual)),
-            reducer: DeviceHeroReducer.init
-        )
-    )
-}
+// (preview removed)

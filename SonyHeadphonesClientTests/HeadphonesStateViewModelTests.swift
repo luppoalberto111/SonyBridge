@@ -4,15 +4,15 @@ import Testing
 
 struct HeadphonesStateViewModelTests {
     @Test func deviceHeroModelCarriesIdentityBatteryAndCodec() {
-        var state = HeadphonesState()
-        state.connected = true
-        state.deviceModel = .left(.wh1000Xm5)
-        state.batteryLevel = 80
-        state.codec = "LDAC"
-        state.firmware = "2.0.0"
-        state.protocolVersion = "v2"
-        state.deviceMac = "AA:BB:CC:DD:EE:FF"
-
+        let state = HeadphonesState(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            batteryLevel: 80,
+            firmware: "2.0.0",
+            codec: "LDAC",
+            deviceMac: "AA:BB:CC:DD:EE:FF",
+            protocolVersion: "v2"
+        )
         let model = state.deviceHeroModel
 
         #expect(model.deviceName == "WH-1000XM5")
@@ -27,12 +27,13 @@ struct HeadphonesStateViewModelTests {
     }
 
     @Test func deviceHeroModelCarriesDualBatteryReadings() {
-        var state = HeadphonesState()
-        state.hasDualBattery = true
-        state.batteryLeft = 80
-        state.batteryRight = 75
-        state.batteryCase = 50
-        state.batteryLevel = -1
+        let state = HeadphonesState(
+            batteryLevel: -1,
+            hasDualBattery: true,
+            batteryLeft: 80,
+            batteryRight: 75,
+            batteryCase: 50
+        )
 
         let model = state.deviceHeroModel
 
@@ -50,9 +51,7 @@ struct HeadphonesStateViewModelTests {
     }
 
     private func batteryState(level: Int, charging: Bool) -> BatteryState {
-        var state = HeadphonesState()
-        state.batteryLevel = level
-        state.batteryCharging = charging
+        let state = HeadphonesState(batteryLevel: level, batteryCharging: charging)
         return state.batteryState
     }
 }

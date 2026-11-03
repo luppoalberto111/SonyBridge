@@ -8,19 +8,16 @@ import Foundation
 /// and the MainActor store without data races.
 public struct HeadphonesState: Sendable, Equatable {
     /// True once a connection to a headset is established.
-    public var connected: Bool
-
-    /// True while a connection attempt is in flight (drives the "Connecting…" UI).
-    public var connecting: Bool
+    public internal(set) var connected: Bool
 
     /// The connected model, resolved from the advertised Bluetooth name.
-    public var deviceModel: Either<DeviceModel, String>?
+    public internal(set) var deviceModel: Either<DeviceModel, String>?
 
     /// Whether the v1-only surround/virtual-position commands are usable (v1 devices only).
-    public var supportsVpt: Bool
+    public internal(set) var supportsVpt: Bool
 
     /// The maximum ambient level the slider should offer: 19 on v1, 20 on v2 devices.
-    public var maxAmbientLevel: Int
+    public internal(set) var maxAmbientLevel: Int
 
     /// The current noise-control mode (off / noise cancelling / ambient sound).
     public var mode: SHCAmbientMode
@@ -32,31 +29,31 @@ public struct HeadphonesState: Sendable, Equatable {
     public var focusOnVoice: Bool
 
     /// Whether focus on voice is offered at the current level (ambient on, level above 2).
-    public var focusOnVoiceAvailable: Bool
+    public internal(set) var focusOnVoiceAvailable: Bool
 
     /// Overall battery percentage, or -1 while still unknown.
-    public var batteryLevel: Int
+    public internal(set) var batteryLevel: Int
 
     /// Whether the device reported itself as charging.
-    public var batteryCharging: Bool
+    public internal(set) var batteryCharging: Bool
 
     /// True for TWS earbuds, which also report per-earbud and case levels.
-    public var hasDualBattery: Bool
+    public internal(set) var hasDualBattery: Bool
 
     /// Left earbud percentage, or -1 if not applicable/unknown.
-    public var batteryLeft: Int
+    public internal(set) var batteryLeft: Int
 
     /// Right earbud percentage, or -1 if not applicable/unknown.
-    public var batteryRight: Int
+    public internal(set) var batteryRight: Int
 
     /// Charging-case percentage, or -1 if not applicable/unknown.
-    public var batteryCase: Int
+    public internal(set) var batteryCase: Int
 
     /// The raw equalizer preset byte (`EQ_PRESET`, e.g. 0x00 Off, 0xA0 Manual).
     public var eqPreset: Int
 
     /// Whether the device exposes the equalizer (v2 protocol only).
-    public var supportsEqualizer: Bool
+    public internal(set) var supportsEqualizer: Bool
 
     /// The 5 equalizer band gains in -10...10, ordered low to high frequency.
     public var eqBands: [Int]
@@ -68,42 +65,37 @@ public struct HeadphonesState: Sendable, Equatable {
     public var dsee: Bool
 
     /// Whether the auto-power-off probe succeeded; if false, the setting must not be shown.
-    public var hasAutoPowerOff: Bool
+    public internal(set) var hasAutoPowerOff: Bool
 
     /// Auto-power-off delay: 0=Off, 1=5 min, 2=30 min, 3=1 hour, 4=3 hours, 5=when taken off.
     public var autoPowerOff: Int
 
     /// The firmware version string, empty when unknown.
-    public var firmware: String
+    public internal(set) var firmware: String
 
     /// The active Bluetooth codec ("SBC", "AAC", "LDAC", "aptX", "aptX HD"), empty when unknown.
-    public var codec: String
+    public internal(set) var codec: String
 
     /// Whether the speak-to-chat probe succeeded; if false, the toggle must not be shown.
-    public var hasSpeakToChat: Bool
+    public internal(set) var hasSpeakToChat: Bool
 
     /// Whether speak-to-chat is enabled on the device.
     public var speakToChat: Bool
 
     /// Whether the adaptive-volume probe succeeded; if false, the toggle must not be shown.
-    public var hasAdaptiveVolume: Bool
+    public internal(set) var hasAdaptiveVolume: Bool
 
     /// Whether adaptive volume is enabled on the device.
     public var adaptiveVolume: Bool
 
     /// The headset's MAC address, empty when not connected.
-    public var deviceMac: String
+    public internal(set) var deviceMac: String
 
     /// Which Sony protocol generation the headset speaks: "v1", "v2", or empty when not connected.
-    public var protocolVersion: String
-
-    /// The last user-facing error message, or nil when the most recent operation succeeded.
-    /// Rendered under the controls by `ConnectedView`.
-    public var errorMessage: String?
+    public internal(set) var protocolVersion: String
 
     public init(
         connected: Bool = false,
-        connecting: Bool = false,
         deviceModel: Either<DeviceModel, String>? = nil,
         supportsVpt: Bool = false,
         maxAmbientLevel: Int = 20,
@@ -131,11 +123,9 @@ public struct HeadphonesState: Sendable, Equatable {
         hasAdaptiveVolume: Bool = false,
         adaptiveVolume: Bool = false,
         deviceMac: String = "",
-        protocolVersion: String = "",
-        errorMessage: String? = nil
+        protocolVersion: String = ""
     ) {
         self.connected = connected
-        self.connecting = connecting
         self.deviceModel = deviceModel
         self.supportsVpt = supportsVpt
         self.maxAmbientLevel = maxAmbientLevel
@@ -164,7 +154,6 @@ public struct HeadphonesState: Sendable, Equatable {
         self.adaptiveVolume = adaptiveVolume
         self.deviceMac = deviceMac
         self.protocolVersion = protocolVersion
-        self.errorMessage = errorMessage
     }
 }
 

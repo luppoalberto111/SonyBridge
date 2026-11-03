@@ -44,6 +44,7 @@
 		F72387E4309129B60023FA02 /* MenuBarApplicationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F72387DC309129B50023FA02 /* MenuBarApplicationClient.swift */; };
 		F76B57F5305815DA00449C1F /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F76B57F4305815DA00449C1F /* ComposableArchitecture */; };
 		F7EAEFD23053FBB600018001 /* HeadphonesCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */; };
+		F7EAEFFA05421900018001 /* HeadphonesUIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFF9054218500018001 /* HeadphonesUIState.swift */; };
 		F7EAEFDB30541E4D00018001 /* DisconnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */; };
 		F7EAEFDF30541F4700018001 /* ConnectedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFDE30541F4400018001 /* ConnectedView.swift */; };
 		F7EAEFE130541F9E00018001 /* ModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFE030541F9B00018001 /* ModeButton.swift */; };
@@ -130,6 +131,7 @@
 		F72387DD309129B50023FA02 /* MenuBarFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarFeature.swift; sourceTree = "<group>"; };
 		F72387DE309129B50023FA02 /* MenuBarKitAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarKitAppDelegate.swift; sourceTree = "<group>"; };
 		F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesCommands.swift; sourceTree = "<group>"; };
+		F7EAEFF9054218500018001 /* HeadphonesUIState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadphonesUIState.swift; sourceTree = "<group>"; };
 		F7EAEFDA30541DEF00018001 /* DisconnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisconnectedView.swift; sourceTree = "<group>"; };
 		F7EAEFDE30541F4400018001 /* ConnectedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectedView.swift; sourceTree = "<group>"; };
 		F7EAEFE030541F9B00018001 /* ModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeButton.swift; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				F7EAEFE8305420E100018001 /* AutoPowerOffOption.swift */,
 				F7EAEFF305421600018001 /* EqBand.swift */,
 				F7EAEFD13053FBB200018001 /* HeadphonesCommands.swift */,
+				F7EAEFF9054218500018001 /* HeadphonesUIState.swift */,
 				F7EAEFE23057D8AB00018001 /* EqPreset.swift */,
 			);
 			path = Models;
@@ -547,6 +550,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F7EAEFD23053FBB600018001 /* HeadphonesCommands.swift in Sources */,
+				F7EAEFFA05421900018001 /* HeadphonesUIState.swift in Sources */,
 				CC000000000000000000000A /* AppDelegate.swift in Sources */,
 				CC0000000000000000000004 /* MainScreenFeature.swift in Sources */,
 				F7EAEFDB30541E4D00018001 /* DisconnectedView.swift in Sources */,
