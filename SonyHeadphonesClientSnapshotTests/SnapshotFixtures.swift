@@ -124,7 +124,8 @@ import SwiftUI
 
     static func ambientStore(
         mode: SHCAmbientMode,
-        focusOnVoiceAvailable: Bool = false
+        focusOnVoiceAvailable: Bool = false,
+        focusOnVoiceLoading: Bool
     ) -> StoreOf<AmbientReducer> {
         Store(
             initialState: AmbientReducer.State(
@@ -136,7 +137,8 @@ import SwiftUI
                         focusOnVoice: false,
                         focusOnVoiceAvailable: focusOnVoiceAvailable
                     )
-                )
+                ),
+                uiState: .init(value: .init(focusOnVoiceLoading: focusOnVoiceLoading))
             )
         ) {
             AmbientReducer()
@@ -159,17 +161,20 @@ import SwiftUI
         }
     }
 
-    static func dseeStore() -> StoreOf<DseeReducer> {
+    static func dseeStore(dseeLoading: Bool) -> StoreOf<DseeReducer> {
         Store(
             initialState: DseeReducer.State(
-                headphones: Shared(value: .init(dsee: false))
-            )
-        ) {
-            DseeReducer()
-        }
+                headphones: Shared(value: .init(dsee: dseeLoading)),
+                uiState: .init(value: .init())
+            ),
+            reducer: DseeReducer.init
+        )
     }
 
-    static func settingsStore() -> StoreOf<SettingsReducer> {
+    static func settingsStore(
+        autoPowerOffLoading: Bool,
+        adaptiveVolumeLoading: Bool
+    ) -> StoreOf<SettingsReducer> {
         Store(
             initialState: SettingsReducer.State(
                 headphones: Shared(
@@ -181,19 +186,25 @@ import SwiftUI
                         hasAdaptiveVolume: true,
                         adaptiveVolume: true
                     )
+                ),
+                uiState: .init(
+                    value: .init(
+                        adaptiveVolumeLoading: adaptiveVolumeLoading,
+                        autoPowerOffLoading: autoPowerOffLoading
+                    )
                 )
-            )
-        ) {
-            SettingsReducer()
-        }
+            ),
+            reducer: SettingsReducer.init
+        )
     }
 
     static func deviceHeroStore(
         headphones: HeadphonesState
     ) -> StoreOf<DeviceHeroReducer> {
-        Store(initialState: DeviceHeroReducer.State(headphones: Shared(value: headphones))) {
-            DeviceHeroReducer()
-        }
+        Store(
+            initialState: DeviceHeroReducer.State(headphones: .init(value: headphones)),
+            reducer: DeviceHeroReducer.init
+        )
     }
 
     static func connectedStore(
@@ -203,10 +214,9 @@ import SwiftUI
             initialState: ConnectedReducer.State(
                 headphones: headphones,
                 showAbout: false
-            )
+            ),
+            reducer: ConnectedReducer.init
         ) {
-            ConnectedReducer()
-        } withDependencies: {
             $0.continuousClock = TestClock<Duration>()
             $0.headphonesClient = HeadphonesTestClient(state: headphones)
         }
@@ -221,9 +231,7 @@ import SwiftUI
         } else {
             headphones = HeadphonesState()
         }
-        return Store(initialState: state) {
-            MainScreenFeature()
-        } withDependencies: {
+        return Store(initialState: state, reducer: MainScreenFeature.init) {
             $0.continuousClock = TestClock<Duration>()
             $0.headphonesClient = HeadphonesTestClient(state: headphones)
         }

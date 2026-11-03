@@ -12,6 +12,7 @@ import SwiftUI
         var uiState: HeadphonesUIState
         var adaptiveVolumeLoading = false
         var autoPowerOffLoading = false
+        var speakToChatLoading = false
     }
 
     enum Action {
@@ -69,7 +70,14 @@ struct SettingsView: View {
                     "SettingsView.speakToChat.title",
                     "SettingsView.speakToChat.subtitle",
                     on: store.headphones.speakToChat
-                ) { store.send(.setSpeakToChat($0)) }
+                ) {
+                    store.send(.setSpeakToChat($0))
+                }
+                .disabled(store.speakToChatLoading)
+                if store.speakToChatLoading {
+                    ProgressView()
+                        .controlSize(.mini)
+                }
             }
             if store.headphones.hasAutoPowerOff {
                 HStack {

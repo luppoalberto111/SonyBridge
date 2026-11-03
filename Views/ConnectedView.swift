@@ -255,7 +255,7 @@ import SwiftUI
                     }
 
                 case let .setSpeakToChat(on):
-                    state.$headphones.withLock { $0.speakToChat = on }
+                    state.settings.speakToChatLoading = true
                     state.$uiState.withLock { $0.errorMessage = nil }
                     return .run { send in
                         do {

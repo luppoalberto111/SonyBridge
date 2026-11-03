@@ -10,7 +10,7 @@ import Testing
     @Test func off() {
         assertSnapshot(
             of: SnapshotFixtures.hostingController(
-                DseeView(store: SnapshotFixtures.dseeStore())
+                DseeView(store: SnapshotFixtures.dseeStore(dseeLoading: false))
             ),
             as: .image(
                 precision: 0.95,
@@ -24,8 +24,7 @@ import Testing
         assertSnapshot(
             of: SnapshotFixtures.hostingController(
                 DseeView(
-                    store: SnapshotFixtures.dseeStore(),
-                    dseeLoading: true
+                    store: SnapshotFixtures.dseeStore(dseeLoading: true)
                 )
             ),
             as: .image(

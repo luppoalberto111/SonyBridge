@@ -80,7 +80,7 @@ public struct HeadphonesState: Sendable, Equatable {
     public internal(set) var hasSpeakToChat: Bool
 
     /// Whether speak-to-chat is enabled on the device.
-    public var speakToChat: Bool
+    public internal(set) var speakToChat: Bool
 
     /// Whether the adaptive-volume probe succeeded; if false, the toggle must not be shown.
     public internal(set) var hasAdaptiveVolume: Bool

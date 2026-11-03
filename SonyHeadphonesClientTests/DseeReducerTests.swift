@@ -7,21 +7,20 @@ import Testing
     @Test func setDseeDelegates() async {
         let store = TestStore(
             initialState: DseeReducer.State(
-                headphones: Shared(value: HeadphonesState())
-            )
-        ) {
-            DseeReducer()
-        }
+                headphones: Shared(value: HeadphonesState()), uiState: .init(value: .init())
+            ),
+            reducer: DseeReducer.init
+        )
 
         await store.send(.setDsee(true))
         await store.receive(\.delegate)
     }
 
     @Test func initSharesDseeFlagFromHeadphones() {
-        var headphones = HeadphonesState()
-        headphones.dsee = true
-
-        let state = DseeReducer.State(headphones: Shared(value: headphones))
+        let state = DseeReducer.State(
+            headphones: .init(value: .init(dsee: true)),
+            uiState: .init(value: .init())
+        )
 
         #expect(state.headphones.dsee)
     }

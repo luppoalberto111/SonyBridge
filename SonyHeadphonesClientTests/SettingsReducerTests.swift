@@ -7,11 +7,10 @@ import Testing
     @Test func setAdaptiveVolumeDelegates() async {
         let store = TestStore(
             initialState: SettingsReducer.State(
-                headphones: Shared(value: HeadphonesState())
-            )
-        ) {
-            SettingsReducer()
-        }
+                headphones: Shared(value: HeadphonesState()), uiState: .init(value: .init())
+            ),
+            reducer: SettingsReducer.init
+        )
 
         await store.send(.setAdaptiveVolume(true))
         await store.receive(\.delegate)
@@ -20,11 +19,11 @@ import Testing
     @Test func setSpeakToChatDelegates() async {
         let store = TestStore(
             initialState: SettingsReducer.State(
-                headphones: Shared(value: HeadphonesState())
-            )
-        ) {
-            SettingsReducer()
-        }
+                headphones: Shared(value: HeadphonesState()),
+                uiState: .init(value: .init())
+            ),
+            reducer: SettingsReducer.init
+        )
 
         await store.send(.setSpeakToChat(true))
         await store.receive(\.delegate)
@@ -33,7 +32,7 @@ import Testing
     @Test func setAutoPowerOffDelegates() async {
         let store = TestStore(
             initialState: SettingsReducer.State(
-                headphones: Shared(value: HeadphonesState())
+                headphones: Shared(value: HeadphonesState()), uiState: .init(value: .init())
             )
         ) {
             SettingsReducer()
@@ -53,7 +52,9 @@ import Testing
             adaptiveVolume: true
         )
 
-        let state = SettingsReducer.State(headphones: Shared(value: headphones))
+        let state = SettingsReducer.State(
+            headphones: Shared(value: headphones), uiState: .init(value: .init())
+        )
 
         #expect(state.headphones.hasAdaptiveVolume)
         #expect(state.headphones.adaptiveVolume)

@@ -10,7 +10,12 @@ import Testing
     @Test func noiseCanceling() {
         assertSnapshot(
             of: SnapshotFixtures.hostingController(
-                AmbientView(store: SnapshotFixtures.ambientStore(mode: .noiseCanceling))
+                AmbientView(
+                    store: SnapshotFixtures.ambientStore(
+                        mode: .noiseCanceling,
+                        focusOnVoiceLoading: false
+                    )
+                )
             ),
             as: .image(
                 precision: 0.95,
@@ -26,7 +31,8 @@ import Testing
                 AmbientView(
                     store: SnapshotFixtures.ambientStore(
                         mode: .ambientSound,
-                        focusOnVoiceAvailable: true
+                        focusOnVoiceAvailable: true,
+                        focusOnVoiceLoading: false
                     )
                 )
             ),
@@ -44,9 +50,9 @@ import Testing
                 AmbientView(
                     store: SnapshotFixtures.ambientStore(
                         mode: .ambientSound,
-                        focusOnVoiceAvailable: true
-                    ),
-                    focusOnVoiceLoading: true
+                        focusOnVoiceAvailable: true,
+                        focusOnVoiceLoading: true
+                    )
                 )
             ),
             as: .image(
@@ -60,7 +66,10 @@ import Testing
     @Test func off() {
         assertSnapshot(
             of: SnapshotFixtures.hostingController(
-                AmbientView(store: SnapshotFixtures.ambientStore(mode: .off))
+                AmbientView(store: SnapshotFixtures.ambientStore(
+                    mode: .off,
+                    focusOnVoiceLoading: false
+                ))
             ),
             as: .image(
                 precision: 0.95,

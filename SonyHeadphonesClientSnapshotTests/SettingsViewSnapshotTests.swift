@@ -10,7 +10,9 @@ import Testing
     @Test func allCapabilitiesAvailable() {
         assertSnapshot(
             of: SnapshotFixtures.hostingController(
-                SettingsView(store: SnapshotFixtures.settingsStore())
+                SettingsView(store: SnapshotFixtures
+                    .settingsStore(autoPowerOffLoading: false, adaptiveVolumeLoading: false)
+                )
             ),
             as: .image(
                 precision: 0.95,
@@ -24,8 +26,8 @@ import Testing
         assertSnapshot(
             of: SnapshotFixtures.hostingController(
                 SettingsView(
-                    store: SnapshotFixtures.settingsStore(),
-                    adaptiveVolumeLoading: true
+                    store: SnapshotFixtures
+                        .settingsStore(autoPowerOffLoading: false, adaptiveVolumeLoading: true)
                 )
             ),
             as: .image(
@@ -40,8 +42,8 @@ import Testing
         assertSnapshot(
             of: SnapshotFixtures.hostingController(
                 SettingsView(
-                    store: SnapshotFixtures.settingsStore(),
-                    autoPowerOffLoading: true
+                    store: SnapshotFixtures
+                        .settingsStore(autoPowerOffLoading: true, adaptiveVolumeLoading: false)
                 )
             ),
             as: .image(
