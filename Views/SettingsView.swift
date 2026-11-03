@@ -8,6 +8,10 @@ import SwiftUI
     @ObservableState struct State: Equatable {
         @Shared
         var headphones: HeadphonesState
+        @Shared
+        var uiState: HeadphonesUIState
+        var adaptiveVolumeLoading = false
+        var autoPowerOffLoading = false
     }
 
     enum Action {
@@ -47,14 +51,6 @@ import SwiftUI
 struct SettingsView: View {
     let store: StoreOf<SettingsReducer>
 
-    /// True while the device is still applying an adaptive-volume change; that toggle is disabled
-    /// and keeps its previous value until the write is confirmed.
-    var adaptiveVolumeLoading = false
-
-    /// True while the device is still applying an auto-power-off change; that picker is disabled
-    /// and keeps its previous value until the write is confirmed.
-    var autoPowerOffLoading = false
-
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("SettingsView.title")
@@ -65,7 +61,7 @@ struct SettingsView: View {
                     "SettingsView.adaptiveVolume.title",
                     "SettingsView.adaptiveVolume.subtitle",
                     on: store.headphones.adaptiveVolume,
-                    loading: adaptiveVolumeLoading
+                    loading: store.adaptiveVolumeLoading
                 ) { store.send(.setAdaptiveVolume($0)) }
             }
             if store.headphones.hasSpeakToChat {
@@ -86,7 +82,7 @@ struct SettingsView: View {
                             .foregroundColor(Color(.foregroundSecondary))
                     }
                     Spacer()
-                    if autoPowerOffLoading {
+                    if store.uiState.autoPowerOffLoading {
                         ProgressView()
                             .controlSize(.mini)
                     }
@@ -104,7 +100,7 @@ struct SettingsView: View {
                     .pickerStyle(MenuPickerStyle())
                     .frame(width: 130)
                     .accentColor(.highlight)
-                    .disabled(autoPowerOffLoading)
+                    .disabled(store.uiState.autoPowerOffLoading)
                 }
             }
         }
@@ -153,7 +149,8 @@ struct SettingsView: View {
                         hasAdaptiveVolume: true,
                         adaptiveVolume: true,
                     )
-                )
+                ),
+                uiState: .init(value: .init())
             ),
             reducer: SettingsReducer.init
         )
@@ -173,7 +170,8 @@ struct SettingsView: View {
                         hasAdaptiveVolume: false,
                         adaptiveVolume: false
                     )
-                )
+                ),
+                uiState: .init(value: .init())
             ),
             reducer: SettingsReducer.init
         )

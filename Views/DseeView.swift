@@ -8,6 +8,8 @@ import SwiftUI
     @ObservableState struct State: Equatable {
         @Shared
         var headphones: HeadphonesState
+        @Shared
+        var uiState: HeadphonesUIState
     }
 
     enum Action {
@@ -37,10 +39,6 @@ import SwiftUI
 struct DseeView: View {
     let store: StoreOf<DseeReducer>
 
-    /// True while the device is still applying a DSEE change; the toggle is disabled and keeps its
-    /// previous value until the write is confirmed.
-    var dseeLoading = false
-
     var body: some View {
         HStack(spacing: 8) {
             Toggle(isOn: Binding(
@@ -55,9 +53,9 @@ struct DseeView: View {
                 }
             }
             .toggleStyle(SwitchToggleStyle(tint: Color.highlight))
-            .disabled(dseeLoading)
+            .disabled(store.uiState.dseeLoading)
 
-            if dseeLoading {
+            if store.uiState.dseeLoading {
                 ProgressView()
                     .controlSize(.mini)
             }
@@ -72,7 +70,10 @@ struct DseeView: View {
 #Preview {
     DseeView(
         store: Store(
-            initialState: .init(headphones: .init(value: .init(dsee: true))),
+            initialState: .init(
+                headphones: .init(value: .init(dsee: true)),
+                uiState: .init(value: .init())
+            ),
             reducer: DseeReducer.init
         )
     )
@@ -81,7 +82,10 @@ struct DseeView: View {
 #Preview {
     DseeView(
         store: Store(
-            initialState: .init(headphones: .init(value: .init(dsee: false))),
+            initialState: .init(
+                headphones: .init(value: .init(dsee: false)),
+                uiState: .init(value: .init())
+            ),
             reducer: DseeReducer.init
         )
     )

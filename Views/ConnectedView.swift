@@ -10,7 +10,8 @@ import SwiftUI
     @ObservableState struct State: Equatable {
         @Shared
         var headphones: HeadphonesState
-        var uiState: HeadphonesUIState = .init()
+        @Shared
+        var uiState: HeadphonesUIState
         var deviceHero: DeviceHeroReducer.State
         var ambient: AmbientReducer.State
         var equalizer: EqualizerReducer.State
@@ -23,12 +24,13 @@ import SwiftUI
         ) {
             let shared = Shared(value: headphones)
             self._headphones = shared
-            self.uiState = .init()
+            let sharedUIState = Shared(value: HeadphonesUIState())
+            self._uiState = sharedUIState
             self.deviceHero = .init(headphones: shared, showAbout: showAbout)
-            self.ambient = .init(headphones: shared)
+            self.ambient = .init(headphones: shared, uiState: sharedUIState)
             self.equalizer = .init(headphones: shared)
-            self.dsee = .init(headphones: shared)
-            self.settings = .init(headphones: shared)
+            self.dsee = .init(headphones: shared, uiState: sharedUIState)
+            self.settings = .init(headphones: shared, uiState: sharedUIState)
         }
     }
 
@@ -133,19 +135,24 @@ import SwiftUI
 
                 case let .snapshotReceived(snap):
                     state.$headphones.withLock { $0 = snap }
-                    state.uiState.errorMessage = nil
-                    state.uiState.focusOnVoiceLoading = false
-                    state.uiState.adaptiveVolumeLoading = false
-                    state.uiState.autoPowerOffLoading = false
-                    state.uiState.dseeLoading = false
+                    state.$uiState.withLock {
+                        $0.errorMessage = nil
+                        $0.focusOnVoiceLoading = false
+                        $0.adaptiveVolumeLoading = false
+                        $0.autoPowerOffLoading = false
+                        $0.dseeLoading = false
+                    }
+
                     return .none
 
                 case let .setError(message):
-                    state.uiState.errorMessage = message
-                    state.uiState.focusOnVoiceLoading = false
-                    state.uiState.adaptiveVolumeLoading = false
-                    state.uiState.autoPowerOffLoading = false
-                    state.uiState.dseeLoading = false
+                    state.$uiState.withLock {
+                        $0.errorMessage = message
+                        $0.focusOnVoiceLoading = false
+                        $0.adaptiveVolumeLoading = false
+                        $0.autoPowerOffLoading = false
+                        $0.dseeLoading = false
+                    }
                     return .none
 
                 case .disconnectButtonTapped:
@@ -153,7 +160,9 @@ import SwiftUI
 
                 case let .setMode(mode):
                     state.$headphones.withLock { $0.mode = mode }
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock {
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client.setMode(mode)))
@@ -164,7 +173,9 @@ import SwiftUI
 
                 case let .setLevel(level):
                     state.$headphones.withLock { $0.ambientLevel = level }
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock {
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client.setLevel(level)))
@@ -174,8 +185,10 @@ import SwiftUI
                     }
 
                 case let .setFocusOnVoice(on):
-                    state.uiState.focusOnVoiceLoading = true
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock {
+                        $0.errorMessage = nil
+                        $0.focusOnVoiceLoading = true
+                    }
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client.setFocusOnVoice(on)))
@@ -186,7 +199,7 @@ import SwiftUI
 
                 case let .setEqualizer(preset):
                     state.$headphones.withLock { $0.eqPreset = preset }
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock { $0.errorMessage = nil }
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client.setEqualizer(preset)))
@@ -202,7 +215,7 @@ import SwiftUI
                         headphones.eqPreset = 0xA0
                         return (headphones.clearBass, headphones.eqBands)
                     }
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock { $0.errorMessage = nil }
                     return customEqEffect(bass: bass, bands: bands)
 
                 case let .setClearBass(value):
@@ -211,12 +224,14 @@ import SwiftUI
                         headphones.eqPreset = 0xA0
                         return headphones.eqBands
                     }
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock { $0.errorMessage = nil }
                     return customEqEffect(bass: value, bands: bands)
 
                 case let .setDsee(on):
-                    state.uiState.dseeLoading = true
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock {
+                        $0.errorMessage = nil
+                        $0.dseeLoading = true
+                    }
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client.setDsee(on)))
@@ -226,8 +241,10 @@ import SwiftUI
                     }
 
                 case let .setAutoPowerOff(option):
-                    state.uiState.autoPowerOffLoading = true
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock {
+                        $0.errorMessage = nil
+                        $0.autoPowerOffLoading = true
+                    }
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client
@@ -239,7 +256,7 @@ import SwiftUI
 
                 case let .setSpeakToChat(on):
                     state.$headphones.withLock { $0.speakToChat = on }
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock { $0.errorMessage = nil }
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client.setSpeakToChat(on)))
@@ -249,8 +266,11 @@ import SwiftUI
                     }
 
                 case let .setAdaptiveVolume(on):
-                    state.uiState.adaptiveVolumeLoading = true
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock {
+                        $0.adaptiveVolumeLoading = true
+                        $0.errorMessage = nil
+                    }
+
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client.setAdaptiveVolume(on)))
@@ -266,7 +286,7 @@ import SwiftUI
 
                 case let .dynamicTickResponse(snap):
                     state.$headphones.withLock { $0 = snap }
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock { $0.errorMessage = nil }
                     return .none
 
                 case .watchTick:
@@ -276,7 +296,7 @@ import SwiftUI
 
                 case let .watchTickResponse(snap):
                     state.$headphones.withLock { $0 = snap }
-                    state.uiState.errorMessage = nil
+                    state.$uiState.withLock { $0.errorMessage = nil }
                     if snap.connected {
                         return .none
                     }
@@ -370,29 +390,17 @@ struct ConnectedView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 16) {
-                DeviceHeroView(
-                    store: store.scope(state: \.deviceHero, action: \.deviceHero)
-                )
-                AmbientView(
-                    store: store.scope(state: \.ambient, action: \.ambient),
-                    focusOnVoiceLoading: store.uiState.focusOnVoiceLoading
-                )
+                DeviceHeroView(store: store.scope(state: \.deviceHero, action: \.deviceHero))
+                AmbientView(store: store.scope(state: \.ambient, action: \.ambient))
                 if store.headphones.supportsEqualizer {
                     EqualizerView(
                         store: store.scope(state: \.equalizer, action: \.equalizer)
                     )
-                    DseeView(
-                        store: store.scope(state: \.dsee, action: \.dsee),
-                        dseeLoading: store.uiState.dseeLoading
-                    )
+                    DseeView(store: store.scope(state: \.dsee, action: \.dsee))
                 }
                 if store.headphones.hasAdaptiveVolume || store.headphones.hasSpeakToChat
                     || store.headphones.hasAutoPowerOff {
-                    SettingsView(
-                        store: store.scope(state: \.settings, action: \.settings),
-                        adaptiveVolumeLoading: store.uiState.adaptiveVolumeLoading,
-                        autoPowerOffLoading: store.uiState.autoPowerOffLoading
-                    )
+                    SettingsView(store: store.scope(state: \.settings, action: \.settings))
                 }
                 if let error = store.uiState.errorMessage {
                     Text(error)

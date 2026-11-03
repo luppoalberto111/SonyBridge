@@ -9,6 +9,8 @@ import SwiftUI
     @ObservableState struct State: Equatable {
         @Shared
         var headphones: HeadphonesState
+        @Shared
+        var uiState: HeadphonesUIState
     }
 
     enum Action {
@@ -47,10 +49,6 @@ import SwiftUI
 
 struct AmbientView: View {
     let store: StoreOf<AmbientReducer>
-
-    /// True while the device is still applying a focus-on-voice change; the toggle is disabled and
-    /// keeps its previous value until the write is confirmed.
-    var focusOnVoiceLoading = false
 
     var body: some View {
         VStack(spacing: 16) {
@@ -118,9 +116,9 @@ struct AmbientView: View {
                         .foregroundColor(Color(.foreground))
                 }
                 .toggleStyle(SwitchToggleStyle(tint: Color(.highlight)))
-                .disabled(focusOnVoiceLoading)
+                .disabled(store.uiState.focusOnVoiceLoading)
 
-                if focusOnVoiceLoading {
+                if store.uiState.focusOnVoiceLoading {
                     ProgressView()
                         .controlSize(.mini)
                 }
@@ -145,11 +143,11 @@ struct AmbientView: View {
                         focusOnVoice: false,
                         focusOnVoiceAvailable: true
                     )
-                )
-            )
-        ) {
-            AmbientReducer()
-        }
+                ),
+                uiState: Shared(value: .init())
+            ),
+            reducer: AmbientReducer.init
+        )
     )
 }
 
@@ -165,10 +163,10 @@ struct AmbientView: View {
                         focusOnVoice: false,
                         focusOnVoiceAvailable: false
                     )
-                )
-            )
-        ) {
-            AmbientReducer()
-        }
+                ),
+                uiState: Shared(value: .init())
+            ),
+            reducer: AmbientReducer.init
+        )
     )
 }
