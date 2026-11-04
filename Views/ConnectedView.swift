@@ -135,17 +135,20 @@ import SwiftUI
 
                 case let .snapshotReceived(snap):
                     state.$headphones.withLock { $0 = snap }
+                    state.equalizer.isEqPresetLoading = false
                     state.$uiState.withLock {
                         $0.errorMessage = nil
                         $0.focusOnVoiceLoading = false
                         $0.adaptiveVolumeLoading = false
                         $0.autoPowerOffLoading = false
                         $0.dseeLoading = false
+                        $0.eqPreset = snap.eqPreset
                     }
 
                     return .none
 
                 case let .setError(message):
+                    state.equalizer.isEqPresetLoading = false
                     state.$uiState.withLock {
                         $0.errorMessage = message
                         $0.focusOnVoiceLoading = false
@@ -198,7 +201,7 @@ import SwiftUI
                     }
 
                 case let .setEqualizer(preset):
-                    state.$headphones.withLock { $0.eqPreset = preset }
+                    state.equalizer.isEqPresetLoading = true
                     state.$uiState.withLock { $0.errorMessage = nil }
                     return .run { send in
                         do {
@@ -212,19 +215,17 @@ import SwiftUI
                     guard state.headphones.eqBands.indices.contains(index) else { return .none }
                     let (bass, bands) = state.$headphones.withLock { headphones -> (Int, [Int]) in
                         headphones.eqBands[index] = value
-                        headphones.eqPreset = 0xA0
                         return (headphones.clearBass, headphones.eqBands)
                     }
-                    state.$uiState.withLock { $0.errorMessage = nil }
+                    state.$uiState.withLock { $0.errorMessage = nil; $0.eqPreset = 0xA0 }
                     return customEqEffect(bass: bass, bands: bands)
 
                 case let .setClearBass(value):
                     let bands = state.$headphones.withLock { headphones -> [Int] in
                         headphones.clearBass = value
-                        headphones.eqPreset = 0xA0
                         return headphones.eqBands
                     }
-                    state.$uiState.withLock { $0.errorMessage = nil }
+                    state.$uiState.withLock { $0.errorMessage = nil; $0.eqPreset = 0xA0 }
                     return customEqEffect(bass: value, bands: bands)
 
                 case let .setDsee(on):

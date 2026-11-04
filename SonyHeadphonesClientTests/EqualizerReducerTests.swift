@@ -56,8 +56,7 @@ import Testing
     }
 
     @Test func initSharesEqualizerFieldsFromHeadphones() {
-        var headphones = HeadphonesState()
-        headphones.eqPreset = EqPreset.manual.rawValue
+        var headphones = HeadphonesState(eqPreset: EqPreset.manual.rawValue)
         headphones.eqBands = [1, -2, 3, 0, 5]
         headphones.clearBass = 7
 

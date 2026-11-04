@@ -8,6 +8,7 @@ import SwiftUI
     @ObservableState struct State: Equatable {
         @Shared
         var headphones: HeadphonesState
+        var isEqPresetLoading = false
     }
 
     enum Action {
@@ -119,6 +120,7 @@ struct EqualizerView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
         }
         .buttonStyle(PlainButtonStyle())
+        .disabled(store.isEqPresetLoading)
     }
 }
 

@@ -50,7 +50,7 @@ public struct HeadphonesState: Sendable, Equatable {
     public internal(set) var batteryCase: Int
 
     /// The raw equalizer preset byte (`EQ_PRESET`, e.g. 0x00 Off, 0xA0 Manual).
-    public var eqPreset: Int
+    public internal(set) var eqPreset: Int
 
     /// Whether the device exposes the equalizer (v2 protocol only).
     public internal(set) var supportsEqualizer: Bool
