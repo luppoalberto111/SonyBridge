@@ -10,8 +10,8 @@ import ComposableArchitecture
 // its own copy; sharing this file keeps the key name and default identical in
 // both targets.
 
-extension SharedReaderKey where Self == InMemoryKey<HeadphonesState>.Default {
+extension SharedReaderKey where Self == InMemoryKey<SonyHeadphones>.Default {
     static var headphonesState: Self {
-        Self[.inMemory("headphonesState"), default: HeadphonesState()]
+        Self[.inMemory("headphonesState"), default: SonyHeadphones()]
     }
 }

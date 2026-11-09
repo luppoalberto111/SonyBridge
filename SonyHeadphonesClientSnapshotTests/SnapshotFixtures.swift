@@ -58,8 +58,8 @@ import SwiftUI
         return controller
     }
 
-    static func singleBatteryHeadphones() -> HeadphonesState {
-        HeadphonesState(
+    static func singleBatteryHeadphones() -> SonyHeadphones {
+        SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             batteryLevel: 80,
@@ -77,8 +77,8 @@ import SwiftUI
         )
     }
 
-    static func dualBatteryHeadphones() -> HeadphonesState {
-        let state = HeadphonesState(
+    static func dualBatteryHeadphones() -> SonyHeadphones {
+        let state = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wf1000Xm5),
             batteryLevel: -1,
@@ -199,7 +199,7 @@ import SwiftUI
     }
 
     static func deviceHeroStore(
-        headphones: HeadphonesState
+        headphones: SonyHeadphones
     ) -> StoreOf<DeviceHeroReducer> {
         Store(
             initialState: DeviceHeroReducer.State(headphones: .init(value: headphones)),
@@ -208,7 +208,7 @@ import SwiftUI
     }
 
     static func connectedStore(
-        headphones: HeadphonesState
+        headphones: SonyHeadphones
     ) -> StoreOf<ConnectedReducer> {
         Store(
             initialState: ConnectedReducer.State(
@@ -225,11 +225,11 @@ import SwiftUI
     static func mainScreenStore(
         state: MainScreenFeature.State
     ) -> StoreOf<MainScreenFeature> {
-        let headphones: HeadphonesState
+        let headphones: SonyHeadphones
         if case let .connected(connected) = state {
             headphones = connected.headphones
         } else {
-            headphones = HeadphonesState()
+            headphones = SonyHeadphones()
         }
         return Store(initialState: state, reducer: MainScreenFeature.init) {
             $0.continuousClock = TestClock<Duration>()

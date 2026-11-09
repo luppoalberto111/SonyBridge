@@ -5,8 +5,8 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct ConnectedReducerTests {
-    private func connectedState() -> HeadphonesState {
-        HeadphonesState(
+    private func connectedState() -> SonyHeadphones {
+        SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             supportsEqualizer: true
@@ -14,7 +14,7 @@ import Testing
     }
 
     @Test func snapshotReceivedUpdatesEverySharedChildState() async {
-        let snapshot = HeadphonesState(
+        let snapshot = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             mode: .ambientSound,
@@ -85,7 +85,7 @@ import Testing
         #expect(store.state.uiState.focusOnVoiceLoading)
 
         await client.releaseWrites()
-        let confirmed = HeadphonesState(
+        let confirmed = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             focusOnVoice: true,
@@ -102,7 +102,7 @@ import Testing
     }
 
     @Test func setAdaptiveVolumeWaitsForSnapshotInsteadOfUpdatingOptimistically() async {
-        let state = HeadphonesState(
+        let state = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             supportsEqualizer: true,
@@ -128,7 +128,7 @@ import Testing
         #expect(store.state.uiState.adaptiveVolumeLoading)
 
         await client.releaseWrites()
-        let confirmed = HeadphonesState(
+        let confirmed = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             supportsEqualizer: true,
@@ -146,7 +146,7 @@ import Testing
     }
 
     @Test func setAutoPowerOffWaitsForSnapshotInsteadOfUpdatingOptimistically() async {
-        let state = HeadphonesState(
+        let state = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             supportsEqualizer: true,
@@ -172,7 +172,7 @@ import Testing
         #expect(store.state.uiState.autoPowerOffLoading)
 
         await client.releaseWrites()
-        let confirmed = HeadphonesState(
+        let confirmed = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             supportsEqualizer: true,
@@ -193,7 +193,7 @@ import Testing
     }
 
     @Test func setDseeWaitsForSnapshotInsteadOfUpdatingOptimistically() async {
-        let state = HeadphonesState(
+        let state = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             supportsEqualizer: true
@@ -218,7 +218,7 @@ import Testing
         #expect(store.state.uiState.dseeLoading)
 
         await client.releaseWrites()
-        let confirmed = HeadphonesState(
+        let confirmed = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             supportsEqualizer: true,
@@ -282,7 +282,7 @@ import Testing
     }
 
     @Test func watchTickReportsDisconnectWhenHeadphonesDropOff() async {
-        let client = HeadphonesTestClient(state: HeadphonesState())
+        let client = HeadphonesTestClient(state: SonyHeadphones())
         let store = TestStore(
             initialState: ConnectedReducer.State(headphones: connectedState(), showAbout: false)
         ) {
@@ -293,7 +293,7 @@ import Testing
 
         await store.send(.watchTick)
         await store.receive(\.watchTickResponse) {
-            $0.$headphones.withLock { $0 = HeadphonesState() }
+            $0.$headphones.withLock { $0 = SonyHeadphones() }
         }
         await store.receive(\.delegate)
 

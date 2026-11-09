@@ -2,11 +2,11 @@ import Bridge
 import Either
 import Foundation
 
-// MARK: - HeadphonesState
+// MARK: - SonyHeadphones
 
 /// Everything SwiftUI renders. A value type so it can hop between the actor
 /// and the MainActor store without data races.
-public struct HeadphonesState: Sendable, Equatable {
+public struct SonyHeadphones: Sendable, Equatable {
     /// True once a connection to a headset is established.
     public internal(set) var connected: Bool
 
@@ -157,7 +157,7 @@ public struct HeadphonesState: Sendable, Equatable {
     }
 }
 
-extension HeadphonesState {
+extension SonyHeadphones {
     // Folds a battery inquiry into state, never clobbering a known reading
     // with unknown (-1). Battery reads can transiently report unknown while
     // connected (slow/flaky inquiry, overlapping refresh) — otherwise the

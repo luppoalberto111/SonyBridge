@@ -9,7 +9,7 @@ import Foundation
 public actor HeadphonesTestClient: HeadphonesClientProtocol {
     /// The snapshot handed back by every method; seed it to set up a scenario, assert on it to check
     /// what the reducer did.
-    public var state: HeadphonesState
+    public var state: SonyHeadphones
 
     /// Devices returned by `pairedDevices()`.
     public var stubbedDevices: [DiscoveredDevice] = []
@@ -28,7 +28,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     /// Creates a test client with an optional pre-seeded snapshot.
     ///
     /// - Parameter state: The initial ``HeadphonesState``; defaults to an empty (disconnected) one.
-    public init(state: HeadphonesState = HeadphonesState()) {
+    public init(state: SonyHeadphones = SonyHeadphones()) {
         self.state = state
     }
 
@@ -86,7 +86,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Returns: The snapshot with `connected` true when ``autoConnectSucceeds`` is true;
     ///            otherwise the unchanged (disconnected) snapshot.
-    public func connectToAutoDevice() async throws -> HeadphonesState {
+    public func connectToAutoDevice() async throws -> SonyHeadphones {
         if autoConnectSucceeds {
             state.connected = true
         }
@@ -100,7 +100,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Parameter address: The MAC address the caller asked to connect to.
     /// - Returns: The connected snapshot, or the unchanged one with `errorMessage` set on failure.
-    public func connect(address: String) async throws -> HeadphonesState {
+    public func connect(address: String) async throws -> SonyHeadphones {
         if let connectionError {
             throw HeadphonesClientError(connectionError)
         }
@@ -115,7 +115,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     /// Simulates disconnecting.
     ///
     /// - Returns: The snapshot with `connected` false and an empty `deviceName`.
-    public func disconnect() async -> HeadphonesState {
+    public func disconnect() async -> SonyHeadphones {
         state.connected = false
         state.deviceModel = nil
         return state
@@ -124,7 +124,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     /// Simulates the connection watchdog; never changes state (no Bluetooth link to lose).
     ///
     /// - Returns: The current snapshot, unchanged.
-    public func pollConnection() async -> HeadphonesState {
+    public func pollConnection() async -> SonyHeadphones {
         state
     }
 
@@ -133,21 +133,21 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     /// Simulates the first-stage status read; no device is queried.
     ///
     /// - Returns: The current snapshot, unchanged.
-    public func refreshStatus() async -> HeadphonesState {
+    public func refreshStatus() async -> SonyHeadphones {
         state
     }
 
     /// Simulates the capability probes; no device is queried.
     ///
     /// - Returns: The current snapshot, unchanged.
-    public func probeCapabilities() async -> HeadphonesState {
+    public func probeCapabilities() async -> SonyHeadphones {
         state
     }
 
     /// Simulates the dynamic poll; no device is queried.
     ///
     /// - Returns: The current snapshot, unchanged.
-    public func refreshDynamic() async -> HeadphonesState {
+    public func refreshDynamic() async -> SonyHeadphones {
         state
     }
 
@@ -157,7 +157,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Parameter newMode: The `SHCAmbientMode` stored in the snapshot.
     /// - Returns: The updated snapshot.
-    public func setMode(_ newMode: SHCAmbientMode) async throws -> HeadphonesState {
+    public func setMode(_ newMode: SHCAmbientMode) async throws -> SonyHeadphones {
         await waitForWriteGate()
         state.mode = newMode
         return state
@@ -167,7 +167,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Parameter level: The level stored in the snapshot, 1...`maxAmbientLevel`.
     /// - Returns: The updated snapshot.
-    public func setLevel(_ level: Int) async throws -> HeadphonesState {
+    public func setLevel(_ level: Int) async throws -> SonyHeadphones {
         await waitForWriteGate()
         state.ambientLevel = level
         return state
@@ -179,7 +179,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Parameter on: The flag stored in the snapshot.
     /// - Returns: The updated snapshot.
-    public func setFocusOnVoice(_ on: Bool) async throws -> HeadphonesState {
+    public func setFocusOnVoice(_ on: Bool) async throws -> SonyHeadphones {
         await waitForWriteGate()
         state.focusOnVoice = on
         return state
@@ -191,7 +191,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Parameter preset: The raw preset byte stored in the snapshot.
     /// - Returns: The updated snapshot with `errorMessage` cleared.
-    public func setEqualizer(_ preset: Int) async throws -> HeadphonesState {
+    public func setEqualizer(_ preset: Int) async throws -> SonyHeadphones {
         await waitForWriteGate()
         state.eqPreset = preset
         return state
@@ -203,7 +203,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///   - bass: Clear-bass boost in -10...10.
     ///   - bands: The 5 band gains in -10...10.
     /// - Returns: The updated snapshot with `eqPreset == 0xA0`.
-    public func setCustomEq(bass: Int, bands: [Int]) async throws -> HeadphonesState {
+    public func setCustomEq(bass: Int, bands: [Int]) async throws -> SonyHeadphones {
         await waitForWriteGate()
         state.eqPreset = 0xA0
         state.clearBass = bass
@@ -215,7 +215,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Parameter on: The flag stored in the snapshot.
     /// - Returns: The updated snapshot with `errorMessage` cleared.
-    public func setDsee(_ on: Bool) async throws -> HeadphonesState {
+    public func setDsee(_ on: Bool) async throws -> SonyHeadphones {
         await waitForWriteGate()
         state.dsee = on
         return state
@@ -227,7 +227,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Parameter index: The delay index stored in the snapshot, 0...5.
     /// - Returns: The updated snapshot with `errorMessage` cleared.
-    public func setAutoPowerOff(_ index: Int) async throws -> HeadphonesState {
+    public func setAutoPowerOff(_ index: Int) async throws -> SonyHeadphones {
         await waitForWriteGate()
         state.autoPowerOff = index
         return state
@@ -237,7 +237,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Parameter on: The flag stored in the snapshot.
     /// - Returns: The updated snapshot with `errorMessage` cleared.
-    public func setSpeakToChat(_ on: Bool) async throws -> HeadphonesState {
+    public func setSpeakToChat(_ on: Bool) async throws -> SonyHeadphones {
         await waitForWriteGate()
         state.speakToChat = on
         return state
@@ -247,7 +247,7 @@ public actor HeadphonesTestClient: HeadphonesClientProtocol {
     ///
     /// - Parameter on: The flag stored in the snapshot.
     /// - Returns: The updated snapshot with `errorMessage` cleared.
-    public func setAdaptiveVolume(_ on: Bool) async throws -> HeadphonesState {
+    public func setAdaptiveVolume(_ on: Bool) async throws -> SonyHeadphones {
         await waitForWriteGate()
         state.adaptiveVolume = on
         return state

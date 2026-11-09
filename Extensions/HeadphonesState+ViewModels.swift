@@ -1,6 +1,6 @@
 import Client
 
-extension HeadphonesState {
+extension SonyHeadphones {
     var aboutModel: AboutView.Model {
         .init(
             deviceName: deviceModel?.displayName ?? "",

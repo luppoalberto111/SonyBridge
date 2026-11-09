@@ -7,7 +7,7 @@ import Testing
     @Test func setAdaptiveVolumeDelegates() async {
         let store = TestStore(
             initialState: SettingsReducer.State(
-                headphones: Shared(value: HeadphonesState()), uiState: .init(value: .init())
+                headphones: Shared(value: SonyHeadphones()), uiState: .init(value: .init())
             ),
             reducer: SettingsReducer.init
         )
@@ -19,7 +19,7 @@ import Testing
     @Test func setSpeakToChatDelegates() async {
         let store = TestStore(
             initialState: SettingsReducer.State(
-                headphones: Shared(value: HeadphonesState()),
+                headphones: Shared(value: SonyHeadphones()),
                 uiState: .init(value: .init())
             ),
             reducer: SettingsReducer.init
@@ -32,7 +32,7 @@ import Testing
     @Test func setAutoPowerOffDelegates() async {
         let store = TestStore(
             initialState: SettingsReducer.State(
-                headphones: Shared(value: HeadphonesState()), uiState: .init(value: .init())
+                headphones: Shared(value: SonyHeadphones()), uiState: .init(value: .init())
             )
         ) {
             SettingsReducer()
@@ -43,7 +43,7 @@ import Testing
     }
 
     @Test func initSharesCapabilitiesFromHeadphones() {
-        let headphones = HeadphonesState(
+        let headphones = SonyHeadphones(
             hasAutoPowerOff: true,
             autoPowerOff: 99,
             hasSpeakToChat: true,

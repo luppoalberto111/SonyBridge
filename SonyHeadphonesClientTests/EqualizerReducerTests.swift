@@ -7,7 +7,7 @@ import Testing
     @Test func setEqualizerDelegates() async {
         let store = TestStore(
             initialState: EqualizerReducer.State(
-                headphones: Shared(value: HeadphonesState())
+                headphones: Shared(value: SonyHeadphones())
             )
         ) {
             EqualizerReducer()
@@ -20,7 +20,7 @@ import Testing
     @Test func setBandDelegates() async {
         let store = TestStore(
             initialState: EqualizerReducer.State(
-                headphones: Shared(value: HeadphonesState())
+                headphones: Shared(value: SonyHeadphones())
             )
         ) {
             EqualizerReducer()
@@ -33,7 +33,7 @@ import Testing
     @Test func setBandIgnoresOutOfRangeIndex() async {
         let store = TestStore(
             initialState: EqualizerReducer.State(
-                headphones: Shared(value: HeadphonesState())
+                headphones: Shared(value: SonyHeadphones())
             )
         ) {
             EqualizerReducer()
@@ -45,7 +45,7 @@ import Testing
     @Test func setClearBassDelegates() async {
         let store = TestStore(
             initialState: EqualizerReducer.State(
-                headphones: Shared(value: HeadphonesState())
+                headphones: Shared(value: SonyHeadphones())
             )
         ) {
             EqualizerReducer()
@@ -56,7 +56,7 @@ import Testing
     }
 
     @Test func initSharesEqualizerFieldsFromHeadphones() {
-        var headphones = HeadphonesState(eqPreset: EqPreset.manual.rawValue)
+        var headphones = SonyHeadphones(eqPreset: EqPreset.manual.rawValue)
         headphones.eqBands = [1, -2, 3, 0, 5]
         headphones.clearBass = 7
 

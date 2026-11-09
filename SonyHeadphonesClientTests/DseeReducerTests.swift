@@ -7,7 +7,7 @@ import Testing
     @Test func setDseeDelegates() async {
         let store = TestStore(
             initialState: DseeReducer.State(
-                headphones: Shared(value: HeadphonesState()), uiState: .init(value: .init())
+                headphones: Shared(value: SonyHeadphones()), uiState: .init(value: .init())
             ),
             reducer: DseeReducer.init
         )

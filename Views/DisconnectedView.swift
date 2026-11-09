@@ -28,17 +28,17 @@ import SwiftUI
 
     enum Action {
         case connectButtonTapped
-        case autoConnectResponse(HeadphonesState)
+        case autoConnectResponse(SonyHeadphones)
         case autoConnectFailed(String)
         case devicesResponse([DiscoveredDevice])
         case deviceTapped(DiscoveredDevice)
-        case connectionResponse(HeadphonesState)
+        case connectionResponse(SonyHeadphones)
         case connectionFailed(String)
         case delegate(Delegate)
     }
 
     enum Delegate {
-        case didConnect(HeadphonesState)
+        case didConnect(SonyHeadphones)
     }
 
     @Dependency(\.headphonesClient)

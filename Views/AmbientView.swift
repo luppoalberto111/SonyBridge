@@ -8,7 +8,7 @@ import SwiftUI
 @Reducer struct AmbientReducer {
     @ObservableState struct State: Equatable {
         @Shared
-        var headphones: HeadphonesState
+        var headphones: SonyHeadphones
         @Shared
         var uiState: HeadphonesUIState
     }

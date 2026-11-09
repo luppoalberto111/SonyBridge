@@ -7,7 +7,7 @@ import Testing
     @Test func showAboutChangedTogglesPopover() async {
         let store = TestStore(
             initialState: DeviceHeroReducer.State(
-                headphones: Shared(value: HeadphonesState())
+                headphones: Shared(value: SonyHeadphones())
             )
         ) {
             DeviceHeroReducer()
@@ -24,7 +24,7 @@ import Testing
     @Test func disconnectTappedDelegatesRequest() async {
         let store = TestStore(
             initialState: DeviceHeroReducer.State(
-                headphones: Shared(value: HeadphonesState())
+                headphones: Shared(value: SonyHeadphones())
             )
         ) {
             DeviceHeroReducer()

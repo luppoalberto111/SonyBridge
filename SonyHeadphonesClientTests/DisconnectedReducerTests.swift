@@ -9,7 +9,7 @@ import Testing
     }
 
     @Test func autoConnectSuccessDelegatesDidConnect() async {
-        let connected = HeadphonesState(
+        let connected = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5)
         )

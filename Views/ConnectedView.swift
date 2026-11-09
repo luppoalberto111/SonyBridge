@@ -9,7 +9,7 @@ import SwiftUI
 @Reducer struct ConnectedReducer {
     @ObservableState struct State: Equatable {
         @Shared
-        var headphones: HeadphonesState
+        var headphones: SonyHeadphones
         @Shared
         var uiState: HeadphonesUIState
         var deviceHero: DeviceHeroReducer.State
@@ -19,7 +19,7 @@ import SwiftUI
         var settings: SettingsReducer.State
 
         init(
-            headphones: HeadphonesState,
+            headphones: SonyHeadphones,
             showAbout: Bool
         ) {
             let shared = Shared(value: headphones)
@@ -42,7 +42,7 @@ import SwiftUI
         case settings(SettingsReducer.Action)
         case task
         case refreshStatusRequested
-        case snapshotReceived(HeadphonesState)
+        case snapshotReceived(SonyHeadphones)
         case setError(String?)
         case disconnectButtonTapped
         case setMode(SHCAmbientMode)
@@ -56,9 +56,9 @@ import SwiftUI
         case setSpeakToChat(Bool)
         case setAdaptiveVolume(Bool)
         case dynamicTick
-        case dynamicTickResponse(HeadphonesState)
+        case dynamicTickResponse(SonyHeadphones)
         case watchTick
-        case watchTickResponse(HeadphonesState)
+        case watchTickResponse(SonyHeadphones)
         case delegate(Delegate)
     }
 
@@ -419,7 +419,7 @@ struct ConnectedView: View {
     ConnectedView(
         store: Store(
             initialState: .init(
-                headphones: HeadphonesState(
+                headphones: SonyHeadphones(
                     connected: true,
                     deviceModel: .left(.wh1000Xm5),
                     batteryLevel: 80,

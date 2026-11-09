@@ -7,7 +7,7 @@ import SwiftUI
 @Reducer struct DeviceHeroReducer {
     @ObservableState struct State: Equatable {
         @Shared
-        var headphones: HeadphonesState
+        var headphones: SonyHeadphones
         var showAbout = false
     }
 
@@ -164,8 +164,8 @@ struct DeviceHeroView: View {
     }
 }
 
-private func previewHeadphones() -> HeadphonesState {
-    HeadphonesState(
+private func previewHeadphones() -> SonyHeadphones {
+    SonyHeadphones(
         connected: true,
         deviceModel: .left(.wh1000Xm5),
         batteryLevel: 80,

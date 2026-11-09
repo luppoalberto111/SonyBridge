@@ -15,7 +15,7 @@ import Dependencies
 @Reducer public struct MenuBarFeature {
     @ObservableState public struct State: Equatable {
         @Shared(.headphonesState)
-        public var headphones: HeadphonesState
+        public var headphones: SonyHeadphones
     }
 
     public enum Action {

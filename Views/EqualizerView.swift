@@ -7,7 +7,7 @@ import SwiftUI
 @Reducer struct EqualizerReducer {
     @ObservableState struct State: Equatable {
         @Shared
-        var headphones: HeadphonesState
+        var headphones: SonyHeadphones
         var isEqPresetLoading = false
     }
 

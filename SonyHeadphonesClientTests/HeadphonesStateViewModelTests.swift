@@ -4,7 +4,7 @@ import Testing
 
 struct HeadphonesStateViewModelTests {
     @Test func deviceHeroModelCarriesIdentityBatteryAndCodec() {
-        let state = HeadphonesState(
+        let state = SonyHeadphones(
             connected: true,
             deviceModel: .left(.wh1000Xm5),
             batteryLevel: 80,
@@ -27,7 +27,7 @@ struct HeadphonesStateViewModelTests {
     }
 
     @Test func deviceHeroModelCarriesDualBatteryReadings() {
-        let state = HeadphonesState(
+        let state = SonyHeadphones(
             batteryLevel: -1,
             hasDualBattery: true,
             batteryLeft: 80,
@@ -51,7 +51,7 @@ struct HeadphonesStateViewModelTests {
     }
 
     private func batteryState(level: Int, charging: Bool) -> BatteryState {
-        let state = HeadphonesState(batteryLevel: level, batteryCharging: charging)
+        let state = SonyHeadphones(batteryLevel: level, batteryCharging: charging)
         return state.batteryState
     }
 }

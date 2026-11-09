@@ -7,7 +7,7 @@ import Testing
     @Test func setModeDelegates() async {
         let store = TestStore(
             initialState: AmbientReducer.State(
-                headphones: Shared(value: HeadphonesState()), uiState: .init(value: .init())
+                headphones: Shared(value: SonyHeadphones()), uiState: .init(value: .init())
             )
         ) {
             AmbientReducer()
@@ -20,7 +20,7 @@ import Testing
     @Test func setLevelDelegates() async {
         let store = TestStore(
             initialState: AmbientReducer.State(
-                headphones: Shared(value: HeadphonesState()),
+                headphones: Shared(value: SonyHeadphones()),
                 uiState: .init(value: .init())
             )
         ) {
@@ -34,7 +34,7 @@ import Testing
     @Test func setFocusOnVoiceDelegates() async {
         let store = TestStore(
             initialState: AmbientReducer.State(
-                headphones: Shared(value: HeadphonesState()),
+                headphones: Shared(value: SonyHeadphones()),
                 uiState: .init(value: .init())
             )
         ) {
@@ -46,7 +46,7 @@ import Testing
     }
 
     @Test func initSharesEveryAmbientFieldFromHeadphones() {
-        let headphones = HeadphonesState(
+        let headphones = SonyHeadphones(
             maxAmbientLevel: 18,
             mode: .ambientSound,
             ambientLevel: 14,
