@@ -4,11 +4,13 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct DseeReducerTests {
+    private func state(_ uiState: HeadphonesUIState = .init()) -> DseeReducer.State {
+        .init(uiState: Shared(value: uiState))
+    }
+
     @Test func setDseeDelegates() async {
         let store = TestStore(
-            initialState: DseeReducer.State(
-                headphones: Shared(value: SonyHeadphones()), uiState: .init(value: .init())
-            ),
+            initialState: state(),
             reducer: DseeReducer.init
         )
 
@@ -16,12 +18,11 @@ import Testing
         await store.receive(\.delegate)
     }
 
-    @Test func initSharesDseeFlagFromHeadphones() {
+    @Test func initMapsDseeFlagFromSnapshot() {
         let state = DseeReducer.State(
-            headphones: .init(value: .init(dsee: true)),
-            uiState: .init(value: .init())
+            uiState: .init(value: HeadphonesUIState(SonyHeadphones(dsee: true)))
         )
 
-        #expect(state.headphones.dsee)
+        #expect(state.uiState.dsee)
     }
 }

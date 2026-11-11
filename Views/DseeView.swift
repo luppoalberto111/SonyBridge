@@ -1,4 +1,3 @@
-import Client
 import ComposableArchitecture
 import SwiftUI
 
@@ -6,8 +5,6 @@ import SwiftUI
 
 @Reducer struct DseeReducer {
     @ObservableState struct State: Equatable {
-        @Shared
-        var headphones: SonyHeadphones
         @Shared
         var uiState: HeadphonesUIState
     }
@@ -42,7 +39,7 @@ struct DseeView: View {
     var body: some View {
         HStack(spacing: 8) {
             Toggle(isOn: Binding(
-                get: { store.headphones.dsee },
+                get: { store.uiState.dsee },
                 set: { store.send(.setDsee($0)) }
             )) {
                 VStack(alignment: .leading, spacing: 2) {
@@ -71,8 +68,7 @@ struct DseeView: View {
     DseeView(
         store: Store(
             initialState: .init(
-                headphones: .init(value: .init(dsee: true)),
-                uiState: .init(value: .init())
+                uiState: .init(value: HeadphonesUIState(dsee: true))
             ),
             reducer: DseeReducer.init
         )
@@ -83,8 +79,7 @@ struct DseeView: View {
     DseeView(
         store: Store(
             initialState: .init(
-                headphones: .init(value: .init(dsee: false)),
-                uiState: .init(value: .init())
+                uiState: .init(value: HeadphonesUIState(dsee: false))
             ),
             reducer: DseeReducer.init
         )

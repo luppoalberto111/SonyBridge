@@ -4,12 +4,12 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct EqualizerReducerTests {
+    private func state(_ uiState: HeadphonesUIState = .init()) -> EqualizerReducer.State {
+        .init(uiState: Shared(value: uiState))
+    }
+
     @Test func setEqualizerDelegates() async {
-        let store = TestStore(
-            initialState: EqualizerReducer.State(
-                headphones: Shared(value: SonyHeadphones())
-            )
-        ) {
+        let store = TestStore(initialState: state()) {
             EqualizerReducer()
         }
 
@@ -18,11 +18,7 @@ import Testing
     }
 
     @Test func setBandDelegates() async {
-        let store = TestStore(
-            initialState: EqualizerReducer.State(
-                headphones: Shared(value: SonyHeadphones())
-            )
-        ) {
+        let store = TestStore(initialState: state()) {
             EqualizerReducer()
         }
 
@@ -31,11 +27,7 @@ import Testing
     }
 
     @Test func setBandIgnoresOutOfRangeIndex() async {
-        let store = TestStore(
-            initialState: EqualizerReducer.State(
-                headphones: Shared(value: SonyHeadphones())
-            )
-        ) {
+        let store = TestStore(initialState: state()) {
             EqualizerReducer()
         }
 
@@ -43,11 +35,7 @@ import Testing
     }
 
     @Test func setClearBassDelegates() async {
-        let store = TestStore(
-            initialState: EqualizerReducer.State(
-                headphones: Shared(value: SonyHeadphones())
-            )
-        ) {
+        let store = TestStore(initialState: state()) {
             EqualizerReducer()
         }
 
@@ -55,15 +43,17 @@ import Testing
         await store.receive(\.delegate)
     }
 
-    @Test func initSharesEqualizerFieldsFromHeadphones() {
+    @Test func initMapsEqualizerFieldsFromSnapshot() {
         var headphones = SonyHeadphones(eqPreset: EqPreset.manual.rawValue)
         headphones.eqBands = [1, -2, 3, 0, 5]
         headphones.clearBass = 7
 
-        let state = EqualizerReducer.State(headphones: Shared(value: headphones))
+        let state = EqualizerReducer.State(
+            uiState: Shared(value: HeadphonesUIState(headphones))
+        )
 
-        #expect(state.headphones.eqPreset == EqPreset.manual.rawValue)
-        #expect(state.headphones.eqBands == [1, -2, 3, 0, 5])
-        #expect(state.headphones.clearBass == 7)
+        #expect(state.uiState.eqPreset == EqPreset.manual.rawValue)
+        #expect(state.uiState.eqBands == [1, -2, 3, 0, 5])
+        #expect(state.uiState.clearBass == 7)
     }
 }

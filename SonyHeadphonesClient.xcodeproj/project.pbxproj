@@ -66,6 +66,7 @@
 		F8000000000000000000000D /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F76B57F4305815DA00449C1F /* ComposableArchitecture */; };
 		F90000000000000000000002 /* SharedStateKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90000000000000000000001 /* SharedStateKeys.swift */; };
 		F90000000000000000000003 /* SharedStateKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90000000000000000000001 /* SharedStateKeys.swift */; };
+		F90000000000000000000004 /* HeadphonesUIState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7EAEFF9054218500018001 /* HeadphonesUIState.swift */; };
 		F9000000000000000000001B /* MenuBarFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9000000000000000000001C /* MenuBarFeatureTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -623,6 +624,7 @@
 				F72387E3309129B60023FA02 /* MenuBarKitAppDelegate.swift in Sources */,
 				F72387E4309129B60023FA02 /* MenuBarApplicationClient.swift in Sources */,
 				F90000000000000000000003 /* SharedStateKeys.swift in Sources */,
+				F90000000000000000000004 /* HeadphonesUIState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

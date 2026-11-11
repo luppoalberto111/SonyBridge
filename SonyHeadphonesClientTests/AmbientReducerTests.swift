@@ -4,12 +4,12 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct AmbientReducerTests {
+    private func state(_ uiState: HeadphonesUIState = .init()) -> AmbientReducer.State {
+        .init(uiState: Shared(value: uiState))
+    }
+
     @Test func setModeDelegates() async {
-        let store = TestStore(
-            initialState: AmbientReducer.State(
-                headphones: Shared(value: SonyHeadphones()), uiState: .init(value: .init())
-            )
-        ) {
+        let store = TestStore(initialState: state()) {
             AmbientReducer()
         }
 
@@ -18,12 +18,7 @@ import Testing
     }
 
     @Test func setLevelDelegates() async {
-        let store = TestStore(
-            initialState: AmbientReducer.State(
-                headphones: Shared(value: SonyHeadphones()),
-                uiState: .init(value: .init())
-            )
-        ) {
+        let store = TestStore(initialState: state()) {
             AmbientReducer()
         }
 
@@ -32,12 +27,7 @@ import Testing
     }
 
     @Test func setFocusOnVoiceDelegates() async {
-        let store = TestStore(
-            initialState: AmbientReducer.State(
-                headphones: Shared(value: SonyHeadphones()),
-                uiState: .init(value: .init())
-            )
-        ) {
+        let store = TestStore(initialState: state()) {
             AmbientReducer()
         }
 
@@ -45,7 +35,7 @@ import Testing
         await store.receive(\.delegate)
     }
 
-    @Test func initSharesEveryAmbientFieldFromHeadphones() {
+    @Test func initMapsEveryAmbientFieldFromSnapshot() {
         let headphones = SonyHeadphones(
             maxAmbientLevel: 18,
             mode: .ambientSound,
@@ -55,14 +45,13 @@ import Testing
         )
 
         let state = AmbientReducer.State(
-            headphones: Shared(value: headphones),
-            uiState: .init(value: .init())
+            uiState: Shared(value: HeadphonesUIState(headphones))
         )
 
-        #expect(state.headphones.mode == .ambientSound)
-        #expect(state.headphones.ambientLevel == 14)
-        #expect(state.headphones.maxAmbientLevel == 18)
-        #expect(state.headphones.focusOnVoice)
-        #expect(state.headphones.focusOnVoiceAvailable)
+        #expect(state.uiState.mode == .ambientSound)
+        #expect(state.uiState.ambientLevel == 14)
+        #expect(state.uiState.maxAmbientLevel == 18)
+        #expect(state.uiState.focusOnVoice)
+        #expect(state.uiState.focusOnVoiceAvailable)
     }
 }

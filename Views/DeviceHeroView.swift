@@ -7,7 +7,7 @@ import SwiftUI
 @Reducer struct DeviceHeroReducer {
     @ObservableState struct State: Equatable {
         @Shared
-        var headphones: SonyHeadphones
+        var uiState: HeadphonesUIState
         var showAbout = false
     }
 
@@ -58,7 +58,7 @@ struct DeviceHeroView: View {
     let store: StoreOf<DeviceHeroReducer>
 
     var body: some View {
-        let model = store.headphones.deviceHeroModel
+        let model = store.uiState.deviceHeroModel
         VStack(spacing: 12) {
             HStack(spacing: 10) {
                 Spacer()
@@ -179,7 +179,7 @@ private func previewHeadphones() -> SonyHeadphones {
 #Preview {
     DeviceHeroView(
         store: Store(
-            initialState: .init(headphones: .init(value: previewHeadphones())),
+            initialState: .init(uiState: .init(value: HeadphonesUIState(previewHeadphones()))),
             reducer: DeviceHeroReducer.init
         )
     )

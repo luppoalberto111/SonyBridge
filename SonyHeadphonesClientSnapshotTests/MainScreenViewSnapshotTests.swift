@@ -25,16 +25,18 @@ import Testing
     }
 
     @Test func connected() {
+        let headphones = SnapshotFixtures.singleBatteryHeadphones()
         assertSnapshot(
             of: SnapshotFixtures.hostingController(
                 MainScreenView(
                     store: SnapshotFixtures.mainScreenStore(
                         state: .connected(
                             ConnectedReducer.State(
-                                headphones: SnapshotFixtures.singleBatteryHeadphones(),
+                                headphones: headphones,
                                 showAbout: false
                             )
-                        )
+                        ),
+                        snapshot: headphones
                     )
                 )
             ),

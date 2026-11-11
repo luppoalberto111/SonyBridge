@@ -1,4 +1,3 @@
-import Client
 import ComposableArchitecture
 import SwiftUI
 
@@ -7,12 +6,7 @@ import SwiftUI
 @Reducer struct SettingsReducer {
     @ObservableState struct State: Equatable {
         @Shared
-        var headphones: SonyHeadphones
-        @Shared
         var uiState: HeadphonesUIState
-        var adaptiveVolumeLoading = false
-        var autoPowerOffLoading = false
-        var speakToChatLoading = false
     }
 
     enum Action {
@@ -57,29 +51,25 @@ struct SettingsView: View {
             Text("SettingsView.title")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(Color(.foreground))
-            if store.headphones.hasAdaptiveVolume {
+            if store.uiState.hasAdaptiveVolume {
                 settingToggle(
                     "SettingsView.adaptiveVolume.title",
                     "SettingsView.adaptiveVolume.subtitle",
-                    on: store.headphones.adaptiveVolume,
-                    loading: store.adaptiveVolumeLoading
+                    on: store.uiState.adaptiveVolume,
+                    loading: store.uiState.adaptiveVolumeLoading
                 ) { store.send(.setAdaptiveVolume($0)) }
             }
-            if store.headphones.hasSpeakToChat {
+            if store.uiState.hasSpeakToChat {
                 settingToggle(
                     "SettingsView.speakToChat.title",
                     "SettingsView.speakToChat.subtitle",
-                    on: store.headphones.speakToChat
+                    on: store.uiState.speakToChat,
+                    loading: store.uiState.speakToChatLoading
                 ) {
                     store.send(.setSpeakToChat($0))
                 }
-                .disabled(store.speakToChatLoading)
-                if store.speakToChatLoading {
-                    ProgressView()
-                        .controlSize(.mini)
-                }
             }
-            if store.headphones.hasAutoPowerOff {
+            if store.uiState.hasAutoPowerOff {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("SettingsView.autoPowerOff.title")
@@ -97,7 +87,7 @@ struct SettingsView: View {
                     Picker(
                         "",
                         selection: Binding(
-                            get: { store.headphones.autoPowerOff },
+                            get: { store.uiState.autoPowerOff },
                             set: { store.send(.setAutoPowerOff(.init(rawValue: $0) ?? .off)) }
                         )
                     ) {
@@ -148,8 +138,8 @@ struct SettingsView: View {
     SettingsView(
         store: Store(
             initialState: .init(
-                headphones: Shared(
-                    value: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
                         hasAutoPowerOff: true,
                         autoPowerOff: 2,
                         hasSpeakToChat: true,
@@ -157,8 +147,7 @@ struct SettingsView: View {
                         hasAdaptiveVolume: true,
                         adaptiveVolume: true,
                     )
-                ),
-                uiState: .init(value: .init())
+                )
             ),
             reducer: SettingsReducer.init
         )
@@ -169,8 +158,8 @@ struct SettingsView: View {
     SettingsView(
         store: Store(
             initialState: .init(
-                headphones: Shared(
-                    value: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
                         hasAutoPowerOff: false,
                         autoPowerOff: 0,
                         hasSpeakToChat: true,
@@ -178,8 +167,7 @@ struct SettingsView: View {
                         hasAdaptiveVolume: false,
                         adaptiveVolume: false
                     )
-                ),
-                uiState: .init(value: .init())
+                )
             ),
             reducer: SettingsReducer.init
         )

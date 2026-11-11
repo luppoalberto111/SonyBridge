@@ -9,8 +9,6 @@ import SwiftUI
 @Reducer struct ConnectedReducer {
     @ObservableState struct State: Equatable {
         @Shared
-        var headphones: SonyHeadphones
-        @Shared
         var uiState: HeadphonesUIState
         var deviceHero: DeviceHeroReducer.State
         var ambient: AmbientReducer.State
@@ -18,19 +16,21 @@ import SwiftUI
         var dsee: DseeReducer.State
         var settings: SettingsReducer.State
 
+        /// Seeds the domain state from the snapshot the client returned on connect.
+        ///
+        /// `SonyHeadphones` is transport only: it is folded into ``HeadphonesUIState``
+        /// here and never stored.
         init(
             headphones: SonyHeadphones,
             showAbout: Bool
         ) {
-            let shared = Shared(value: headphones)
-            self._headphones = shared
-            let sharedUIState = Shared(value: HeadphonesUIState())
+            let sharedUIState = Shared(value: HeadphonesUIState(headphones))
             self._uiState = sharedUIState
-            self.deviceHero = .init(headphones: shared, showAbout: showAbout)
-            self.ambient = .init(headphones: shared, uiState: sharedUIState)
-            self.equalizer = .init(headphones: shared)
-            self.dsee = .init(headphones: shared, uiState: sharedUIState)
-            self.settings = .init(headphones: shared, uiState: sharedUIState)
+            self.deviceHero = .init(uiState: sharedUIState, showAbout: showAbout)
+            self.ambient = .init(uiState: sharedUIState)
+            self.equalizer = .init(uiState: sharedUIState)
+            self.dsee = .init(uiState: sharedUIState)
+            self.settings = .init(uiState: sharedUIState)
         }
     }
 
@@ -134,27 +134,28 @@ import SwiftUI
                     }
 
                 case let .snapshotReceived(snap):
-                    state.$headphones.withLock { $0 = snap }
-                    state.equalizer.isEqPresetLoading = false
                     state.$uiState.withLock {
+                        $0.apply(snap)
                         $0.errorMessage = nil
                         $0.focusOnVoiceLoading = false
                         $0.adaptiveVolumeLoading = false
                         $0.autoPowerOffLoading = false
                         $0.dseeLoading = false
-                        $0.eqPreset = snap.eqPreset
+                        $0.speakToChatLoading = false
+                        $0.eqPresetLoading = false
                     }
 
                     return .none
 
                 case let .setError(message):
-                    state.equalizer.isEqPresetLoading = false
                     state.$uiState.withLock {
                         $0.errorMessage = message
                         $0.focusOnVoiceLoading = false
                         $0.adaptiveVolumeLoading = false
                         $0.autoPowerOffLoading = false
                         $0.dseeLoading = false
+                        $0.speakToChatLoading = false
+                        $0.eqPresetLoading = false
                     }
                     return .none
 
@@ -162,8 +163,8 @@ import SwiftUI
                     return disconnectEffect()
 
                 case let .setMode(mode):
-                    state.$headphones.withLock { $0.mode = mode }
                     state.$uiState.withLock {
+                        $0.mode = mode
                         $0.errorMessage = nil
                     }
                     return .run { send in
@@ -175,8 +176,8 @@ import SwiftUI
                     }
 
                 case let .setLevel(level):
-                    state.$headphones.withLock { $0.ambientLevel = level }
                     state.$uiState.withLock {
+                        $0.ambientLevel = level
                         $0.errorMessage = nil
                     }
                     return .run { send in
@@ -201,8 +202,10 @@ import SwiftUI
                     }
 
                 case let .setEqualizer(preset):
-                    state.equalizer.isEqPresetLoading = true
-                    state.$uiState.withLock { $0.errorMessage = nil }
+                    state.$uiState.withLock {
+                        $0.eqPresetLoading = true
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client.setEqualizer(preset)))
@@ -212,20 +215,22 @@ import SwiftUI
                     }
 
                 case let .setBand(index, value):
-                    guard state.headphones.eqBands.indices.contains(index) else { return .none }
-                    let (bass, bands) = state.$headphones.withLock { headphones -> (Int, [Int]) in
-                        headphones.eqBands[index] = value
-                        return (headphones.clearBass, headphones.eqBands)
+                    guard state.uiState.eqBands.indices.contains(index) else { return .none }
+                    let (bass, bands) = state.$uiState.withLock { uiState -> (Int, [Int]) in
+                        uiState.eqBands[index] = value
+                        uiState.eqPreset = EqPreset.manual.rawValue
+                        uiState.errorMessage = nil
+                        return (uiState.clearBass, uiState.eqBands)
                     }
-                    state.$uiState.withLock { $0.errorMessage = nil; $0.eqPreset = 0xA0 }
                     return customEqEffect(bass: bass, bands: bands)
 
                 case let .setClearBass(value):
-                    let bands = state.$headphones.withLock { headphones -> [Int] in
-                        headphones.clearBass = value
-                        return headphones.eqBands
+                    let bands = state.$uiState.withLock { uiState -> [Int] in
+                        uiState.clearBass = value
+                        uiState.eqPreset = EqPreset.manual.rawValue
+                        uiState.errorMessage = nil
+                        return uiState.eqBands
                     }
-                    state.$uiState.withLock { $0.errorMessage = nil; $0.eqPreset = 0xA0 }
                     return customEqEffect(bass: value, bands: bands)
 
                 case let .setDsee(on):
@@ -256,8 +261,10 @@ import SwiftUI
                     }
 
                 case let .setSpeakToChat(on):
-                    state.settings.speakToChatLoading = true
-                    state.$uiState.withLock { $0.errorMessage = nil }
+                    state.$uiState.withLock {
+                        $0.speakToChatLoading = true
+                        $0.errorMessage = nil
+                    }
                     return .run { send in
                         do {
                             await send(.snapshotReceived(try await client.setSpeakToChat(on)))
@@ -286,8 +293,10 @@ import SwiftUI
                     }
 
                 case let .dynamicTickResponse(snap):
-                    state.$headphones.withLock { $0 = snap }
-                    state.$uiState.withLock { $0.errorMessage = nil }
+                    state.$uiState.withLock {
+                        $0.apply(snap)
+                        $0.errorMessage = nil
+                    }
                     return .none
 
                 case .watchTick:
@@ -296,8 +305,10 @@ import SwiftUI
                     }
 
                 case let .watchTickResponse(snap):
-                    state.$headphones.withLock { $0 = snap }
-                    state.$uiState.withLock { $0.errorMessage = nil }
+                    state.$uiState.withLock {
+                        $0.apply(snap)
+                        $0.errorMessage = nil
+                    }
                     if snap.connected {
                         return .none
                     }
@@ -393,14 +404,14 @@ struct ConnectedView: View {
             VStack(spacing: 16) {
                 DeviceHeroView(store: store.scope(state: \.deviceHero, action: \.deviceHero))
                 AmbientView(store: store.scope(state: \.ambient, action: \.ambient))
-                if store.headphones.supportsEqualizer {
+                if store.uiState.supportsEqualizer {
                     EqualizerView(
                         store: store.scope(state: \.equalizer, action: \.equalizer)
                     )
                     DseeView(store: store.scope(state: \.dsee, action: \.dsee))
                 }
-                if store.headphones.hasAdaptiveVolume || store.headphones.hasSpeakToChat
-                    || store.headphones.hasAutoPowerOff {
+                if store.uiState.hasAdaptiveVolume || store.uiState.hasSpeakToChat
+                    || store.uiState.hasAutoPowerOff {
                     SettingsView(store: store.scope(state: \.settings, action: \.settings))
                 }
                 if let error = store.uiState.errorMessage {

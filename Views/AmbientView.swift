@@ -1,5 +1,4 @@
 import Bridge
-import Client
 import ComposableArchitecture
 import SwiftUI
 
@@ -7,8 +6,6 @@ import SwiftUI
 
 @Reducer struct AmbientReducer {
     @ObservableState struct State: Equatable {
-        @Shared
-        var headphones: SonyHeadphones
         @Shared
         var uiState: HeadphonesUIState
     }
@@ -53,7 +50,7 @@ struct AmbientView: View {
     var body: some View {
         VStack(spacing: 16) {
             modeCard
-            if store.headphones.mode == .ambientSound {
+            if store.uiState.mode == .ambientSound {
                 levelCard
             }
         }
@@ -67,15 +64,15 @@ struct AmbientView: View {
             HStack(spacing: 0) {
                 ModeButton(
                     mode: .noiseCanceling,
-                    isSelected: store.headphones.mode == .noiseCanceling
+                    isSelected: store.uiState.mode == .noiseCanceling
                 ) { store.send(.setMode($0)) }
                 ModeButton(
                     mode: .ambientSound,
-                    isSelected: store.headphones.mode == .ambientSound
+                    isSelected: store.uiState.mode == .ambientSound
                 ) { store.send(.setMode($0)) }
                 ModeButton(
                     mode: .off,
-                    isSelected: store.headphones.mode == .off
+                    isSelected: store.uiState.mode == .off
                 ) { store.send(.setMode($0)) }
             }
         }
@@ -92,23 +89,23 @@ struct AmbientView: View {
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(Color(.foregroundSecondary))
                 Spacer()
-                Text("\(store.headphones.ambientLevel)")
+                Text("\(store.uiState.ambientLevel)")
                     .font(.system(size: 20, weight: .bold, design: .rounded))
                     .foregroundColor(Color(.highlight))
             }
             Slider(
                 value: Binding(
-                    get: { Double(store.headphones.ambientLevel) },
+                    get: { Double(store.uiState.ambientLevel) },
                     set: { store.send(.setLevel(Int($0.rounded()))) }
                 ),
-                in: 1 ... Double(store.headphones.maxAmbientLevel),
+                in: 1 ... Double(store.uiState.maxAmbientLevel),
                 step: 1
             )
             .accentColor(Color(.highlight))
 
             HStack(spacing: 8) {
                 Toggle(isOn: Binding(
-                    get: { store.headphones.focusOnVoice },
+                    get: { store.uiState.focusOnVoice },
                     set: { store.send(.setFocusOnVoice($0)) }
                 )) {
                     Text("AmbientView.levelCard.focusOnVoice")
@@ -135,16 +132,15 @@ struct AmbientView: View {
     AmbientView(
         store: Store(
             initialState: .init(
-                headphones: Shared(
-                    value: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
                         maxAmbientLevel: 20,
                         mode: .ambientSound,
                         ambientLevel: 10,
                         focusOnVoice: false,
                         focusOnVoiceAvailable: true
                     )
-                ),
-                uiState: Shared(value: .init())
+                )
             ),
             reducer: AmbientReducer.init
         )
@@ -155,16 +151,15 @@ struct AmbientView: View {
     AmbientView(
         store: Store(
             initialState: .init(
-                headphones: Shared(
-                    value: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
                         maxAmbientLevel: 20,
                         mode: .noiseCanceling,
                         ambientLevel: 10,
                         focusOnVoice: false,
                         focusOnVoiceAvailable: false
                     )
-                ),
-                uiState: Shared(value: .init())
+                )
             ),
             reducer: AmbientReducer.init
         )

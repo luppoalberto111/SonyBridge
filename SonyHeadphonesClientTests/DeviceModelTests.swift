@@ -20,13 +20,13 @@ struct DeviceModelTests {
         #expect(identifier.displayName == "Marek's WH-1000XM5")
 
         let state = SonyHeadphones(deviceModel: identifier)
-        #expect(state.deviceHeroModel.deviceImage == nil)
+        #expect(HeadphonesUIState(state).deviceHeroModel.deviceImage == nil)
     }
 
     @Test func stateResolvesItsDeviceModel() {
         let state =
             SonyHeadphones(deviceModel: Either<DeviceModel, String>(deviceName: "WF-1000XM4"))
         #expect(state.deviceModel == .left(.wf1000Xm4))
-        #expect(state.deviceHeroModel.deviceImage != nil)
+        #expect(HeadphonesUIState(state).deviceHeroModel.deviceImage != nil)
     }
 }

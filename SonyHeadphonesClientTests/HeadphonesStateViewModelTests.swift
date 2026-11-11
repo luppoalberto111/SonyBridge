@@ -13,7 +13,7 @@ struct HeadphonesStateViewModelTests {
             deviceMac: "AA:BB:CC:DD:EE:FF",
             protocolVersion: "v2"
         )
-        let model = state.deviceHeroModel
+        let model = HeadphonesUIState(state).deviceHeroModel
 
         #expect(model.deviceName == "WH-1000XM5")
         #expect(model.batteryLevel == 80)
@@ -35,7 +35,7 @@ struct HeadphonesStateViewModelTests {
             batteryCase: 50
         )
 
-        let model = state.deviceHeroModel
+        let model = HeadphonesUIState(state).deviceHeroModel
 
         #expect(model.hasDualBattery)
         #expect(model.batteryLeft == 80)
@@ -52,6 +52,6 @@ struct HeadphonesStateViewModelTests {
 
     private func batteryState(level: Int, charging: Bool) -> BatteryState {
         let state = SonyHeadphones(batteryLevel: level, batteryCharging: charging)
-        return state.batteryState
+        return HeadphonesUIState(state).batteryState
     }
 }

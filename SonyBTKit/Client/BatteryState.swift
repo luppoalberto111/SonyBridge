@@ -18,7 +18,7 @@ public enum BatteryState: Hashable {
     ///   - rawValue: The percentage, 0...100; negative (unknown) buckets as `.full` since it never
     ///               reaches a level read.
     ///   - isCharging: When true the state is `.charging` regardless of `rawValue`.
-    init(rawValue: Int, isCharging: Bool) {
+    public init(rawValue: Int, isCharging: Bool) {
         if isCharging {
             self = .charging
             return

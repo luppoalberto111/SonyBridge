@@ -129,16 +129,16 @@ import SwiftUI
     ) -> StoreOf<AmbientReducer> {
         Store(
             initialState: AmbientReducer.State(
-                headphones: Shared(
-                    value: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
+                        focusOnVoiceLoading: focusOnVoiceLoading,
                         maxAmbientLevel: 20,
                         mode: mode,
                         ambientLevel: 10,
                         focusOnVoice: false,
                         focusOnVoiceAvailable: focusOnVoiceAvailable
                     )
-                ),
-                uiState: .init(value: .init(focusOnVoiceLoading: focusOnVoiceLoading))
+                )
             )
         ) {
             AmbientReducer()
@@ -148,8 +148,8 @@ import SwiftUI
     static func equalizerStore(preset: EqPreset) -> StoreOf<EqualizerReducer> {
         Store(
             initialState: EqualizerReducer.State(
-                headphones: Shared(
-                    value: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
                         eqPreset: preset.rawValue,
                         eqBands: [2, -1, 0, 3, -2],
                         clearBass: 5
@@ -164,8 +164,7 @@ import SwiftUI
     static func dseeStore(dseeLoading: Bool) -> StoreOf<DseeReducer> {
         Store(
             initialState: DseeReducer.State(
-                headphones: Shared(value: .init(dsee: dseeLoading)),
-                uiState: .init(value: .init())
+                uiState: .init(value: HeadphonesUIState(dsee: dseeLoading))
             ),
             reducer: DseeReducer.init
         )
@@ -177,20 +176,16 @@ import SwiftUI
     ) -> StoreOf<SettingsReducer> {
         Store(
             initialState: SettingsReducer.State(
-                headphones: Shared(
-                    value: .init(
+                uiState: .init(
+                    value: HeadphonesUIState(
+                        adaptiveVolumeLoading: adaptiveVolumeLoading,
+                        autoPowerOffLoading: autoPowerOffLoading,
                         hasAutoPowerOff: true,
                         autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue,
                         hasSpeakToChat: true,
                         speakToChat: false,
                         hasAdaptiveVolume: true,
                         adaptiveVolume: true
-                    )
-                ),
-                uiState: .init(
-                    value: .init(
-                        adaptiveVolumeLoading: adaptiveVolumeLoading,
-                        autoPowerOffLoading: autoPowerOffLoading
                     )
                 )
             ),
@@ -202,7 +197,9 @@ import SwiftUI
         headphones: SonyHeadphones
     ) -> StoreOf<DeviceHeroReducer> {
         Store(
-            initialState: DeviceHeroReducer.State(headphones: .init(value: headphones)),
+            initialState: DeviceHeroReducer.State(
+                uiState: .init(value: HeadphonesUIState(headphones))
+            ),
             reducer: DeviceHeroReducer.init
         )
     }
@@ -223,17 +220,12 @@ import SwiftUI
     }
 
     static func mainScreenStore(
-        state: MainScreenFeature.State
+        state: MainScreenFeature.State,
+        snapshot: SonyHeadphones = SonyHeadphones()
     ) -> StoreOf<MainScreenFeature> {
-        let headphones: SonyHeadphones
-        if case let .connected(connected) = state {
-            headphones = connected.headphones
-        } else {
-            headphones = SonyHeadphones()
-        }
-        return Store(initialState: state, reducer: MainScreenFeature.init) {
+        Store(initialState: state, reducer: MainScreenFeature.init) {
             $0.continuousClock = TestClock<Duration>()
-            $0.headphonesClient = HeadphonesTestClient(state: headphones)
+            $0.headphonesClient = HeadphonesTestClient(state: snapshot)
         }
     }
 }

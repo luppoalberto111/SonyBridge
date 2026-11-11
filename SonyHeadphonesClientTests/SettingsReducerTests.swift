@@ -4,11 +4,13 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct SettingsReducerTests {
+    private func state(_ uiState: HeadphonesUIState = .init()) -> SettingsReducer.State {
+        .init(uiState: Shared(value: uiState))
+    }
+
     @Test func setAdaptiveVolumeDelegates() async {
         let store = TestStore(
-            initialState: SettingsReducer.State(
-                headphones: Shared(value: SonyHeadphones()), uiState: .init(value: .init())
-            ),
+            initialState: state(),
             reducer: SettingsReducer.init
         )
 
@@ -18,10 +20,7 @@ import Testing
 
     @Test func setSpeakToChatDelegates() async {
         let store = TestStore(
-            initialState: SettingsReducer.State(
-                headphones: Shared(value: SonyHeadphones()),
-                uiState: .init(value: .init())
-            ),
+            initialState: state(),
             reducer: SettingsReducer.init
         )
 
@@ -30,11 +29,7 @@ import Testing
     }
 
     @Test func setAutoPowerOffDelegates() async {
-        let store = TestStore(
-            initialState: SettingsReducer.State(
-                headphones: Shared(value: SonyHeadphones()), uiState: .init(value: .init())
-            )
-        ) {
+        let store = TestStore(initialState: state()) {
             SettingsReducer()
         }
 
@@ -42,7 +37,7 @@ import Testing
         await store.receive(\.delegate)
     }
 
-    @Test func initSharesCapabilitiesFromHeadphones() {
+    @Test func initMapsCapabilitiesFromSnapshot() {
         let headphones = SonyHeadphones(
             hasAutoPowerOff: true,
             autoPowerOff: 99,
@@ -53,14 +48,14 @@ import Testing
         )
 
         let state = SettingsReducer.State(
-            headphones: Shared(value: headphones), uiState: .init(value: .init())
+            uiState: Shared(value: HeadphonesUIState(headphones))
         )
 
-        #expect(state.headphones.hasAdaptiveVolume)
-        #expect(state.headphones.adaptiveVolume)
-        #expect(state.headphones.hasSpeakToChat)
-        #expect(state.headphones.speakToChat)
-        #expect(state.headphones.hasAutoPowerOff)
-        #expect(state.headphones.autoPowerOff == 99)
+        #expect(state.uiState.hasAdaptiveVolume)
+        #expect(state.uiState.adaptiveVolume)
+        #expect(state.uiState.hasSpeakToChat)
+        #expect(state.uiState.speakToChat)
+        #expect(state.uiState.hasAutoPowerOff)
+        #expect(state.uiState.autoPowerOff == 99)
     }
 }

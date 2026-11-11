@@ -1,4 +1,3 @@
-import Client
 import ComposableArchitecture
 import SwiftUI
 
@@ -7,8 +6,7 @@ import SwiftUI
 @Reducer struct EqualizerReducer {
     @ObservableState struct State: Equatable {
         @Shared
-        var headphones: SonyHeadphones
-        var isEqPresetLoading = false
+        var uiState: HeadphonesUIState
     }
 
     enum Action {
@@ -31,7 +29,7 @@ import SwiftUI
                     return .send(.delegate(.setEqualizer(preset)))
 
                 case let .setBand(index, value):
-                    guard state.headphones.eqBands.indices.contains(index) else { return .none }
+                    guard state.uiState.eqBands.indices.contains(index) else { return .none }
                     return .send(.delegate(.setBand(index, value)))
 
                 case let .setClearBass(value):
@@ -60,25 +58,25 @@ struct EqualizerView: View {
             ) {
                 ForEach(EqPreset.allCases, content: eqChip)
             }
-            if store.headphones.eqPreset == EqPreset.manual.rawValue {
+            if store.uiState.eqPreset == EqPreset.manual.rawValue {
                 Divider().background(Color.cardHi)
                 ForEach(EqBand.allCases) { band in
                     eqBandRow(
                         band.label,
                         value: Binding(
-                            get: { Double(store.headphones.eqBands[band.rawValue]) },
+                            get: { Double(store.uiState.eqBands[band.rawValue]) },
                             set: { store.send(.setBand(band.rawValue, Int($0.rounded()))) }
                         ),
-                        display: store.headphones.eqBands[band.rawValue]
+                        display: store.uiState.eqBands[band.rawValue]
                     )
                 }
                 eqBandRow(
                     String(localized: "EqualizerView.clearBass", defaultValue: "Bass"),
                     value: Binding(
-                        get: { Double(store.headphones.clearBass) },
+                        get: { Double(store.uiState.clearBass) },
                         set: { store.send(.setClearBass(Int($0.rounded()))) }
                     ),
-                    display: store.headphones.clearBass,
+                    display: store.uiState.clearBass,
                     accent: true
                 )
             }
@@ -109,7 +107,7 @@ struct EqualizerView: View {
     }
 
     private func eqChip(_ preset: EqPreset) -> some View {
-        let selected = store.headphones.eqPreset == preset.rawValue
+        let selected = store.uiState.eqPreset == preset.rawValue
         return Button(action: { store.send(.setEqualizer(preset.rawValue)) }) {
             Text(preset.name)
                 .font(.system(size: 12, weight: .medium))
@@ -120,7 +118,7 @@ struct EqualizerView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
         }
         .buttonStyle(PlainButtonStyle())
-        .disabled(store.isEqPresetLoading)
+        .disabled(store.uiState.eqPresetLoading)
     }
 }
 
@@ -128,8 +126,8 @@ struct EqualizerView: View {
     EqualizerView(
         store: Store(
             initialState: EqualizerReducer.State(
-                headphones: Shared(
-                    value: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
                         eqPreset: EqPreset.excited.rawValue,
                         eqBands: [0, 0, 0, 0, 0],
                         clearBass: 0
@@ -146,8 +144,8 @@ struct EqualizerView: View {
     EqualizerView(
         store: Store(
             initialState: EqualizerReducer.State(
-                headphones: Shared(
-                    value: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
                         eqPreset: EqPreset.manual.rawValue,
                         eqBands: [2, -1, 0, 3, -2],
                         clearBass: 5
