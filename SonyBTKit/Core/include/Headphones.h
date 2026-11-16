@@ -101,6 +101,15 @@ public:
 	/// @throws RecoverableException If the device never replies.
 	void initDevice();
 
+	/// Sets the connected headset's advertised name (e.g. "WH-1000XM5").
+	///
+	/// The name picks the protocol dialect for the few models that need one (the per-earbud battery
+	/// layouts, the WH-1000XM6's equalizer). A name the app doesn't recognise still works - the
+	/// model-specific handling then falls back to probing.
+	///
+	/// @param name The device name as advertised over Bluetooth; an empty name is allowed.
+	void setDeviceName(const std::string& name);
+
 	// Battery (v2 inquiry). getBatteryLevel() returns -1 until requestBattery() succeeds.
 	// For TWS earbuds requestBattery() also fills the per-earbud + case levels (hasDualBattery()).
 	/// Queries the battery; v2 only.
@@ -303,6 +312,9 @@ private:
 	Property<int> _asmLevel = { 0 };
 	Property<SOUND_POSITION_PRESET> _surroundPosition = { SOUND_POSITION_PRESET::OUT_OF_RANGE, SOUND_POSITION_PRESET::OFF };
 	Property<int> _vptType = { 0 };
+
+	/// The connected device's advertised name; used to pick the model-specific protocol dialect.
+	std::string _deviceName;
 
 	int _batteryLevel = -1;
 	bool _batteryCharging = false;

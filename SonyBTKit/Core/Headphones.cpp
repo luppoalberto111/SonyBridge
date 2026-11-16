@@ -85,6 +85,12 @@ void Headphones::initDevice()
 	);
 }
 
+void Headphones::setDeviceName(const std::string& name)
+{
+	std::lock_guard guard(this->_propertyMtx);
+	this->_deviceName = name;
+}
+
 void Headphones::requestBattery()
 {
 	// Single battery (over-ear and most models): GET 22 00 -> RET 23 00 <level> <charging>

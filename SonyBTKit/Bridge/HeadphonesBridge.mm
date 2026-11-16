@@ -205,6 +205,9 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
     _deviceName = [device nameOrAddress];
     _deviceMac = [device addressString];
     _hp = std::make_unique<Headphones>(*_bt);
+    // The model name selects the protocol dialect for the few models that need one (the per-earbud
+    // battery layouts, the WH-1000XM6's equalizer), so hand it over before the first inquiry.
+    _hp->setDeviceName(_deviceName.UTF8String ?: "");
     completion(YES, nil);
 }
 
