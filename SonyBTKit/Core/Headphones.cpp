@@ -270,6 +270,7 @@ void Headphones::requestEqualizer()
 		if (resp.size() < 4 + count) return;
 		std::lock_guard guard(this->_propertyMtx);
 		this->_eqPreset = static_cast<EQ_PRESET>((unsigned char)resp[2]);
+		this->_hasEqualizer = true;
 		this->_eqClearBass = 0;
 		this->_eqBands.assign(resp.begin() + 4, resp.begin() + 4 + count);
 		for (auto& band : this->_eqBands) band = (unsigned char)band;

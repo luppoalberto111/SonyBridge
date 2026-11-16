@@ -170,6 +170,22 @@ import SwiftUI
         }
     }
 
+    static func tenBandEqualizerStore() -> StoreOf<EqualizerReducer> {
+        Store(
+            initialState: EqualizerReducer.State(
+                uiState: Shared(
+                    value: HeadphonesUIState(
+                        eqPreset: EqPreset.manual.rawValue,
+                        eqBands: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        tenBandEqualizer: true
+                    )
+                )
+            )
+        ) {
+            EqualizerReducer()
+        }
+    }
+
     static func dseeStore(dseeLoading: Bool) -> StoreOf<DseeReducer> {
         Store(
             initialState: DseeReducer.State(

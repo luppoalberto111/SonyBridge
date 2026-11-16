@@ -37,6 +37,13 @@ let package = Package(
                 .process("Assets.xcassets"),
             ]
         ),
+        // Protocol-level tests for the C++ core: a scripted fake device, run with
+        // `swift run CoreProtocolTests`.
+        .executableTarget(
+            name: "CoreProtocolTests",
+            dependencies: ["Core"],
+            path: "Tests/CoreProtocolTests"
+        ),
     ],
     cxxLanguageStandard: .cxx17
 )
