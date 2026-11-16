@@ -104,6 +104,14 @@
     return _hp ? _hp->getClearBass() : 0;
 }
 
+- (NSInteger)equalizerBandCount {
+    return _hp ? _hp->getEqualizerBandCount() : 5;
+}
+
+- (BOOL)tenBandEqualizer {
+    return _hp && _hp->isTenBandEqualizer();
+}
+
 - (BOOL)dsee {
     return _hp ? _hp->getDsee() : NO;
 }

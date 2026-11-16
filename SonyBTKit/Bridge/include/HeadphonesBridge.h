@@ -96,6 +96,13 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 /// Clear-bass boost from the last EQ read/write, in -10..10.
 @property (nonatomic, readonly) NSInteger clearBass;      // -10..10
 
+/// How many equalizer bands this device exposes.
+@property (nonatomic, readonly) NSInteger equalizerBandCount; // 5, or 10 on the ten-band layout
+
+/// Whether this device uses the ten-band equalizer layout (WH-1000XM6).
+/// Its bands are raw device steps in 0..12 and it has no clear-bass slot.
+@property (nonatomic, readonly) BOOL tenBandEqualizer;
+
 /// Whether DSEE (audio upsampling) is enabled on the device.
 @property (nonatomic, readonly) BOOL dsee;                // DSEE / audio upsampling
 

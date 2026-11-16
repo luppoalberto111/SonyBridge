@@ -165,7 +165,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
         state.eqPreset = bridge.eqPreset
         state.clearBass = bridge.clearBass
         state.dsee = bridge.dsee
-        state.eqBands = (0 ..< 5).map { bridge.equalizerBand(at: $0) }
+        state.eqBands = (0 ..< bridge.equalizerBandCount).map { bridge.equalizerBand(at: $0) }
         return state.updatedBattery(from: bridge)
     }
 

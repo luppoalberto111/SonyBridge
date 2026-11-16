@@ -206,6 +206,19 @@ public:
 	/// @return The band gain in -10..10, or 0 for an out-of-range index.
 	int getEqualizerBand(int index); // 0..4
 
+	/// How many equalizer bands the connected device exposes.
+	///
+	/// @return 5 for the standard layout, 10 on the WH-1000XM6's ten-band layout.
+	int getEqualizerBandCount();
+
+	/// Whether the connected device uses the ten-band equalizer layout.
+	///
+	/// On that layout the bands are raw device steps in 0..12 (no dB mapping is known) and the
+	/// device has no clear-bass slot.
+	///
+	/// @return True on the WH-1000XM6 (v2 only).
+	bool isTenBandEqualizer();
+
 	// DSEE / audio upsampling (v2).
 	/// Reads the DSEE (audio upsampling) switch; v2 only.
 	/// @throws RecoverableException If the device doesn't answer.

@@ -64,8 +64,16 @@ public struct SonyHeadphones: Sendable, Equatable {
     /// Whether the device exposes the equalizer (v2 protocol only).
     public internal(set) var supportsEqualizer: Bool
 
-    /// The 5 equalizer band gains in -10...10, ordered low to high frequency.
+    /// The equalizer band gains, ordered low to high frequency.
+    ///
+    /// Five gains in -10...10 on the standard layout; ten raw device steps in 0...12 on the
+    /// WH-1000XM6's ten-band layout.
     public var eqBands: [Int]
+
+    /// Whether the device uses the ten-band equalizer layout (WH-1000XM6).
+    ///
+    /// On that layout the bands are raw device steps and the device has no clear-bass slot.
+    public internal(set) var tenBandEqualizer: Bool
 
     /// Clear-bass boost in -10...10.
     public var clearBass: Int
@@ -124,6 +132,7 @@ public struct SonyHeadphones: Sendable, Equatable {
         eqPreset: Int = 0,
         supportsEqualizer: Bool = false,
         eqBands: [Int] = [0, 0, 0, 0, 0],
+        tenBandEqualizer: Bool = false,
         clearBass: Int = 0,
         dsee: Bool = false,
         hasAutoPowerOff: Bool = false,
@@ -157,6 +166,7 @@ public struct SonyHeadphones: Sendable, Equatable {
         self.eqPreset = eqPreset
         self.supportsEqualizer = supportsEqualizer
         self.eqBands = eqBands
+        self.tenBandEqualizer = tenBandEqualizer
         self.clearBass = clearBass
         self.dsee = dsee
         self.hasAutoPowerOff = hasAutoPowerOff
@@ -213,7 +223,8 @@ extension SonyHeadphones {
         updated.eqPreset = bridge.eqPreset
         updated.clearBass = bridge.clearBass
         updated.dsee = bridge.dsee
-        updated.eqBands = (0 ..< 5).map { bridge.equalizerBand(at: $0) }
+        updated.eqBands = (0 ..< bridge.equalizerBandCount).map { bridge.equalizerBand(at: $0) }
+        updated.tenBandEqualizer = bridge.tenBandEqualizer
         updated.hasAutoPowerOff = bridge.hasAutoPowerOff
         updated.autoPowerOff = bridge.autoPowerOff
         let firmware = bridge.firmware ?? ""

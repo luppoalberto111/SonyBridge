@@ -235,6 +235,22 @@ bool Headphones::isBatteryCaseCharging() { return this->_batteryCaseCharging; }
 
 void Headphones::requestEqualizer()
 {
+	if (this->_isWh1000Xm6())
+	{
+		// GET 56 04 -> RET 57 04 <preset> <count> <b1..bN>, raw device steps 0..12 with no bias and
+		// no clear-bass slot. The legacy 56 00 frame is ACKed but ignored by this device.
+		auto resp = this->_conn.sendCommandAndReadResponse(
+			{ (char)V2Command::EQ_GET, (char)V2Command::EQ_TEN_BAND }, V2Command::EQ_RET, V2Command::EQ_TEN_BAND);
+		if (resp.size() < 4) return;
+		size_t count = (unsigned char)resp[3];
+		if (resp.size() < 4 + count) return;
+		std::lock_guard guard(this->_propertyMtx);
+		this->_eqPreset = static_cast<EQ_PRESET>((unsigned char)resp[2]);
+		this->_eqClearBass = 0;
+		this->_eqBands.assign(resp.begin() + 4, resp.begin() + 4 + count);
+		for (auto& band : this->_eqBands) band = (unsigned char)band;
+		return;
+	}
 	// GET: 56 00  ->  RET: 57 00 <preset> 06 <bass+10> <b1..b5 +10>
 	auto resp = this->_conn.sendCommandAndReadResponse(
 		{ (char)V2Command::EQ_GET, 0x00 },
@@ -263,10 +279,10 @@ EQ_PRESET Headphones::getEqualizerPreset()
 
 void Headphones::setEqualizerPreset(EQ_PRESET preset)
 {
-	// SET preset: 58 00 <preset> 00
+	// SET preset: 58 00 <preset> 00 (58 04 <preset> 00 on the ten-band layout).
 	this->_conn.sendCommand({
 		(char)V2Command::EQ_SET,
-		0x00,
+		(char)(this->_isWh1000Xm6() ? V2Command::EQ_TEN_BAND : 0x00),
 		(char)static_cast<unsigned char>(preset),
 		0x00
 	});
@@ -276,6 +292,21 @@ void Headphones::setEqualizerPreset(EQ_PRESET preset)
 
 void Headphones::setEqualizerCustom(int clearBass, const std::vector<int>& bands)
 {
+	if (this->_isWh1000Xm6())
+	{
+		// SET 58 04 a0 <count> <b1..bN>, raw 0..12, no clear-bass slot.
+		std::vector<int> raw(bands.begin(), bands.end());
+		for (auto& band : raw) band = std::clamp(band, 0, 12);
+		Buffer cmd = { (char)V2Command::EQ_SET, (char)V2Command::EQ_TEN_BAND,
+			(char)static_cast<unsigned char>(EQ_PRESET::MANUAL), (char)raw.size() };
+		for (int band : raw) cmd.push_back((char)band);
+		this->_conn.sendCommand(cmd);
+
+		std::lock_guard guard(this->_propertyMtx);
+		this->_eqPreset = EQ_PRESET::MANUAL;
+		this->_eqBands = raw;
+		return;
+	}
 	// SET custom: 58 00 A0 06 <clearBass+10> <b1..b5 +10>  (0xA0 = MANUAL preset; values clamped to [-10,10])
 	auto clamp = [](int v) { return (char)(unsigned char)(std::max(-10, std::min(10, v)) + 10); };
 	Buffer cmd = {
@@ -308,6 +339,16 @@ int Headphones::getClearBass()
 int Headphones::getEqualizerBand(int index)
 {
 	return (index >= 0 && index < (int)this->_eqBands.size()) ? this->_eqBands[index] : 0;
+}
+
+int Headphones::getEqualizerBandCount()
+{
+	return (int)this->_eqBands.size();
+}
+
+bool Headphones::isTenBandEqualizer()
+{
+	return this->_conn.getProtocolVersion() == SonyProtocolVersion::V2 && this->_isWh1000Xm6();
 }
 
 void Headphones::requestDsee()
