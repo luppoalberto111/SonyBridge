@@ -103,6 +103,17 @@ bool Headphones::_looksLikeEarbuds()
 	return name.find("wf-") != std::string::npos || name.find("linkbuds") != std::string::npos;
 }
 
+bool Headphones::_isWh1000Xm6()
+{
+	std::string name;
+	{
+		std::lock_guard guard(this->_propertyMtx);
+		name = this->_deviceName;
+	}
+	std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return (char)std::tolower(c); });
+	return name.find("wh-1000xm6") != std::string::npos || name.find("wh1000xm6") != std::string::npos;
+}
+
 bool Headphones::_requestDualBattery(unsigned char subType)
 {
 	Buffer resp;
@@ -338,8 +349,15 @@ void Headphones::requestAmbientState()
 	if (protocolVersion == SonyProtocolVersion::V2)
 	{
 		// GET: 66 17  ->  RET: 67 17 01 <effect> <settingType 0=NC/1=Ambient> <voice> <level>
-		auto resp = this->_conn.sendCommandAndReadResponse({ 0x66, 0x17 }, 0x67);
-		if (resp.size() >= 7)
+		// Match the sub-type too: 0x67 also carries unsolicited notifications with a different layout,
+		// and accepting one of those parsed <effect>/<level> out of unrelated bytes.
+		// The WH-1000XM6 answers 66 17 with all zeros in every mode - parsing that as "off" is what
+		// snapped its UI straight back to Off. It reports the same layout under inquired type 0x19.
+		unsigned char inquired = this->_isWh1000Xm6() ? V2Command::NCASM_TYPE_XM6 : V2Command::NCASM_TYPE;
+		auto resp = this->_conn.sendCommandAndReadResponse({ 0x66, (char)inquired }, 0x67, inquired);
+		// Byte [2] is 01 in every real reply; anything else (like the XM6's zeroed 0x17 answer) is not
+		// a state at all, so it is ignored instead of being read as "off".
+		if (resp.size() >= 7 && resp[2] == 0x01)
 		{
 			bool on = resp[3] != 0;
 			bool ambient = resp[4] != 0;

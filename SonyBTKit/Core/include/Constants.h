@@ -66,6 +66,10 @@ namespace V2Command
 	inline constexpr unsigned char BTNMODE_SET  = 0xf8; // SET f8 <sub> <value...>
 	inline constexpr unsigned char SUB_ADAPTIVE_VOLUME = 0x0a;
 	inline constexpr unsigned char SUB_SPEAK_TO_CHAT   = 0x0c;
+	// Noise-control inquired types: 66/67/68 <type>. The WH-1000XM6 reads back through 0x19 - it
+	// answers 0x17 with all zeros in every mode, which is not a state at all.
+	inline constexpr unsigned char NCASM_TYPE     = 0x17;
+	inline constexpr unsigned char NCASM_TYPE_XM6 = 0x19;
 }
 
 // v2 equalizer preset ids (byte value sent/received at EQ payload[2]).

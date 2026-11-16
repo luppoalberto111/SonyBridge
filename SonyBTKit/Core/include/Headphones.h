@@ -224,7 +224,8 @@ public:
 
 	// Reads the device's current ambient/NC state into the *current* properties (for live polling so
 	// changes made with the headphone's own button are reflected in the app).
-	/// Reads the current NC/ambient state back from the device (protocol-aware: v2 `66 17`, v1 `66 02`).
+	/// Reads the current NC/ambient state back from the device (protocol-aware: v2 `66 17`
+	/// — `66 19` on the WH-1000XM6 — and v1 `66 02`).
 	///
 	/// Called on a timer by the app so that pressing the headphone's own button updates the UI. On v1
 	/// the reply is drained but deliberately not parsed (the layout is unverified and a mis-parse would
@@ -358,6 +359,12 @@ private:
 	/// Only used to pick the battery probe order - an unrecognised name still finds both layouts,
 	/// just one timed-out inquiry slower.
 	bool _looksLikeEarbuds();
+
+	/// Whether the connected device is a WH-1000XM6.
+	///
+	/// The XM6 speaks a different dialect of the v2 protocol for two commands: it reads its noise
+	/// control through inquired type 0x19 and its equalizer through type 0x04 with ten raw bands.
+	bool _isWh1000Xm6();
 
 	/// Reads the per-earbud levels (and charging flags) of a TWS device.
 	///
