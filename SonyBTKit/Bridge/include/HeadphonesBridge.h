@@ -147,8 +147,8 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 // Synchronous and safe off the main thread; never shows any UI.
 /// Lists the paired headsets that look like supported Sony models, for the manual device picker.
 ///
-/// Filters the system's paired devices by name prefixes (WH-, WF-, WI-, MDR-, XB, LinkBuds); paired
-/// status is enough, the RFCOMM link is opened later on demand by
+/// Filters the system's paired devices by name prefixes (WH-, WF-, WI-, MDR-, XB, LinkBuds, ULT);
+/// paired status is enough, the RFCOMM link is opened later on demand by
 /// `-connectToDeviceWithAddress:completion:`.
 ///
 /// @return An array of dictionaries with exactly two `NSString` keys, `name` and `address`
@@ -159,6 +159,9 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 // completion is called on the main thread; a nil error with ok=NO means
 // "nothing found" (not a failure) so the caller can offer a device list.
 /// Connects to the Sony headset that macOS already considers connected ("My Device" behaviour).
+///
+/// When no headset reports itself as connected, any paired Sony-looking device is used instead -
+/// headsets that are only connected for audio (or over BLE) are reported as disconnected by macOS.
 ///
 /// @param completion Called on the main thread with `(ok, error)`. `ok == NO` with a nil `error`
 ///                   means no Sony-looking device was found — not a failure, so the caller should

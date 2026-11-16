@@ -140,10 +140,10 @@
 ///
 /// @param name The device's advertised name; an empty name is never a match.
 /// @return YES if the name contains one of the known Sony model prefixes (WH-, WF-, WI-, MDR-, XB,
-///         LinkBuds).
+///         LinkBuds, ULT).
 static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
     if (name.length == 0) return NO;
-    NSArray<NSString *> *prefixes = @[@"WH-", @"WF-", @"WI-", @"MDR-", @"XB", @"LinkBuds"];
+    NSArray<NSString *> *prefixes = @[@"WH-", @"WF-", @"WI-", @"MDR-", @"XB", @"LinkBuds", @"ULT"];
     for (NSString *p in prefixes) {
         if ([name hasPrefix:p] || [name containsString:p]) return YES;
     }
@@ -169,6 +169,18 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
         if ([paired isConnected] && SHCLooksLikeSonyHeadset([paired name])) {
             device = paired;
             break;
+        }
+    }
+
+    if (!device) {
+        // No Sony headset reports itself as connected. That happens for headsets that are only
+        // connected for audio (or over BLE) - macOS reports isConnected == NO for those - so fall
+        // back to any paired Sony-looking device. connect() opens the RFCOMM link on demand.
+        for (IOBluetoothDevice *paired in [IOBluetoothDevice pairedDevices]) {
+            if (SHCLooksLikeSonyHeadset([paired name])) {
+                device = paired;
+                break;
+            }
         }
     }
 

@@ -26,6 +26,8 @@ public enum DeviceModel: String, CaseIterable, Sendable {
     case whCh720N = "WH-CH720N"
     case whXb900N = "WH-XB900N"
     case whXb910N = "WH-XB910N"
+    /// The ULT WEAR (WH-ULT900N) advertises itself without the usual "WH-" prefix.
+    case ultWear = "ULT WEAR"
 
     /// Hero artwork for the model, from the Client target's asset catalog.
     ///
@@ -47,6 +49,7 @@ public enum DeviceModel: String, CaseIterable, Sendable {
             case .whCh720N: Image(.whCh720N)
             case .whXb900N: Image(.whXb900N)
             case .whXb910N: Image(.whXb910N)
+            case .ultWear: Image(.ultWear)
         }
     }
 }
