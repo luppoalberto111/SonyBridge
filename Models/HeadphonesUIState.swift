@@ -99,6 +99,15 @@ public struct HeadphonesUIState: Sendable, Equatable {
     /// Charging-case percentage, or -1 if not applicable/unknown.
     public var batteryCase: Int
 
+    /// Whether the left earbud reported itself as charging.
+    public var batteryLeftCharging: Bool
+
+    /// Whether the right earbud reported itself as charging.
+    public var batteryRightCharging: Bool
+
+    /// Whether the charging case reported itself as charging.
+    public var batteryCaseCharging: Bool
+
     /// The raw equalizer preset byte (`EQ_PRESET`, e.g. 0x00 Off, 0xA0 Manual).
     public var eqPreset: Int
 
@@ -166,6 +175,9 @@ public struct HeadphonesUIState: Sendable, Equatable {
         batteryLeft: Int = -1,
         batteryRight: Int = -1,
         batteryCase: Int = -1,
+        batteryLeftCharging: Bool = false,
+        batteryRightCharging: Bool = false,
+        batteryCaseCharging: Bool = false,
         eqPreset: Int = 0,
         supportsEqualizer: Bool = false,
         eqBands: [Int] = [0, 0, 0, 0, 0],
@@ -203,6 +215,9 @@ public struct HeadphonesUIState: Sendable, Equatable {
         self.batteryLeft = batteryLeft
         self.batteryRight = batteryRight
         self.batteryCase = batteryCase
+        self.batteryLeftCharging = batteryLeftCharging
+        self.batteryRightCharging = batteryRightCharging
+        self.batteryCaseCharging = batteryCaseCharging
         self.eqPreset = eqPreset
         self.supportsEqualizer = supportsEqualizer
         self.eqBands = eqBands
@@ -242,6 +257,9 @@ extension HeadphonesUIState {
             batteryLeft: headphones.batteryLeft,
             batteryRight: headphones.batteryRight,
             batteryCase: headphones.batteryCase,
+            batteryLeftCharging: headphones.batteryLeftCharging,
+            batteryRightCharging: headphones.batteryRightCharging,
+            batteryCaseCharging: headphones.batteryCaseCharging,
             eqPreset: headphones.eqPreset,
             supportsEqualizer: headphones.supportsEqualizer,
             eqBands: headphones.eqBands,

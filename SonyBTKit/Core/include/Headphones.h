@@ -114,9 +114,11 @@ public:
 	// For TWS earbuds requestBattery() also fills the per-earbud + case levels (hasDualBattery()).
 	/// Queries the battery; v2 only.
 	///
-	/// Tries the single-battery type first, then the TWS dual-earbud and charging-case types. Every
-	/// query is best-effort: an unsupported type is skipped, and known values are never cleared, so
-	/// calling this again after a missed read is always safe.
+	/// The probe order depends on the model: earbuds (`WF-*`, `LinkBuds`) are asked for the per-earbud
+	/// layout first, because some of them also answer the single-battery inquiry - and taking that
+	/// answer would hide the per-earbud levels. Every query is best-effort: an unsupported type is
+	/// skipped, and known values are never cleared, so calling this again after a missed read is
+	/// always safe.
 	/// @throws RecoverableException Never escapes - failures are swallowed internally.
 	void requestBattery();
 
@@ -149,6 +151,21 @@ public:
 	///
 	/// @return 0..100, or -1 if not applicable/unknown.
 	int getBatteryCase();
+
+	/// Whether the left earbud reported itself as charging.
+	///
+	/// @return True when charging; false when unknown or on battery.
+	bool isBatteryLeftCharging();
+
+	/// Whether the right earbud reported itself as charging.
+	///
+	/// @return True when charging; false when unknown or on battery.
+	bool isBatteryRightCharging();
+
+	/// Whether the charging case reported itself as charging.
+	///
+	/// @return True when charging; false when unknown or on battery.
+	bool isBatteryCaseCharging();
 
 	// Equalizer (v2). requestEqualizer() reads current state; setEqualizerPreset() pushes a preset immediately.
 	/// Reads the current equalizer state (preset, clear bass and bands); v2 only.
@@ -322,6 +339,9 @@ private:
 	int _batteryLeft = -1;
 	int _batteryRight = -1;
 	int _batteryCase = -1;
+	bool _batteryLeftCharging = false;
+	bool _batteryRightCharging = false;
+	bool _batteryCaseCharging = false;
 	EQ_PRESET _eqPreset = EQ_PRESET::OFF;
 	std::vector<int> _eqBands = { 0, 0, 0, 0, 0 };
 	int _eqClearBass = 0;
@@ -332,6 +352,26 @@ private:
 	bool _hasCodec = false; std::string _codec;
 	bool _hasSpeakToChat = false; bool _speakToChat = false;
 	bool _hasAdaptiveVolume = false; bool _adaptiveVolume = false;
+
+	/// Whether the connected device is one of Sony's true-wireless earbuds.
+	///
+	/// Only used to pick the battery probe order - an unrecognised name still finds both layouts,
+	/// just one timed-out inquiry slower.
+	bool _looksLikeEarbuds();
+
+	/// Reads the per-earbud levels (and charging flags) of a TWS device.
+	///
+	/// @param subType The battery sub-type to ask for (`BATTERY_SUB_DUAL` or `BATTERY_SUB_DUAL2`).
+	/// @return False when the device didn't answer that sub-type, so the caller can try the other one.
+	bool _requestDualBattery(unsigned char subType);
+
+	/// Reads a single battery level (and charging flag).
+	///
+	/// @param subType       The battery sub-type to ask for (e.g. `BATTERY_SUB_SINGLE`).
+	/// @param levelOut      Receives the level, or -1 when the device didn't answer.
+	/// @param chargingOut   Receives the charging flag; untouched when the device didn't answer.
+	/// @return False when the device didn't answer that sub-type.
+	bool _requestSingleBattery(unsigned char subType, int& levelOut, bool& chargingOut);
 
 	std::mutex _propertyMtx;
 

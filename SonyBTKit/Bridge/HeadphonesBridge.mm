@@ -88,6 +88,9 @@
 - (NSInteger)batteryLeft { return _hp ? _hp->getBatteryLeft() : -1; }
 - (NSInteger)batteryRight { return _hp ? _hp->getBatteryRight() : -1; }
 - (NSInteger)batteryCase { return _hp ? _hp->getBatteryCase() : -1; }
+- (BOOL)batteryLeftCharging { return _hp && _hp->isBatteryLeftCharging(); }
+- (BOOL)batteryRightCharging { return _hp && _hp->isBatteryRightCharging(); }
+- (BOOL)batteryCaseCharging { return _hp && _hp->isBatteryCaseCharging(); }
 
 - (NSInteger)eqPreset {
     return _hp ? (NSInteger)_hp->getEqualizerPreset() : 0;

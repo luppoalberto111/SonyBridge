@@ -49,6 +49,15 @@ public struct SonyHeadphones: Sendable, Equatable {
     /// Charging-case percentage, or -1 if not applicable/unknown.
     public internal(set) var batteryCase: Int
 
+    /// Whether the left earbud reported itself as charging.
+    public internal(set) var batteryLeftCharging: Bool
+
+    /// Whether the right earbud reported itself as charging.
+    public internal(set) var batteryRightCharging: Bool
+
+    /// Whether the charging case reported itself as charging.
+    public internal(set) var batteryCaseCharging: Bool
+
     /// The raw equalizer preset byte (`EQ_PRESET`, e.g. 0x00 Off, 0xA0 Manual).
     public internal(set) var eqPreset: Int
 
@@ -109,6 +118,9 @@ public struct SonyHeadphones: Sendable, Equatable {
         batteryLeft: Int = -1,
         batteryRight: Int = -1,
         batteryCase: Int = -1,
+        batteryLeftCharging: Bool = false,
+        batteryRightCharging: Bool = false,
+        batteryCaseCharging: Bool = false,
         eqPreset: Int = 0,
         supportsEqualizer: Bool = false,
         eqBands: [Int] = [0, 0, 0, 0, 0],
@@ -139,6 +151,9 @@ public struct SonyHeadphones: Sendable, Equatable {
         self.batteryLeft = batteryLeft
         self.batteryRight = batteryRight
         self.batteryCase = batteryCase
+        self.batteryLeftCharging = batteryLeftCharging
+        self.batteryRightCharging = batteryRightCharging
+        self.batteryCaseCharging = batteryCaseCharging
         self.eqPreset = eqPreset
         self.supportsEqualizer = supportsEqualizer
         self.eqBands = eqBands
@@ -178,6 +193,9 @@ extension SonyHeadphones {
         updated.batteryLeft = bridge.batteryLeft
         updated.batteryRight = bridge.batteryRight
         updated.batteryCase = bridge.batteryCase
+        updated.batteryLeftCharging = bridge.batteryLeftCharging
+        updated.batteryRightCharging = bridge.batteryRightCharging
+        updated.batteryCaseCharging = bridge.batteryCaseCharging
 
         return updated
     }

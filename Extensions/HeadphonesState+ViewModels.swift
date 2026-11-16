@@ -25,6 +25,8 @@ extension HeadphonesUIState {
             hasDualBattery: hasDualBattery,
             batteryLeft: batteryLeft,
             batteryRight: batteryRight,
+            batteryLeftCharging: batteryLeftCharging,
+            batteryRightCharging: batteryRightCharging,
             batteryLevel: batteryLevel,
             batteryImage: batteryState.image,
             codec: codec,

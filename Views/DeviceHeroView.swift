@@ -49,6 +49,8 @@ struct DeviceHeroView: View {
         let hasDualBattery: Bool
         let batteryLeft: Int
         let batteryRight: Int
+        let batteryLeftCharging: Bool
+        let batteryRightCharging: Bool
         let batteryLevel: Int
         let batteryImage: Image
         let codec: String
@@ -138,6 +140,11 @@ struct DeviceHeroView: View {
                     ))
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.foregroundSecondary)
+                    if model.batteryLeftCharging || model.batteryRightCharging {
+                        Image(systemName: "bolt.fill")
+                            .font(.system(size: 11))
+                            .foregroundColor(Color(.highlight))
+                    }
                 } else if model.batteryLevel >= 0 {
                     model.batteryImage
                         .font(.system(size: 13))

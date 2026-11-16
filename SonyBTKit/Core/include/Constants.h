@@ -33,9 +33,20 @@ namespace V2Command
 {
 	inline constexpr unsigned char INIT_REQUEST = 0x00; // payload: 00 00
 	inline constexpr unsigned char INIT_REPLY   = 0x01; // reply: 01 ... (8 bytes total => v2 device)
-	inline constexpr unsigned char BATTERY_GET  = 0x22; // payload: 22 <type: 00=single>
-	inline constexpr unsigned char BATTERY_RET  = 0x23; // reply: 23 <type> <level 0-100> <charging 0/1>
-	inline constexpr unsigned char BATTERY_NTFY = 0x25; // notify: 25 <type> <level> <charging>
+	inline constexpr unsigned char BATTERY_GET  = 0x22; // payload: 22 <sub-type>
+	inline constexpr unsigned char BATTERY_RET  = 0x23; // reply: 23 <sub-type> <level 0-100> <charging 0/1>
+	inline constexpr unsigned char BATTERY_NTFY = 0x25; // notify: 25 <sub-type> <level> <charging>
+	// Battery inquiry sub-types (payload byte 1). A device answers only the ones it actually has, so
+	// these have to be probed - and an unsupported inquiry costs a full receive timeout.
+	// TWS earbuds report DUAL (or DUAL2 on the WF-C500/C510/C700N line) plus CASE; everything else
+	// reports SINGLE.
+	inline constexpr unsigned char BATTERY_SUB_SINGLE = 0x00; // RET 23 00 <level> <charging>
+	inline constexpr unsigned char BATTERY_SUB_DUAL2  = 0x01; // WF-C500 / WF-C510 / WF-C700N
+	inline constexpr unsigned char BATTERY_SUB_DUAL   = 0x09; // WF-1000XM4 / WF-1000XM5 / LinkBuds
+	inline constexpr unsigned char BATTERY_SUB_CASE   = 0x0a; // RET 23 0a <level> <charging>
+	// DUAL/DUAL2 reply: 23 <sub> <Llvl> <Lchg> <Rlvl> <Rchg>. A level of 0 means that earbud isn't
+	// reporting (docked in the case / powered down) rather than "empty" - treat it as unknown.
+	// The reply can be longer than the reference layout, so size checks must be lower bounds.
 	inline constexpr unsigned char EQ_GET       = 0x56; // payload: 56 00
 	inline constexpr unsigned char EQ_RET       = 0x57; // reply: 57 00 <preset> 06 <bass+10> <b1..b5 +10>
 	inline constexpr unsigned char EQ_SET       = 0x58; // preset: 58 00 <preset> 00 ; custom: 58 00 A0 06 <bass+10> <b1..b5 +10>

@@ -77,6 +77,15 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 /// Charging-case percentage, or -1 if not applicable/unknown.
 @property (nonatomic, readonly) NSInteger batteryCase;
 
+/// Whether the left earbud reported itself as charging.
+@property (nonatomic, readonly) BOOL batteryLeftCharging;
+
+/// Whether the right earbud reported itself as charging.
+@property (nonatomic, readonly) BOOL batteryRightCharging;
+
+/// Whether the charging case reported itself as charging.
+@property (nonatomic, readonly) BOOL batteryCaseCharging;
+
 // Equalizer, mirrored from the last read/write (v2 only).
 /// The raw equalizer preset byte (an `EQ_PRESET` value, e.g. 0x00 = Off, 0xA0 = Manual).
 @property (nonatomic, readonly) NSInteger eqPreset;       // raw preset byte (EQ_PRESET)
