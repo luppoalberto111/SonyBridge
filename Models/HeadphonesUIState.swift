@@ -111,8 +111,15 @@ public struct HeadphonesUIState: Sendable, Equatable {
     /// The raw equalizer preset byte (`EQ_PRESET`, e.g. 0x00 Off, 0xA0 Manual).
     public var eqPreset: Int
 
-    /// Whether the device exposes the equalizer (v2 protocol only).
+    /// Whether the device exposes the equalizer.
+    ///
+    /// True once the device answered the equalizer inquiry - not every model has one.
     public var supportsEqualizer: Bool
+
+    /// Whether the device exposes DSEE (audio upsampling).
+    ///
+    /// True once the device answered the DSEE inquiry.
+    public var supportsDsee: Bool
 
     /// The equalizer band gains, ordered low to high frequency.
     ///
@@ -188,6 +195,7 @@ public struct HeadphonesUIState: Sendable, Equatable {
         batteryCaseCharging: Bool = false,
         eqPreset: Int = 0,
         supportsEqualizer: Bool = false,
+        supportsDsee: Bool = false,
         eqBands: [Int] = [0, 0, 0, 0, 0],
         tenBandEqualizer: Bool = false,
         clearBass: Int = 0,
@@ -229,6 +237,7 @@ public struct HeadphonesUIState: Sendable, Equatable {
         self.batteryCaseCharging = batteryCaseCharging
         self.eqPreset = eqPreset
         self.supportsEqualizer = supportsEqualizer
+        self.supportsDsee = supportsDsee
         self.eqBands = eqBands
         self.tenBandEqualizer = tenBandEqualizer
         self.clearBass = clearBass
@@ -272,6 +281,7 @@ extension HeadphonesUIState {
             batteryCaseCharging: headphones.batteryCaseCharging,
             eqPreset: headphones.eqPreset,
             supportsEqualizer: headphones.supportsEqualizer,
+            supportsDsee: headphones.supportsDsee,
             eqBands: headphones.eqBands,
             tenBandEqualizer: headphones.tenBandEqualizer,
             clearBass: headphones.clearBass,

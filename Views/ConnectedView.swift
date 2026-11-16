@@ -408,6 +408,8 @@ struct ConnectedView: View {
                     EqualizerView(
                         store: store.scope(state: \.equalizer, action: \.equalizer)
                     )
+                }
+                if store.uiState.supportsDsee {
                     DseeView(store: store.scope(state: \.dsee, action: \.dsee))
                 }
                 if store.uiState.hasAdaptiveVolume || store.uiState.hasSpeakToChat

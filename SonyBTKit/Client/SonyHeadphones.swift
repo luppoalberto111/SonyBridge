@@ -61,8 +61,16 @@ public struct SonyHeadphones: Sendable, Equatable {
     /// The raw equalizer preset byte (`EQ_PRESET`, e.g. 0x00 Off, 0xA0 Manual).
     public internal(set) var eqPreset: Int
 
-    /// Whether the device exposes the equalizer (v2 protocol only).
+    /// Whether the device exposes the equalizer.
+    ///
+    /// True once the device answered the equalizer inquiry - both protocol generations speak it,
+    /// but not every model has one.
     public internal(set) var supportsEqualizer: Bool
+
+    /// Whether the device exposes DSEE (audio upsampling).
+    ///
+    /// True once the device answered the DSEE inquiry.
+    public internal(set) var supportsDsee: Bool
 
     /// The equalizer band gains, ordered low to high frequency.
     ///
@@ -131,6 +139,7 @@ public struct SonyHeadphones: Sendable, Equatable {
         batteryCaseCharging: Bool = false,
         eqPreset: Int = 0,
         supportsEqualizer: Bool = false,
+        supportsDsee: Bool = false,
         eqBands: [Int] = [0, 0, 0, 0, 0],
         tenBandEqualizer: Bool = false,
         clearBass: Int = 0,
@@ -165,6 +174,7 @@ public struct SonyHeadphones: Sendable, Equatable {
         self.batteryCaseCharging = batteryCaseCharging
         self.eqPreset = eqPreset
         self.supportsEqualizer = supportsEqualizer
+        self.supportsDsee = supportsDsee
         self.eqBands = eqBands
         self.tenBandEqualizer = tenBandEqualizer
         self.clearBass = clearBass
@@ -225,6 +235,8 @@ extension SonyHeadphones {
         updated.dsee = bridge.dsee
         updated.eqBands = (0 ..< bridge.equalizerBandCount).map { bridge.equalizerBand(at: $0) }
         updated.tenBandEqualizer = bridge.tenBandEqualizer
+        updated.supportsEqualizer = bridge.supportsEqualizer
+        updated.supportsDsee = bridge.supportsDsee
         updated.hasAutoPowerOff = bridge.hasAutoPowerOff
         updated.autoPowerOff = bridge.autoPowerOff
         let firmware = bridge.firmware ?? ""
@@ -253,6 +265,7 @@ extension SonyHeadphones {
         updated.protocolVersion = bridge.protocolVersionString ?? ""
         updated.supportsVpt = bridge.supportsVpt
         updated.supportsEqualizer = bridge.supportsEqualizer
+        updated.supportsDsee = bridge.supportsDsee
         updated.maxAmbientLevel = bridge.maxAmbientLevel
         updated.mode = bridge.mode
         let level = bridge.ambientLevel

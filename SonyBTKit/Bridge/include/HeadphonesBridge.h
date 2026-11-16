@@ -90,8 +90,14 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 /// The raw equalizer preset byte (an `EQ_PRESET` value, e.g. 0x00 = Off, 0xA0 = Manual).
 @property (nonatomic, readonly) NSInteger eqPreset;       // raw preset byte (EQ_PRESET)
 
-/// Whether this device exposes the equalizer (v2 protocol only).
-@property (nonatomic, readonly) BOOL supportsEqualizer;   // v2 devices only
+/// Whether this device exposes the equalizer.
+/// YES once the device answered the equalizer inquiry - both protocol generations speak it, but
+/// not every model has one.
+@property (nonatomic, readonly) BOOL supportsEqualizer;
+
+/// Whether this device exposes DSEE (audio upsampling).
+/// YES once the device answered the DSEE inquiry.
+@property (nonatomic, readonly) BOOL supportsDsee;
 
 /// Clear-bass boost from the last EQ read/write, in -10..10.
 @property (nonatomic, readonly) NSInteger clearBass;      // -10..10
@@ -188,10 +194,10 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
        completion:(void (^)(BOOL ok, NSString * _Nullable error))completion;
 
 // Runs the init handshake (once) then reads battery + equalizer on a background thread; completion on main.
-/// Runs the first-stage status read after connecting: init handshake (v2, once), battery, equalizer and DSEE.
+/// Runs the first-stage status read after connecting: init handshake (once), battery, equalizer and DSEE.
 ///
-/// On v1 devices this intentionally only issues the read-only ambient-state query, because the v2
-/// battery opcode would power the headphones off there.
+/// The inquiries are protocol-aware, so v1 devices (e.g. the WH-1000XM4) are read with their own
+/// sub-types instead of being skipped.
 ///
 /// @param completion Called on the main thread when the reads finished (errors are swallowed — the
 ///                   properties simply keep their previous values).
@@ -203,7 +209,8 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 /// Runs the second-stage capability probe (firmware, codec, auto power off, adaptive volume, speak-to-chat).
 ///
 /// Each probe can take seconds to time out on devices that don't support the feature, so this is
-/// deliberately separate from `-refreshStatusWithCompletion:` and must be called after it. v2 only.
+/// deliberately separate from `-refreshStatusWithCompletion:` and must be called after it. The
+/// probes are protocol-aware, so v1 devices are asked with their own opcodes.
 ///
 /// @param completion Called on the main thread when every probe settled (errors are swallowed; the
 ///                   `has…` properties simply stay NO for unsupported features).

@@ -97,7 +97,8 @@
 }
 
 - (BOOL)supportsEqualizer {
-    return self.connected && _bt->getProtocolVersion() == SonyProtocolVersion::V2;
+    // The device answered the equalizer inquiry - both protocol generations speak it.
+    return _hp && _hp->hasEqualizer();
 }
 
 - (NSInteger)clearBass {
@@ -114,6 +115,10 @@
 
 - (BOOL)dsee {
     return _hp ? _hp->getDsee() : NO;
+}
+
+- (BOOL)supportsDsee {
+    return _hp && _hp->hasDsee();
 }
 
 - (NSInteger)equalizerBandAtIndex:(NSInteger)index {
@@ -233,30 +238,24 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
 - (void)refreshStatusWithCompletion:(void (^)(void))completion {
     if (!_hp || !self.connected) { completion(); return; }
     Headphones *hp = _hp.get();
-    // CRITICAL: the init/battery/EQ inquiries below use v2 opcodes. Opcode 0x22 is BATTERY_LEVEL_REQUEST
-    // on v2 but POWER_OFF on v1 - sending it to a v1 device (e.g. WH-1000XM4) powers the headphones off.
-    // A v1 device still needs *some* valid handshake traffic right after connect or it drops/powers off on
-    // its own, so read its ambient state (read-only 66 02) instead of sending nothing.
-    if (_bt->getProtocolVersion() != SonyProtocolVersion::V2) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            try { hp->requestAmbientState(); } catch (std::exception &exc) {}
-            dispatch_async(dispatch_get_main_queue(), ^{ completion(); });
-        });
-        return;
-    }
+    // The init/battery/EQ inquiries below are protocol-aware: v1 devices answer the same commands
+    // with their own sub-types (10 00 battery, 56 01 equalizer, e6 02 DSEE). The v2 opcodes must
+    // never be sent to a v1 device - opcode 0x22 is POWER_OFF there and powers the headphones off.
     // Reads run on the global queue (not the serial command queue) so they don't block quick user taps;
     // per-call the connector mutex still serializes actual I/O.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // Fast, always-supported reads first, then update the UI immediately...
+        // Every read is guarded on its own: a device that doesn't answer one inquiry (a v1 model
+        // without an equalizer, say) must not keep the other reads from running.
         try {
             if (!self->_initialized) {
                 hp->initDevice();
                 self->_initialized = YES;
             }
-            hp->requestBattery();
-            hp->requestEqualizer();
-            hp->requestDsee();
         } catch (std::exception &exc) {}
+        try { hp->requestBattery(); } catch (std::exception &exc) {}
+        try { hp->requestEqualizer(); } catch (std::exception &exc) {}
+        try { hp->requestDsee(); } catch (std::exception &exc) {}
         dispatch_async(dispatch_get_main_queue(), ^{ completion(); });
     });
 }
@@ -266,9 +265,8 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
 // once for the fast reads, this fires once for the slow probes.
 - (void)probeCapabilitiesWithCompletion:(void (^)(void))completion {
     if (!_hp || !self.connected) { completion(); return; }
-    // Probes use v2 opcodes - v1 devices were never probed, keep it that way.
-    if (_bt->getProtocolVersion() != SonyProtocolVersion::V2) { completion(); return; }
     Headphones *hp = _hp.get();
+    // The probes are protocol-aware, so v1 devices are probed with their own opcodes.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         try { hp->probeCapabilities(); } catch (std::exception &exc) {}
         dispatch_async(dispatch_get_main_queue(), ^{ completion(); });
@@ -283,10 +281,10 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
         // requestAmbientState() is protocol-aware (v2 uses 66 17, v1 uses 66 02), so this is safe on both.
         try { hp->requestAmbientState(); } catch (std::exception &exc) {}
         // Battery inquiry only runs at connect and is best-effort: re-request while unknown so a missed
-        // read recovers on a later tick instead of staying empty forever. V2-only on purpose: opcode 0x22
-        // is BATTERY_LEVEL_REQUEST on v2 but POWER_OFF on v1 (mirrors the refreshStatus guard).
+        // read recovers on a later tick instead of staying empty forever. The inquiry is protocol-aware
+        // (v2 uses 22 00, v1 uses 10 00 - opcode 0x22 is POWER_OFF on v1 and would power the headset off).
         // requestBattery() only fills on success, never clears, so this cannot clobber a known reading.
-        if (_bt->getProtocolVersion() == SonyProtocolVersion::V2 && hp->getBatteryLevel() < 0) {
+        if (hp->getBatteryLevel() < 0) {
             try { hp->requestBattery(); } catch (std::exception &exc) {}
         }
         dispatch_async(dispatch_get_main_queue(), ^{ completion(); });
@@ -298,8 +296,9 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
         completion(NO, @"Not connected.");
         return;
     }
-    // The v2 EQ SET opcode differs from v1; only issue it on confirmed v2 devices.
-    if (_bt->getProtocolVersion() != SonyProtocolVersion::V2) {
+    // Only devices that answered the equalizer inquiry get a preset - the v1 and v2 dialects differ
+    // in their sub-type, and a device without an equalizer must never see the command.
+    if (!_hp->hasEqualizer()) {
         completion(NO, @"Equalizer control isn't supported on this device yet.");
         return;
     }
@@ -320,7 +319,7 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
 }
 
 - (void)setCustomEqualizerBass:(NSInteger)bass bands:(NSArray<NSNumber *> *)bands completion:(void (^)(BOOL, NSString * _Nullable))completion {
-    if (!_hp || !self.connected || _bt->getProtocolVersion() != SonyProtocolVersion::V2) {
+    if (!_hp || !self.connected || !_hp->hasEqualizer()) {
         completion(NO, @"Equalizer control isn't supported on this device yet.");
         return;
     }
@@ -338,7 +337,7 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
 }
 
 - (void)setDsee:(BOOL)enabled completion:(void (^)(BOOL, NSString * _Nullable))completion {
-    if (!_hp || !self.connected || _bt->getProtocolVersion() != SonyProtocolVersion::V2) {
+    if (!_hp || !self.connected || !_hp->hasDsee()) {
         completion(NO, @"Not supported on this device.");
         return;
     }
@@ -397,7 +396,7 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
 }
 
 - (void)setAutoPowerOff:(NSInteger)index completion:(void (^)(BOOL, NSString * _Nullable))completion {
-    if (!_hp || !self.connected) { completion(NO, @"Not connected."); return; }
+    if (!_hp || !self.connected || !_hp->hasAutoPowerOff()) { completion(NO, @"Not supported on this device."); return; }
     Headphones *hp = _hp.get();
     dispatch_async(_cmdQueue, ^{
         NSString *error = nil; BOOL ok = YES;
@@ -407,7 +406,7 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
 }
 
 - (void)setSpeakToChat:(BOOL)enabled completion:(void (^)(BOOL, NSString * _Nullable))completion {
-    if (!_hp || !self.connected) { completion(NO, @"Not connected."); return; }
+    if (!_hp || !self.connected || !_hp->hasSpeakToChat()) { completion(NO, @"Not supported on this device."); return; }
     Headphones *hp = _hp.get();
     dispatch_async(_cmdQueue, ^{
         NSString *error = nil; BOOL ok = YES;
@@ -417,7 +416,7 @@ static BOOL SHCLooksLikeSonyHeadset(NSString *name) {
 }
 
 - (void)setAdaptiveVolume:(BOOL)enabled completion:(void (^)(BOOL, NSString * _Nullable))completion {
-    if (!_hp || !self.connected) { completion(NO, @"Not connected."); return; }
+    if (!_hp || !self.connected || !_hp->hasAdaptiveVolume()) { completion(NO, @"Not supported on this device."); return; }
     Headphones *hp = _hp.get();
     dispatch_async(_cmdQueue, ^{
         NSString *error = nil; BOOL ok = YES;

@@ -121,9 +121,9 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
 
     /// Runs the init handshake (once) then reads battery + equalizer.
     ///
-    /// First stage of the post-connect refresh: fast, always-supported inquiries only. On v1 devices
-    /// this issues read-only ambient traffic instead, because the v2 battery opcode would power them
-    /// off. The blocking I/O happens on a background queue, so this doesn't hold up user taps.
+    /// First stage of the post-connect refresh: fast, always-supported inquiries only. The inquiries
+    /// are protocol-aware, so v1 devices (e.g. the WH-1000XM4) are read with their own sub-types.
+    /// The blocking I/O happens on a background queue, so this doesn't hold up user taps.
     ///
     /// - Returns: A snapshot with battery, equalizer and DSEE merged in.
     public func refreshStatus() async -> SonyHeadphones {

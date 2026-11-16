@@ -93,11 +93,11 @@ public:
 	/// @return A `VPT_PRESET_ID` value, 0 when off.
 	int getVptType();
 
-	// Handshake the device expects before it answers inquiry (GET) commands on the v2 protocol.
-	/// Runs the v2 init handshake, after which the device answers GET inquiries.
+	// Handshake the device expects before it answers inquiry (GET) commands.
+	/// Runs the init handshake, after which the device answers GET inquiries.
 	///
 	/// Best-effort: the reply payload is ignored, we only need the device to enter its ready state.
-	/// Must not be called on v1 devices.
+	/// Both protocol generations expect it, and both use the same opcodes for it.
 	/// @throws RecoverableException If the device never replies.
 	void initDevice();
 
@@ -112,7 +112,7 @@ public:
 
 	// Battery (v2 inquiry). getBatteryLevel() returns -1 until requestBattery() succeeds.
 	// For TWS earbuds requestBattery() also fills the per-earbud + case levels (hasDualBattery()).
-	/// Queries the battery; v2 only.
+	/// Queries the battery.
 	///
 	/// The probe order depends on the model: earbuds (`WF-*`, `LinkBuds`) are asked for the per-earbud
 	/// layout first, because some of them also answer the single-battery inquiry - and taking that
@@ -121,6 +121,11 @@ public:
 	/// always safe.
 	/// @throws RecoverableException Never escapes - failures are swallowed internally.
 	void requestBattery();
+
+	/// Whether a battery inquiry ever succeeded.
+	///
+	/// @return True once the device reported a battery level.
+	bool hasBattery();
 
 	/// The overall battery percentage from the last successful inquiry.
 	///
@@ -167,17 +172,22 @@ public:
 	/// @return True when charging; false when unknown or on battery.
 	bool isBatteryCaseCharging();
 
-	// Equalizer (v2). requestEqualizer() reads current state; setEqualizerPreset() pushes a preset immediately.
-	/// Reads the current equalizer state (preset, clear bass and bands); v2 only.
+	// Equalizer. requestEqualizer() reads current state; setEqualizerPreset() pushes a preset immediately.
+	/// Reads the current equalizer state (preset, clear bass and bands).
 	/// @throws RecoverableException If the device doesn't answer.
 	void requestEqualizer();
+
+	/// Whether the device answered the equalizer inquiry.
+	///
+	/// @return True when the equalizer may be shown and written.
+	bool hasEqualizer();
 
 	/// The equalizer preset confirmed on the device.
 	///
 	/// @return An `EQ_PRESET` value (`OFF` when never read or unsupported).
 	EQ_PRESET getEqualizerPreset();
 
-	/// Pushes an equalizer preset to the device immediately (no staging); v2 only.
+	/// Pushes an equalizer preset to the device immediately (no staging).
 	///
 	/// @param preset An `EQ_PRESET` value; `MANUAL` (0xA0) only makes sense together with
 	///               ``setEqualizerCustom``.
@@ -185,13 +195,13 @@ public:
 	void setEqualizerPreset(EQ_PRESET preset);
 
 	// Custom (manual) EQ: 5 band values + clear bass, each in [-10, 10]. Selects the MANUAL preset.
-	/// Pushes a custom (manual) equalizer curve immediately (no staging); v2 only.
+	/// Pushes a custom (manual) equalizer curve immediately (no staging).
 	///
 	/// Values are clamped to [-10, 10] before being sent; missing bands are sent as 0.
 	/// Selects the `MANUAL` preset on the device.
 	///
 	/// @param clearBass Bass boost in [-10, 10].
-	/// @param bands    The 5 frequency-band gains in [-10, 10] (fewer than 5 entries are padded with 0).
+	/// @param bands    The frequency-band gains in [-10, 10] (fewer entries are padded with 0).
 	/// @throws RecoverableException If the device doesn't ACK the command.
 	void setEqualizerCustom(int clearBass, const std::vector<int>& bands);
 
@@ -219,17 +229,22 @@ public:
 	/// @return True on the WH-1000XM6 (v2 only).
 	bool isTenBandEqualizer();
 
-	// DSEE / audio upsampling (v2).
-	/// Reads the DSEE (audio upsampling) switch; v2 only.
+	// DSEE / audio upsampling.
+	/// Reads the DSEE (audio upsampling) switch.
 	/// @throws RecoverableException If the device doesn't answer.
 	void requestDsee();
+
+	/// Whether the device answered the DSEE inquiry.
+	///
+	/// @return True when the toggle may be shown and written.
+	bool hasDsee();
 
 	/// Whether DSEE is currently enabled on the device.
 	///
 	/// @return True when enabled (also reflects the last successful ``setDsee``).
 	bool getDsee();
 
-	/// Pushes the DSEE switch to the device immediately; v2 only.
+	/// Pushes the DSEE switch to the device immediately.
 	///
 	/// @param enabled True to enable audio upsampling, false to disable it.
 	/// @throws RecoverableException If the device doesn't ACK the command.
@@ -349,6 +364,7 @@ private:
 
 	int _batteryLevel = -1;
 	bool _batteryCharging = false;
+	bool _hasBattery = false;
 	bool _hasDualBattery = false;
 	int _batteryLeft = -1;
 	int _batteryRight = -1;
@@ -357,9 +373,11 @@ private:
 	bool _batteryRightCharging = false;
 	bool _batteryCaseCharging = false;
 	EQ_PRESET _eqPreset = EQ_PRESET::OFF;
+	bool _hasEqualizer = false;
 	std::vector<int> _eqBands = { 0, 0, 0, 0, 0 };
 	int _eqClearBass = 0;
 	bool _dsee = false;
+	bool _hasDsee = false;
 
 	bool _hasAutoPowerOff = false; int _autoPowerOff = 0;
 	bool _hasFirmware = false; std::string _firmware;

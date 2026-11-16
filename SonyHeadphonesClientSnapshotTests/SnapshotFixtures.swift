@@ -65,6 +65,7 @@ import SwiftUI
             batteryLevel: 80,
             eqPreset: EqPreset.excited.rawValue,
             supportsEqualizer: true,
+            supportsDsee: true,
             hasAutoPowerOff: true,
             autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue,
             firmware: "2.0.0",

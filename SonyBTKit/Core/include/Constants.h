@@ -27,6 +27,39 @@ enum class SonyProtocolVersion : signed char
 	V2 = 1
 };
 
+// First-generation Sony protocol (WH-1000XM4 and earlier models). Several opcodes overlap with v2
+// but mean something entirely different - 0x22 is POWER_OFF here, while it is the battery inquiry
+// on v2 - so call sites may only use this namespace once the SDP service UUID has established the
+// protocol version.
+namespace V1Command
+{
+	inline constexpr unsigned char INIT_REQUEST = 0x00;
+	inline constexpr unsigned char INIT_REPLY   = 0x01;
+	inline constexpr unsigned char FW_GET       = 0x04;
+	inline constexpr unsigned char FW_RET       = 0x05;
+	inline constexpr unsigned char BATTERY_GET  = 0x10; // payload: 10 00 -> RET 11 00 <level> <charging>
+	inline constexpr unsigned char BATTERY_RET  = 0x11;
+	inline constexpr unsigned char CODEC_GET    = 0x18;
+	inline constexpr unsigned char CODEC_RET    = 0x19;
+	inline constexpr unsigned char POWER_OFF    = 0x22; // never send this to a v1 device
+	inline constexpr unsigned char EQ_GET       = 0x56; // payload: 56 01
+	inline constexpr unsigned char EQ_RET       = 0x57;
+	inline constexpr unsigned char EQ_SET       = 0x58;
+	inline constexpr unsigned char AMBIENT_GET  = 0x66;
+	inline constexpr unsigned char AMBIENT_RET  = 0x67;
+	inline constexpr unsigned char AMBIENT_SET  = 0x68;
+	inline constexpr unsigned char DSEE_GET     = 0xe6; // payload: e6 02
+	inline constexpr unsigned char DSEE_RET     = 0xe7;
+	inline constexpr unsigned char DSEE_SET     = 0xe8;
+	inline constexpr unsigned char BTNMODE_GET  = 0xf6;
+	inline constexpr unsigned char BTNMODE_RET  = 0xf7;
+	inline constexpr unsigned char BTNMODE_SET  = 0xf8;
+	inline constexpr unsigned char SUB_AUTO_POWER_OFF = 0x04;
+	inline constexpr unsigned char SUB_SPEAK_TO_CHAT  = 0x05;
+	// The preset byte that selects the custom curve on v1; v2 uses 0xA0.
+	inline constexpr unsigned char MANUAL_EQ = 0xff;
+}
+
 // Second-generation (v2) inquiry/response command opcodes (the first payload byte).
 // Byte layouts reverse-engineered by GadgetBridge (SonyProtocolImplV2); verified against WH-CH720N.
 namespace V2Command
