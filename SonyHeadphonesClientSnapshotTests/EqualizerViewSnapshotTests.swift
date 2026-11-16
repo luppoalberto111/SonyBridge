@@ -31,4 +31,17 @@ import Testing
             )
         )
     }
+
+    @Test func tenBandEqualizerShowsTenRawBands() {
+        assertSnapshot(
+            of: SnapshotFixtures.hostingController(
+                EqualizerView(store: SnapshotFixtures.tenBandEqualizerStore())
+            ),
+            as: .image(
+                precision: 0.95,
+                perceptualPrecision: 0.95,
+                size: CGSize(width: 380, height: 560)
+            )
+        )
+    }
 }

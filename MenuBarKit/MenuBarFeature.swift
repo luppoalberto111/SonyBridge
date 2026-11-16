@@ -3,63 +3,21 @@ import Cocoa
 import ComposableArchitecture
 import Dependencies
 
-// MARK: - Shared isConnected
-
-extension SharedReaderKey where Self == InMemoryKey<Bool>.Default {
-    static var isConnected: Self {
-        Self[.inMemory("isConnected"), default: false]
-    }
-}
-
-extension SharedReaderKey where Self == InMemoryKey<SHCAmbientMode>.Default {
-    static var ambientMode: Self {
-        Self[.inMemory("ambientMode"), default: .off]
-    }
-}
-
-extension SharedReaderKey where Self == InMemoryKey<Int>.Default {
-    static var ambientLevel: Self {
-        Self[.inMemory("ambientLevel"), default: 10]
-    }
-
-    static var maxAmbientLevel: Self {
-        Self[.inMemory("maxAmbientLevel"), default: 20]
-    }
-
-    static var batteryLevel: Self {
-        Self[.inMemory("batteryLevel"), default: -1]
-    }
-}
-
-extension SharedReaderKey where Self == InMemoryKey<Bool>.Default {
-    static var focusOnVoice: Self {
-        Self[.inMemory("focusOnVoice"), default: false]
-    }
-}
-
 // MARK: - MenuBarFeature
 
 /// Status-bar menu state machine. Every `NSMenuItem` forwards to an action;
-/// connect/disconnect bubble up as delegate actions, while open/quit run
-/// through `menuBarApplicationClient` so the reducer stays testable.
-@Reducer struct MenuBarFeature {
-    @ObservableState struct State: Equatable {
-        @Shared(.isConnected)
-        var isConnected: Bool
-        @Shared(.ambientMode)
-        var ambientMode: SHCAmbientMode
-        @Shared(.ambientLevel)
-        var ambientLevel: Int
-        @Shared(.maxAmbientLevel)
-        var maxAmbientLevel: Int
-        @Shared(.focusOnVoice)
-        var focusOnVoice: Bool
-        @Shared(.batteryLevel)
-        var batteryLevel: Int
+/// connect/disconnect bubble up as delegate actions, while quit runs through
+/// `menuBarApplicationClient` so the reducer stays testable.
+///
+/// The menu bar no longer opens the app; it only emits delegate actions that
+/// the host app is free to handle.
+@Reducer public struct MenuBarFeature {
+    @ObservableState public struct State: Equatable {
+        @Shared(.headphonesState)
+        public var uiState: HeadphonesUIState
     }
 
-    enum Action {
-        case openTapped
+    public enum Action {
         case connectTapped
         case disconnectTapped
         case ambientModeTapped(SHCAmbientMode)
@@ -69,7 +27,7 @@ extension SharedReaderKey where Self == InMemoryKey<Bool>.Default {
         case delegate(Delegate)
     }
 
-    enum Delegate {
+    public enum Delegate {
         case connectRequested
         case disconnectRequested
         case ambientModeSelected(SHCAmbientMode)
@@ -80,14 +38,9 @@ extension SharedReaderKey where Self == InMemoryKey<Bool>.Default {
     @Dependency(\.menuBarApplicationClient)
     var applicationClient
 
-    var body: some ReducerOf<Self> {
+    public var body: some ReducerOf<Self> {
         Reduce { _, action in
             switch action {
-                case .openTapped:
-                    return .run { _ in
-                        await applicationClient.activateApp()
-                    }
-
                 case .connectTapped:
                     return .send(.delegate(.connectRequested))
 
@@ -104,6 +57,7 @@ extension SharedReaderKey where Self == InMemoryKey<Bool>.Default {
                     return .send(.delegate(.focusOnVoiceSelected(focusOn)))
 
                 case .quitTapped:
+                    let applicationClient = applicationClient
                     return .run { _ in
                         await applicationClient.terminateApp()
                     }
@@ -115,7 +69,7 @@ extension SharedReaderKey where Self == InMemoryKey<Bool>.Default {
     }
 }
 
-// MARK: - StatusMenuController
+// MARK: - Menu bar item titles
 
 /// Formats the top menu row, e.g. "Battery: 80%". Unknown levels render as "--".
 func batteryMenuTitle(level: Int) -> String {
@@ -129,7 +83,7 @@ func batteryMenuTitle(level: Int) -> String {
 /// Item visibility is refreshed in `menuWillOpen(_:)`: Connect only appears
 /// while disconnected; Battery, Ambient Sound and Disconnect only appear
 /// while connected.
-@MainActor final class StatusMenuController: NSObject, NSMenuDelegate {
+@MainActor public final class StatusMenuController: NSObject, NSMenuDelegate {
     private let store: StoreOf<MenuBarFeature>
     private let statusItem: NSStatusItem
     private let batteryItem: NSMenuItem
@@ -143,7 +97,7 @@ func batteryMenuTitle(level: Int) -> String {
     private let focusOnVoiceItem: NSMenuItem
     private var lastSentAmbientLevel: Int?
 
-    init(store: StoreOf<MenuBarFeature>) {
+    public init(store: StoreOf<MenuBarFeature>) {
         self.store = store
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         self.batteryItem = NSMenuItem(
@@ -219,10 +173,7 @@ func batteryMenuTitle(level: Int) -> String {
         focusOnVoiceItem.target = self
 
         let menu = NSMenu()
-        let openItem = NSMenuItem(title: "Open", action: #selector(handleOpen), keyEquivalent: "O")
-        openItem.target = self
         menu.addItem(batteryItem)
-        menu.addItem(openItem)
         connectItem.target = self
         menu.addItem(connectItem)
         menu.addItem(ambientItem)
@@ -238,32 +189,28 @@ func batteryMenuTitle(level: Int) -> String {
         statusItem.menu = menu
     }
 
-    func menuWillOpen(_ menu: NSMenu) {
-        let connected = store.state.isConnected
-        let ambientSelected = connected && store.state.ambientMode == .ambientSound
+    public func menuWillOpen(_ menu: NSMenu) {
+        let connected = store.state.uiState.connected
+        let ambientSelected = connected && store.state.uiState.mode == .ambientSound
         batteryItem.isHidden = !connected
-        batteryItem.title = batteryMenuTitle(level: store.state.batteryLevel)
+        batteryItem.title = batteryMenuTitle(level: store.state.uiState.batteryLevel)
         connectItem.isHidden = connected
         disconnectItem.isHidden = !connected
         ambientItem.isHidden = !connected
         ambientLevelItem.isHidden = !ambientSelected
         focusOnVoiceItem.isHidden = !ambientSelected
-        let currentMode = store.state.ambientMode
+        let currentMode = store.state.uiState.mode
         for (index, item) in ambientModeItems.enumerated() {
             item.state = ambientModes[index] == currentMode ? .on : .off
         }
-        ambientLevelSlider.maxValue = Double(max(store.state.maxAmbientLevel, 1))
+        ambientLevelSlider.maxValue = Double(max(store.state.uiState.maxAmbientLevel, 1))
         let sliderLevel = min(
-            max(store.state.ambientLevel, 1),
-            store.state.maxAmbientLevel
+            max(store.state.uiState.ambientLevel, 1),
+            store.state.uiState.maxAmbientLevel
         )
         ambientLevelSlider.integerValue = sliderLevel
         lastSentAmbientLevel = sliderLevel
-        focusOnVoiceItem.state = store.state.focusOnVoice ? .on : .off
-    }
-
-    @objc private func handleOpen() {
-        store.send(.openTapped)
+        focusOnVoiceItem.state = store.state.uiState.focusOnVoice ? .on : .off
     }
 
     @objc private func handleConnect() {
@@ -290,7 +237,7 @@ func batteryMenuTitle(level: Int) -> String {
     }
 
     @objc private func handleFocusOnVoice() {
-        store.send(.focusOnVoicePicked(!store.state.focusOnVoice))
+        store.send(.focusOnVoicePicked(!store.state.uiState.focusOnVoice))
     }
 
     @objc private func handleQuit() {

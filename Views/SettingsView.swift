@@ -1,4 +1,3 @@
-import Client
 import ComposableArchitecture
 import SwiftUI
 
@@ -6,21 +5,8 @@ import SwiftUI
 
 @Reducer struct SettingsReducer {
     @ObservableState struct State: Equatable {
-        var hasAdaptiveVolume = false
-        var adaptiveVolume = false
-        var hasSpeakToChat = false
-        var speakToChat = false
-        var hasAutoPowerOff = false
-        var autoPowerOff = AutoPowerOffOption.off
-
-        mutating func sync(from headphones: HeadphonesState) {
-            hasAdaptiveVolume = headphones.hasAdaptiveVolume
-            adaptiveVolume = headphones.adaptiveVolume
-            hasSpeakToChat = headphones.hasSpeakToChat
-            speakToChat = headphones.speakToChat
-            hasAutoPowerOff = headphones.hasAutoPowerOff
-            autoPowerOff = AutoPowerOffOption(rawValue: headphones.autoPowerOff) ?? .off
-        }
+        @Shared
+        var uiState: HeadphonesUIState
     }
 
     enum Action {
@@ -37,18 +23,15 @@ import SwiftUI
     }
 
     var body: some ReducerOf<Self> {
-        Reduce { state, action in
+        Reduce { _, action in
             switch action {
                 case let .setAdaptiveVolume(on):
-                    state.adaptiveVolume = on
                     return .send(.delegate(.setAdaptiveVolume(on)))
 
                 case let .setSpeakToChat(on):
-                    state.speakToChat = on
                     return .send(.delegate(.setSpeakToChat(on)))
 
                 case let .setAutoPowerOff(option):
-                    state.autoPowerOff = option
                     return .send(.delegate(.setAutoPowerOff(option)))
 
                 case .delegate:
@@ -68,21 +51,25 @@ struct SettingsView: View {
             Text("SettingsView.title")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(Color(.foreground))
-            if store.hasAdaptiveVolume {
+            if store.uiState.hasAdaptiveVolume {
                 settingToggle(
                     "SettingsView.adaptiveVolume.title",
                     "SettingsView.adaptiveVolume.subtitle",
-                    on: store.adaptiveVolume
+                    on: store.uiState.adaptiveVolume,
+                    loading: store.uiState.adaptiveVolumeLoading
                 ) { store.send(.setAdaptiveVolume($0)) }
             }
-            if store.hasSpeakToChat {
+            if store.uiState.hasSpeakToChat {
                 settingToggle(
                     "SettingsView.speakToChat.title",
                     "SettingsView.speakToChat.subtitle",
-                    on: store.speakToChat
-                ) { store.send(.setSpeakToChat($0)) }
+                    on: store.uiState.speakToChat,
+                    loading: store.uiState.speakToChatLoading
+                ) {
+                    store.send(.setSpeakToChat($0))
+                }
             }
-            if store.hasAutoPowerOff {
+            if store.uiState.hasAutoPowerOff {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("SettingsView.autoPowerOff.title")
@@ -93,11 +80,15 @@ struct SettingsView: View {
                             .foregroundColor(Color(.foregroundSecondary))
                     }
                     Spacer()
+                    if store.uiState.autoPowerOffLoading {
+                        ProgressView()
+                            .controlSize(.mini)
+                    }
                     Picker(
                         "",
                         selection: Binding(
-                            get: { store.autoPowerOff },
-                            set: { store.send(.setAutoPowerOff($0)) }
+                            get: { store.uiState.autoPowerOff },
+                            set: { store.send(.setAutoPowerOff(.init(rawValue: $0) ?? .off)) }
                         )
                     ) {
                         ForEach(AutoPowerOffOption.allCases) { option in
@@ -107,6 +98,7 @@ struct SettingsView: View {
                     .pickerStyle(MenuPickerStyle())
                     .frame(width: 130)
                     .accentColor(.highlight)
+                    .disabled(store.uiState.autoPowerOffLoading)
                 }
             }
         }
@@ -120,49 +112,64 @@ struct SettingsView: View {
         _ title: LocalizedStringKey,
         _ subtitle: LocalizedStringKey,
         on: Bool,
+        loading: Bool = false,
         action: @escaping (Bool) -> Void
     ) -> some View {
-        Toggle(isOn: Binding(get: { on }, set: { action($0) })) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.foreground)
-                Text(subtitle).font(.system(size: 11)).foregroundColor(.foregroundSecondary)
+        HStack(spacing: 8) {
+            Toggle(isOn: Binding(get: { on }, set: { action($0) })) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.foreground)
+                    Text(subtitle).font(.system(size: 11)).foregroundColor(.foregroundSecondary)
+                }
+            }
+            .toggleStyle(SwitchToggleStyle(tint: .highlight))
+            .disabled(loading)
+
+            if loading {
+                ProgressView()
+                    .controlSize(.mini)
             }
         }
-        .toggleStyle(SwitchToggleStyle(tint: .highlight))
     }
 }
 
 #Preview {
     SettingsView(
         store: Store(
-            initialState: SettingsReducer.State(
-                hasAdaptiveVolume: true,
-                adaptiveVolume: true,
-                hasSpeakToChat: true,
-                speakToChat: false,
-                hasAutoPowerOff: true,
-                autoPowerOff: .thirtyMinutes
-            )
-        ) {
-            SettingsReducer()
-        }
+            initialState: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
+                        hasAutoPowerOff: true,
+                        autoPowerOff: 2,
+                        hasSpeakToChat: true,
+                        speakToChat: false,
+                        hasAdaptiveVolume: true,
+                        adaptiveVolume: true,
+                    )
+                )
+            ),
+            reducer: SettingsReducer.init
+        )
     )
 }
 
 #Preview {
     SettingsView(
         store: Store(
-            initialState: SettingsReducer.State(
-                hasAdaptiveVolume: false,
-                adaptiveVolume: false,
-                hasSpeakToChat: true,
-                speakToChat: true,
-                hasAutoPowerOff: false,
-                autoPowerOff: .off
-            )
-        ) {
-            SettingsReducer()
-        }
+            initialState: .init(
+                uiState: Shared(
+                    value: HeadphonesUIState(
+                        hasAutoPowerOff: false,
+                        autoPowerOff: 0,
+                        hasSpeakToChat: true,
+                        speakToChat: true,
+                        hasAdaptiveVolume: false,
+                        adaptiveVolume: false
+                    )
+                )
+            ),
+            reducer: SettingsReducer.init
+        )
     )
 }

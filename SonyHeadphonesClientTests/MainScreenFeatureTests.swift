@@ -5,9 +5,10 @@ import Testing
 
 @MainActor struct MainScreenFeatureTests {
     @Test func didConnectSwapsToConnectedScreen() async {
-        var snapshot = HeadphonesState()
-        snapshot.connected = true
-        snapshot.deviceName = "WH-1000XM5"
+        let snapshot = SonyHeadphones(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5)
+        )
 
         let store = TestStore(
             initialState: MainScreenFeature.State.disconnected(DisconnectedReducer.State())
@@ -16,17 +17,21 @@ import Testing
         }
 
         await store.send(.disconnected(.delegate(.didConnect(snapshot)))) {
-            $0 = .connected(ConnectedReducer.State(headphones: snapshot))
+            $0 = .connected(ConnectedReducer.State(headphones: snapshot, showAbout: false))
         }
     }
 
+    @Test func defaultUIStateHasNoLoadingFlags() {
+        #expect(DisconnectedReducer.State().uiState.autoPowerOffLoading == false)
+        #expect(HeadphonesUIState().autoPowerOffLoading == false)
+    }
+
     @Test func didDisconnectSwapsBackToDisconnectedScreen() async {
-        var snapshot = HeadphonesState()
-        snapshot.connected = true
+        let snapshot = SonyHeadphones(connected: true)
 
         let store = TestStore(
             initialState: MainScreenFeature.State.connected(
-                ConnectedReducer.State(headphones: snapshot)
+                ConnectedReducer.State(headphones: snapshot, showAbout: false)
             )
         ) {
             MainScreenFeature()

@@ -1,4 +1,3 @@
-import Client
 import ComposableArchitecture
 import SwiftUI
 
@@ -6,11 +5,8 @@ import SwiftUI
 
 @Reducer struct DseeReducer {
     @ObservableState struct State: Equatable {
-        var dsee = false
-
-        mutating func sync(from headphones: HeadphonesState) {
-            dsee = headphones.dsee
-        }
+        @Shared
+        var uiState: HeadphonesUIState
     }
 
     enum Action {
@@ -23,10 +19,9 @@ import SwiftUI
     }
 
     var body: some ReducerOf<Self> {
-        Reduce { state, action in
+        Reduce { _, action in
             switch action {
                 case let .setDsee(on):
-                    state.dsee = on
                     return .send(.delegate(.setDsee(on)))
 
                 case .delegate:
@@ -42,18 +37,26 @@ struct DseeView: View {
     let store: StoreOf<DseeReducer>
 
     var body: some View {
-        Toggle(isOn: Binding(
-            get: { store.dsee },
-            set: { store.send(.setDsee($0)) }
-        )) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("DseeView.title").font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(Color(.foreground))
-                Text("DseeView.subtitle").font(.system(size: 11))
-                    .foregroundColor(Color(.foregroundSecondary))
+        HStack(spacing: 8) {
+            Toggle(isOn: Binding(
+                get: { store.uiState.dsee },
+                set: { store.send(.setDsee($0)) }
+            )) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("DseeView.title").font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(Color(.foreground))
+                    Text("DseeView.subtitle").font(.system(size: 11))
+                        .foregroundColor(Color(.foregroundSecondary))
+                }
+            }
+            .toggleStyle(SwitchToggleStyle(tint: Color.highlight))
+            .disabled(store.uiState.dseeLoading)
+
+            if store.uiState.dseeLoading {
+                ProgressView()
+                    .controlSize(.mini)
             }
         }
-        .toggleStyle(SwitchToggleStyle(tint: Color.highlight))
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.card)
@@ -63,16 +66,22 @@ struct DseeView: View {
 
 #Preview {
     DseeView(
-        store: Store(initialState: DseeReducer.State(dsee: true)) {
-            DseeReducer()
-        }
+        store: Store(
+            initialState: .init(
+                uiState: .init(value: HeadphonesUIState(dsee: true))
+            ),
+            reducer: DseeReducer.init
+        )
     )
 }
 
 #Preview {
     DseeView(
-        store: Store(initialState: DseeReducer.State(dsee: false)) {
-            DseeReducer()
-        }
+        store: Store(
+            initialState: .init(
+                uiState: .init(value: HeadphonesUIState(dsee: false))
+            ),
+            reducer: DseeReducer.init
+        )
     )
 }

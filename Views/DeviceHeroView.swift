@@ -6,7 +6,8 @@ import SwiftUI
 
 @Reducer struct DeviceHeroReducer {
     @ObservableState struct State: Equatable {
-        var headphones = HeadphonesState()
+        @Shared
+        var uiState: HeadphonesUIState
         var showAbout = false
     }
 
@@ -48,6 +49,8 @@ struct DeviceHeroView: View {
         let hasDualBattery: Bool
         let batteryLeft: Int
         let batteryRight: Int
+        let batteryLeftCharging: Bool
+        let batteryRightCharging: Bool
         let batteryLevel: Int
         let batteryImage: Image
         let codec: String
@@ -57,7 +60,7 @@ struct DeviceHeroView: View {
     let store: StoreOf<DeviceHeroReducer>
 
     var body: some View {
-        let model = store.headphones.deviceHeroModel
+        let model = store.uiState.deviceHeroModel
         VStack(spacing: 12) {
             HStack(spacing: 10) {
                 Spacer()
@@ -137,6 +140,11 @@ struct DeviceHeroView: View {
                     ))
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundColor(.foregroundSecondary)
+                    if model.batteryLeftCharging || model.batteryRightCharging {
+                        Image(systemName: "bolt.fill")
+                            .font(.system(size: 11))
+                            .foregroundColor(Color(.highlight))
+                    }
                 } else if model.batteryLevel >= 0 {
                     model.batteryImage
                         .font(.system(size: 13))
@@ -163,38 +171,25 @@ struct DeviceHeroView: View {
     }
 }
 
-private func previewHeadphones() -> HeadphonesState {
-    var state = HeadphonesState()
-    state.connected = true
-    state.deviceName = "WH-1000XM5"
-    state.batteryLevel = 80
-    state.codec = "LDAC"
-    state.firmware = "2.0.0"
-    state.protocolVersion = "v2"
-    state.deviceMac = "AA:BB:CC:DD:EE:FF"
-    return state
+private func previewHeadphones() -> SonyHeadphones {
+    SonyHeadphones(
+        connected: true,
+        deviceModel: .left(.wh1000Xm5),
+        batteryLevel: 80,
+        firmware: "2.0.0",
+        codec: "LDAC",
+        deviceMac: "AA:BB:CC:DD:EE:FF",
+        protocolVersion: "v2"
+    )
 }
 
 #Preview {
     DeviceHeroView(
-        store: Store(initialState: DeviceHeroReducer.State(headphones: previewHeadphones())) {
-            DeviceHeroReducer()
-        }
+        store: Store(
+            initialState: .init(uiState: .init(value: HeadphonesUIState(previewHeadphones()))),
+            reducer: DeviceHeroReducer.init
+        )
     )
 }
 
-#Preview {
-    var dual = previewHeadphones()
-    dual.deviceName = "WF-1000XM5"
-    dual.hasDualBattery = true
-    dual.batteryLeft = 80
-    dual.batteryRight = 75
-    dual.batteryCase = 50
-    dual.batteryLevel = -1
-    dual.codec = ""
-    return DeviceHeroView(
-        store: Store(initialState: DeviceHeroReducer.State(headphones: dual)) {
-            DeviceHeroReducer()
-        }
-    )
-}
+// (preview removed)

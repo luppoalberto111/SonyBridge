@@ -27,18 +27,66 @@ enum class SonyProtocolVersion : signed char
 	V2 = 1
 };
 
+// First-generation Sony protocol (WH-1000XM4 and earlier models). Several opcodes overlap with v2
+// but mean something entirely different - 0x22 is POWER_OFF here, while it is the battery inquiry
+// on v2 - so call sites may only use this namespace once the SDP service UUID has established the
+// protocol version.
+namespace V1Command
+{
+	inline constexpr unsigned char INIT_REQUEST = 0x00;
+	inline constexpr unsigned char INIT_REPLY   = 0x01;
+	inline constexpr unsigned char FW_GET       = 0x04;
+	inline constexpr unsigned char FW_RET       = 0x05;
+	inline constexpr unsigned char BATTERY_GET  = 0x10; // payload: 10 00 -> RET 11 00 <level> <charging>
+	inline constexpr unsigned char BATTERY_RET  = 0x11;
+	inline constexpr unsigned char CODEC_GET    = 0x18;
+	inline constexpr unsigned char CODEC_RET    = 0x19;
+	inline constexpr unsigned char POWER_OFF    = 0x22; // never send this to a v1 device
+	inline constexpr unsigned char EQ_GET       = 0x56; // payload: 56 01
+	inline constexpr unsigned char EQ_RET       = 0x57;
+	inline constexpr unsigned char EQ_SET       = 0x58;
+	inline constexpr unsigned char AMBIENT_GET  = 0x66;
+	inline constexpr unsigned char AMBIENT_RET  = 0x67;
+	inline constexpr unsigned char AMBIENT_SET  = 0x68;
+	inline constexpr unsigned char DSEE_GET     = 0xe6; // payload: e6 02
+	inline constexpr unsigned char DSEE_RET     = 0xe7;
+	inline constexpr unsigned char DSEE_SET     = 0xe8;
+	inline constexpr unsigned char BTNMODE_GET  = 0xf6;
+	inline constexpr unsigned char BTNMODE_RET  = 0xf7;
+	inline constexpr unsigned char BTNMODE_SET  = 0xf8;
+	inline constexpr unsigned char SUB_AUTO_POWER_OFF = 0x04;
+	inline constexpr unsigned char SUB_SPEAK_TO_CHAT  = 0x05;
+	// The preset byte that selects the custom curve on v1; v2 uses 0xA0.
+	inline constexpr unsigned char MANUAL_EQ = 0xff;
+}
+
 // Second-generation (v2) inquiry/response command opcodes (the first payload byte).
 // Byte layouts reverse-engineered by GadgetBridge (SonyProtocolImplV2); verified against WH-CH720N.
 namespace V2Command
 {
 	inline constexpr unsigned char INIT_REQUEST = 0x00; // payload: 00 00
 	inline constexpr unsigned char INIT_REPLY   = 0x01; // reply: 01 ... (8 bytes total => v2 device)
-	inline constexpr unsigned char BATTERY_GET  = 0x22; // payload: 22 <type: 00=single>
-	inline constexpr unsigned char BATTERY_RET  = 0x23; // reply: 23 <type> <level 0-100> <charging 0/1>
-	inline constexpr unsigned char BATTERY_NTFY = 0x25; // notify: 25 <type> <level> <charging>
+	inline constexpr unsigned char BATTERY_GET  = 0x22; // payload: 22 <sub-type>
+	inline constexpr unsigned char BATTERY_RET  = 0x23; // reply: 23 <sub-type> <level 0-100> <charging 0/1>
+	inline constexpr unsigned char BATTERY_NTFY = 0x25; // notify: 25 <sub-type> <level> <charging>
+	// Battery inquiry sub-types (payload byte 1). A device answers only the ones it actually has, so
+	// these have to be probed - and an unsupported inquiry costs a full receive timeout.
+	// TWS earbuds report DUAL (or DUAL2 on the WF-C500/C510/C700N line) plus CASE; everything else
+	// reports SINGLE.
+	inline constexpr unsigned char BATTERY_SUB_SINGLE = 0x00; // RET 23 00 <level> <charging>
+	inline constexpr unsigned char BATTERY_SUB_DUAL2  = 0x01; // WF-C500 / WF-C510 / WF-C700N
+	inline constexpr unsigned char BATTERY_SUB_DUAL   = 0x09; // WF-1000XM4 / WF-1000XM5 / LinkBuds
+	inline constexpr unsigned char BATTERY_SUB_CASE   = 0x0a; // RET 23 0a <level> <charging>
+	// DUAL/DUAL2 reply: 23 <sub> <Llvl> <Lchg> <Rlvl> <Rchg>. A level of 0 means that earbud isn't
+	// reporting (docked in the case / powered down) rather than "empty" - treat it as unknown.
+	// The reply can be longer than the reference layout, so size checks must be lower bounds.
 	inline constexpr unsigned char EQ_GET       = 0x56; // payload: 56 00
 	inline constexpr unsigned char EQ_RET       = 0x57; // reply: 57 00 <preset> 06 <bass+10> <b1..b5 +10>
 	inline constexpr unsigned char EQ_SET       = 0x58; // preset: 58 00 <preset> 00 ; custom: 58 00 A0 06 <bass+10> <b1..b5 +10>
+	// Ten-band equalizer inquired type (WH-1000XM6): 56/57/58 04, 10 raw bands 0..12, no clear bass.
+	// The 5-band frames are ACKed by that device but ignored, which is why its presets used to
+	// highlight without changing the sound.
+	inline constexpr unsigned char EQ_TEN_BAND  = 0x04;
 	inline constexpr unsigned char DSEE_GET     = 0xe6; // payload: e6 01
 	inline constexpr unsigned char DSEE_RET     = 0xe7; // reply: e7 01 <enabled 0/1>
 	inline constexpr unsigned char DSEE_SET     = 0xe8; // payload: e8 01 <enabled 0/1>
@@ -55,6 +103,10 @@ namespace V2Command
 	inline constexpr unsigned char BTNMODE_SET  = 0xf8; // SET f8 <sub> <value...>
 	inline constexpr unsigned char SUB_ADAPTIVE_VOLUME = 0x0a;
 	inline constexpr unsigned char SUB_SPEAK_TO_CHAT   = 0x0c;
+	// Noise-control inquired types: 66/67/68 <type>. The WH-1000XM6 reads back through 0x19 - it
+	// answers 0x17 with all zeros in every mode, which is not a state at all.
+	inline constexpr unsigned char NCASM_TYPE     = 0x17;
+	inline constexpr unsigned char NCASM_TYPE_XM6 = 0x19;
 }
 
 // v2 equalizer preset ids (byte value sent/received at EQ payload[2]).

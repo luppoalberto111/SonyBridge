@@ -4,54 +4,54 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct AmbientReducerTests {
-    @Test func setModeUpdatesStateAndDelegates() async {
-        let store = TestStore(initialState: AmbientReducer.State()) {
+    private func state(_ uiState: HeadphonesUIState = .init()) -> AmbientReducer.State {
+        .init(uiState: Shared(value: uiState))
+    }
+
+    @Test func setModeDelegates() async {
+        let store = TestStore(initialState: state()) {
             AmbientReducer()
         }
 
-        await store.send(.setMode(.noiseCanceling)) {
-            $0.mode = .noiseCanceling
-        }
+        await store.send(.setMode(.noiseCanceling))
         await store.receive(\.delegate)
     }
 
-    @Test func setLevelUpdatesStateAndDelegates() async {
-        let store = TestStore(initialState: AmbientReducer.State()) {
+    @Test func setLevelDelegates() async {
+        let store = TestStore(initialState: state()) {
             AmbientReducer()
         }
 
-        await store.send(.setLevel(17)) {
-            $0.ambientLevel = 17
-        }
+        await store.send(.setLevel(17))
         await store.receive(\.delegate)
     }
 
-    @Test func setFocusOnVoiceUpdatesStateAndDelegates() async {
-        let store = TestStore(initialState: AmbientReducer.State()) {
+    @Test func setFocusOnVoiceDelegates() async {
+        let store = TestStore(initialState: state()) {
             AmbientReducer()
         }
 
-        await store.send(.setFocusOnVoice(true)) {
-            $0.focusOnVoice = true
-        }
+        await store.send(.setFocusOnVoice(true))
         await store.receive(\.delegate)
     }
 
-    @Test func syncCopiesEveryAmbientFieldFromHeadphones() {
-        var headphones = HeadphonesState()
-        headphones.mode = .ambientSound
-        headphones.ambientLevel = 14
-        headphones.maxAmbientLevel = 18
-        headphones.focusOnVoice = true
-        headphones.focusOnVoiceAvailable = true
+    @Test func initMapsEveryAmbientFieldFromSnapshot() {
+        let headphones = SonyHeadphones(
+            maxAmbientLevel: 18,
+            mode: .ambientSound,
+            ambientLevel: 14,
+            focusOnVoice: true,
+            focusOnVoiceAvailable: true
+        )
 
-        var state = AmbientReducer.State()
-        state.sync(from: headphones)
+        let state = AmbientReducer.State(
+            uiState: Shared(value: HeadphonesUIState(headphones))
+        )
 
-        #expect(state.mode == .ambientSound)
-        #expect(state.ambientLevel == 14)
-        #expect(state.maxAmbientLevel == 18)
-        #expect(state.focusOnVoice)
-        #expect(state.focusOnVoiceAvailable)
+        #expect(state.uiState.mode == .ambientSound)
+        #expect(state.uiState.ambientLevel == 14)
+        #expect(state.uiState.maxAmbientLevel == 18)
+        #expect(state.uiState.focusOnVoice)
+        #expect(state.uiState.focusOnVoiceAvailable)
     }
 }

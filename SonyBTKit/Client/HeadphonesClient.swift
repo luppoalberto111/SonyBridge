@@ -11,7 +11,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     public init() {}
 
     private let bridge = HeadphonesBridge()
-    private var state = HeadphonesState()
+    private var state = SonyHeadphones()
 
     // MARK: Connection
 
@@ -25,7 +25,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
         let entries = await MainActor.run { bridge.pairedSonyDevices() }
         return entries.compactMap { entry in
             guard let name = entry["name"], let address = entry["address"] else { return nil }
-            return DiscoveredDevice(name: name, address: address)
+            return .init(name: name, address: address)
         }
     }
 
@@ -60,15 +60,12 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     ///
     /// - Returns: The updated snapshot. Staying disconnected with no `errorMessage` means no Sony
     ///            device was found, and the caller should offer the device list.
-    public func connectToAutoDevice() async -> HeadphonesState {
-        state.connecting = true
-        state.errorMessage = nil
+    public func connectToAutoDevice() async throws -> SonyHeadphones {
         let (ok, error) = await connectToAutoDeviceOnMain(bridge)
-        state.connecting = false
         if ok {
             state = state.synced(with: bridge)
         } else if let error {
-            state.errorMessage = error
+            throw HeadphonesClientError(error)
         }
         return state
     }
@@ -78,15 +75,12 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     /// - Parameter address: Colon-separated MAC address, as returned by ``pairedDevices()``.
     /// - Returns: The updated snapshot, with `connected`, `deviceName` and the capability flags
     ///            filled in on success, or `errorMessage` set with user-facing copy on failure.
-    public func connect(address: String) async -> HeadphonesState {
-        state.connecting = true
-        state.errorMessage = nil
+    public func connect(address: String) async throws -> SonyHeadphones {
         let (ok, error) = await connectToDeviceOnMain(bridge, address: address)
-        state.connecting = false
         if ok {
             state = state.synced(with: bridge)
         } else if let error {
-            state.errorMessage = error
+            throw HeadphonesClientError(error)
         }
         return state
     }
@@ -94,11 +88,11 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     /// Closes the connection and clears the device name.
     ///
     /// - Returns: The disconnected snapshot (`connected == false`, empty `deviceName`).
-    public func disconnect() async -> HeadphonesState {
+    public func disconnect() async -> SonyHeadphones {
         let bridge = bridge
         await MainActor.run { bridge.disconnect() }
         state.connected = false
-        state.deviceName = ""
+        state.deviceModel = nil
         return state
     }
 
@@ -113,13 +107,12 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     ///
     /// - Returns: The (possibly updated) snapshot; when `connected` became false the reducer cancels
     ///            its polling effects and pops back to the disconnected screen.
-    public func pollConnection() async -> HeadphonesState {
+    public func pollConnection() async -> SonyHeadphones {
         let bridge = bridge
         let connected = await MainActor.run { bridge.connected }
         if state.connected, !connected {
             state.connected = false
-            state.deviceName = ""
-            state.errorMessage = "Headphones disconnected."
+            state.deviceModel = nil
         }
         return state
     }
@@ -128,12 +121,12 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
 
     /// Runs the init handshake (once) then reads battery + equalizer.
     ///
-    /// First stage of the post-connect refresh: fast, always-supported inquiries only. On v1 devices
-    /// this issues read-only ambient traffic instead, because the v2 battery opcode would power them
-    /// off. The blocking I/O happens on a background queue, so this doesn't hold up user taps.
+    /// First stage of the post-connect refresh: fast, always-supported inquiries only. The inquiries
+    /// are protocol-aware, so v1 devices (e.g. the WH-1000XM4) are read with their own sub-types.
+    /// The blocking I/O happens on a background queue, so this doesn't hold up user taps.
     ///
     /// - Returns: A snapshot with battery, equalizer and DSEE merged in.
-    public func refreshStatus() async -> HeadphonesState {
+    public func refreshStatus() async -> SonyHeadphones {
         await bridge.refreshStatus()
         return state.updated(with: bridge)
     }
@@ -146,7 +139,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     /// simply keep their `has… == false` flags.
     ///
     /// - Returns: A snapshot with the optional-feature flags merged in.
-    public func probeCapabilities() async -> HeadphonesState {
+    public func probeCapabilities() async -> SonyHeadphones {
         await bridge.probeCapabilities()
         return state.updated(with: bridge)
     }
@@ -163,7 +156,7 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     /// ``HeadphonesState/mergeBattery(from:)``.
     ///
     /// - Returns: The refreshed snapshot.
-    public func refreshDynamic() async -> HeadphonesState {
+    public func refreshDynamic() async -> SonyHeadphones {
         guard state.connected else { return state }
         await bridge.refreshDynamic()
         state.mode = bridge.mode
@@ -172,9 +165,8 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
         state.eqPreset = bridge.eqPreset
         state.clearBass = bridge.clearBass
         state.dsee = bridge.dsee
-        state.eqBands = (0 ..< 5).map { bridge.equalizerBand(at: $0) }
-        state.mergeBattery(from: bridge)
-        return state
+        state.eqBands = (0 ..< bridge.equalizerBandCount).map { bridge.equalizerBand(at: $0) }
+        return state.updatedBattery(from: bridge)
     }
 
     // MARK: Ambient sound control
@@ -186,9 +178,9 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     ///
     /// - Parameter newMode: The `SHCAmbientMode` to apply.
     /// - Returns: The snapshot re-synced from the device on success, or with `errorMessage` set.
-    public func setMode(_ newMode: SHCAmbientMode) async -> HeadphonesState {
+    public func setMode(_ newMode: SHCAmbientMode) async throws -> SonyHeadphones {
         state.mode = newMode
-        return await pushAmbient()
+        return try await pushAmbient()
     }
 
     /// Sets the ambient-sound level.
@@ -198,10 +190,10 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     ///
     /// - Parameter level: 1...`maxAmbientLevel` (19 on v1 devices, 20 on v2); 0 means "off".
     /// - Returns: The snapshot re-synced from the device when a command was sent, otherwise unchanged.
-    public func setLevel(_ level: Int) async -> HeadphonesState {
+    public func setLevel(_ level: Int) async throws -> SonyHeadphones {
         state.ambientLevel = level
         if state.mode == .ambientSound {
-            return await pushAmbient()
+            return try await pushAmbient()
         }
         return state
     }
@@ -210,9 +202,9 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     ///
     /// - Parameter on: True to enable, false to disable.
     /// - Returns: The snapshot re-synced from the device on success, or with `errorMessage` set.
-    public func setFocusOnVoice(_ on: Bool) async -> HeadphonesState {
+    public func setFocusOnVoice(_ on: Bool) async throws -> SonyHeadphones {
         state.focusOnVoice = on
-        return await pushAmbient()
+        return try await pushAmbient()
     }
 
     // MARK: Equalizer / DSEE
@@ -222,12 +214,11 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     /// - Parameter preset: The raw preset byte, e.g. one of `EqPreset`'s raw values (0x00 Off,
     ///   0x10…0x17 presets, 0xA0 Manual). v2 devices only; v1 reports an error.
     /// - Returns: The snapshot with `eqPreset` set, or with `errorMessage` if the write failed.
-    public func setEqualizer(_ preset: Int) async -> HeadphonesState {
+    public func setEqualizer(_ preset: Int) async throws -> SonyHeadphones {
         state.eqPreset = preset
-        state.errorMessage = nil
         let (ok, error) = await bridge.setEqualizerPreset(preset)
         if !ok, let error {
-            state.errorMessage = error
+            throw HeadphonesClientError(error)
         }
         return state
     }
@@ -241,15 +232,14 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     ///   - bass: Clear-bass boost in -10...10.
     ///   - bands: The 5 frequency-band gains in -10...10 (fewer entries are padded with 0 by the core).
     /// - Returns: The snapshot with `eqPreset == 0xA0` and the new values, or `errorMessage` on failure.
-    public func setCustomEq(bass: Int, bands: [Int]) async -> HeadphonesState {
+    public func setCustomEq(bass: Int, bands: [Int]) async throws -> SonyHeadphones {
         state.eqPreset = 0xA0
         state.clearBass = bass
         state.eqBands = bands
-        state.errorMessage = nil
         let numbers = bands.map { NSNumber(value: $0) }
         let (ok, error) = await bridge.setCustomEqualizerBass(bass, bands: numbers)
         if !ok, let error {
-            state.errorMessage = error
+            throw HeadphonesClientError(error)
         }
         return state
     }
@@ -258,12 +248,11 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     ///
     /// - Parameter on: True to enable, false to disable. v2 devices only.
     /// - Returns: The snapshot with `dsee` set, or with `errorMessage` if the write failed.
-    public func setDsee(_ on: Bool) async -> HeadphonesState {
+    public func setDsee(_ on: Bool) async throws -> SonyHeadphones {
         state.dsee = on
-        state.errorMessage = nil
         let (ok, error) = await bridge.setDsee(on)
         if !ok, let error {
-            state.errorMessage = error
+            throw HeadphonesClientError(error)
         }
         return state
     }
@@ -275,12 +264,11 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     /// - Parameter index: 0=Off, 1=5 min, 2=30 min, 3=1 hour, 4=3 hours, 5=when taken off (the raw
     ///   values of `AutoPowerOffOption`).
     /// - Returns: The snapshot with `autoPowerOff` set, or with `errorMessage` if the write failed.
-    public func setAutoPowerOff(_ index: Int) async -> HeadphonesState {
+    public func setAutoPowerOff(_ index: Int) async throws -> SonyHeadphones {
         state.autoPowerOff = index
-        state.errorMessage = nil
         let (ok, error) = await bridge.setAutoPowerOff(index)
         if !ok, let error {
-            state.errorMessage = error
+            throw HeadphonesClientError(error)
         }
         return state
     }
@@ -289,12 +277,11 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     ///
     /// - Parameter on: True to enable, false to disable.
     /// - Returns: The snapshot with `speakToChat` set, or with `errorMessage` if the write failed.
-    public func setSpeakToChat(_ on: Bool) async -> HeadphonesState {
+    public func setSpeakToChat(_ on: Bool) async throws -> SonyHeadphones {
         state.speakToChat = on
-        state.errorMessage = nil
         let (ok, error) = await bridge.setSpeakToChat(on)
         if !ok, let error {
-            state.errorMessage = error
+            throw HeadphonesClientError(error)
         }
         return state
     }
@@ -303,12 +290,11 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     ///
     /// - Parameter on: True to enable, false to disable.
     /// - Returns: The snapshot with `adaptiveVolume` set, or with `errorMessage` if the write failed.
-    public func setAdaptiveVolume(_ on: Bool) async -> HeadphonesState {
+    public func setAdaptiveVolume(_ on: Bool) async throws -> SonyHeadphones {
         state.adaptiveVolume = on
-        state.errorMessage = nil
         let (ok, error) = await bridge.setAdaptiveVolume(on)
         if !ok, let error {
-            state.errorMessage = error
+            throw HeadphonesClientError(error)
         }
         return state
     }
@@ -322,16 +308,15 @@ public actor HeadphonesClient: HeadphonesClientProtocol {
     /// failure only `errorMessage` is set, leaving the user's selection in place for a retry.
     ///
     /// - Returns: The resulting snapshot.
-    private func pushAmbient() async -> HeadphonesState {
+    private func pushAmbient() async throws -> SonyHeadphones {
         let mode = state.mode
         let level = state.ambientLevel
         let focusVoice = state.focusOnVoice
-        state.errorMessage = nil
         let (ok, error) = await bridge.applyMode(mode, level: level, focusVoice: focusVoice)
         if ok {
             state = state.synced(with: bridge)
         } else if let error {
-            state.errorMessage = error
+            throw HeadphonesClientError(error)
         }
         return state
     }

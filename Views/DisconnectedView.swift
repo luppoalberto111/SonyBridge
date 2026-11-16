@@ -8,22 +8,23 @@ import SwiftUI
 
 @Reducer struct DisconnectedReducer {
     @ObservableState struct State: Equatable {
-        var connecting = false
-        var errorMessage: String?
+        var uiState: HeadphonesUIState = .init()
         var devices: [DiscoveredDevice] = []
     }
 
     enum Action {
         case connectButtonTapped
-        case autoConnectResponse(HeadphonesState)
+        case autoConnectResponse(SonyHeadphones)
+        case autoConnectFailed(String)
         case devicesResponse([DiscoveredDevice])
         case deviceTapped(DiscoveredDevice)
-        case connectionResponse(HeadphonesState)
+        case connectionResponse(SonyHeadphones)
+        case connectionFailed(String)
         case delegate(Delegate)
     }
 
     enum Delegate {
-        case didConnect(HeadphonesState)
+        case didConnect(SonyHeadphones)
     }
 
     @Dependency(\.headphonesClient)
@@ -33,19 +34,30 @@ import SwiftUI
         Reduce { state, action in
             switch action {
                 case .connectButtonTapped:
-                    state.connecting = true
-                    state.errorMessage = nil
+                    state.uiState.connecting = true
+                    state.uiState.errorMessage = nil
                     state.devices = []
                     return .run { send in
-                        await send(.autoConnectResponse(client.connectToAutoDevice()))
+                        do {
+                            await send(.autoConnectResponse(try await client.connectToAutoDevice()))
+                        } catch {
+                            await send(.autoConnectFailed(error.localizedDescription))
+                        }
                     }
 
                 case let .autoConnectResponse(snap):
                     if snap.connected {
-                        state.connecting = false
+                        state.uiState.connecting = false
                         return .send(.delegate(.didConnect(snap)))
                     }
-                    state.connecting = false
+                    state.uiState.connecting = false
+                    return .run { send in
+                        await send(.devicesResponse(client.pairedDevices()))
+                    }
+
+                case let .autoConnectFailed(message):
+                    state.uiState.connecting = false
+                    state.uiState.errorMessage = message
                     return .run { send in
                         await send(.devicesResponse(client.pairedDevices()))
                     }
@@ -53,7 +65,7 @@ import SwiftUI
                 case let .devicesResponse(devices):
                     state.devices = devices
                     if devices.isEmpty {
-                        state.errorMessage = String(
+                        state.uiState.errorMessage = String(
                             localized: "DisconnectedView.emptyListHint",
                             // swiftlint:disable:next line_length
                             defaultValue: "No paired Sony headphones found. Pair them in macOS Bluetooth settings first."
@@ -62,19 +74,28 @@ import SwiftUI
                     return .none
 
                 case let .deviceTapped(device):
-                    state.connecting = true
-                    state.errorMessage = nil
+                    state.uiState.connecting = true
+                    state.uiState.errorMessage = nil
                     return .run { send in
-                        await send(.connectionResponse(client.connect(address: device.address)))
+                        do {
+                            await send(.connectionResponse(try await client
+                                    .connect(address: device.address)))
+                        } catch {
+                            await send(.connectionFailed(error.localizedDescription))
+                        }
                     }
 
                 case let .connectionResponse(snap):
-                    state.connecting = false
+                    state.uiState.connecting = false
                     if snap.connected {
                         state.devices = []
                         return .send(.delegate(.didConnect(snap)))
                     }
-                    state.errorMessage = snap.errorMessage
+                    return .none
+
+                case let .connectionFailed(message):
+                    state.uiState.connecting = false
+                    state.uiState.errorMessage = message
                     return .none
 
                 case .delegate:
@@ -98,7 +119,7 @@ struct DisconnectedView: View {
             Text("DisconnectedView.title")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundColor(.foregroundSecondary)
-            if let errorMessage = store.errorMessage {
+            if let errorMessage = store.uiState.errorMessage {
                 Text(errorMessage)
                     .font(.system(size: 12))
                     .foregroundColor(.red.opacity(0.9))
@@ -109,7 +130,8 @@ struct DisconnectedView: View {
                 deviceList
             }
             Button(action: { store.send(.connectButtonTapped) }) {
-                Text(store.connecting ? "DisconnectedView.connecting" : "DisconnectedView.connect")
+                Text(store.uiState
+                    .connecting ? "DisconnectedView.connecting" : "DisconnectedView.connect")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -118,7 +140,7 @@ struct DisconnectedView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             .buttonStyle(PlainButtonStyle())
-            .disabled(store.connecting)
+            .disabled(store.uiState.connecting)
             .padding(.horizontal, 40)
             Spacer()
         }
@@ -151,7 +173,7 @@ struct DisconnectedView: View {
                     .padding(.vertical, 10)
                 }
                 .buttonStyle(PlainButtonStyle())
-                .disabled(store.connecting)
+                .disabled(store.uiState.connecting)
             }
         }
         .background(Color.card)
@@ -162,17 +184,19 @@ struct DisconnectedView: View {
 
 #Preview {
     DisconnectedView(
-        store: Store(initialState: DisconnectedReducer.State(connecting: true)) {
-            DisconnectedReducer()
-        }
+        store: Store(
+            initialState: .init(uiState: .init(connecting: true)),
+            reducer: DisconnectedReducer.init
+        )
     )
 }
 
 #Preview {
     DisconnectedView(
-        store: Store(initialState: DisconnectedReducer.State(errorMessage: "Error")) {
-            DisconnectedReducer()
-        }
+        store: Store(
+            initialState: .init(uiState: .init(errorMessage: "Error")),
+            reducer: DisconnectedReducer.init
+        )
     )
 }
 

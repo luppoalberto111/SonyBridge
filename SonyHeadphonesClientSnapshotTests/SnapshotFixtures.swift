@@ -17,17 +17,16 @@ import SwiftUI
 // MARK: - SnapshotFixtures
 
 /// Deterministic `HeadphonesState` values shared by the snapshot tests.
-enum SnapshotFixtures {
+@MainActor enum SnapshotFixtures {
     /// Wraps a SwiftUI view for image snapshotting on macOS.
     ///
     /// swift-snapshot-testing only ships `NSView`/`NSViewController` image
     /// strategies on macOS, so views go through an `NSHostingController`
     /// upcast to `NSViewController`. The color scheme is pinned to Dark so
     /// references stay deterministic regardless of the host Mac's setting.
-    @MainActor
     private static var snapshotWindows: [NSWindow] = []
 
-    @MainActor static func hostingController(_ view: some View) -> NSViewController {
+    static func hostingController(_ view: some View) -> NSViewController {
         let controller = NSHostingController(
             rootView: AnyView(
                 view
@@ -59,35 +58,37 @@ enum SnapshotFixtures {
         return controller
     }
 
-    static func singleBatteryHeadphones() -> HeadphonesState {
-        var state = HeadphonesState()
-        state.connected = true
-        state.deviceName = "WH-1000XM5"
-        state.batteryLevel = 80
-        state.codec = "LDAC"
-        state.firmware = "2.0.0"
-        state.protocolVersion = "v2"
-        state.deviceMac = "AA:BB:CC:DD:EE:FF"
-        state.supportsEqualizer = true
-        state.eqPreset = EqPreset.excited.rawValue
-        state.hasAdaptiveVolume = true
-        state.adaptiveVolume = true
-        state.hasSpeakToChat = true
-        state.hasAutoPowerOff = true
-        state.autoPowerOff = AutoPowerOffOption.thirtyMinutes.rawValue
-        return state
+    static func singleBatteryHeadphones() -> SonyHeadphones {
+        SonyHeadphones(
+            connected: true,
+            deviceModel: .left(.wh1000Xm5),
+            batteryLevel: 80,
+            eqPreset: EqPreset.excited.rawValue,
+            supportsEqualizer: true,
+            supportsDsee: true,
+            hasAutoPowerOff: true,
+            autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue,
+            firmware: "2.0.0",
+            codec: "LDAC",
+            hasSpeakToChat: true,
+            hasAdaptiveVolume: true,
+            adaptiveVolume: true,
+            deviceMac: "AA:BB:CC:DD:EE:FF",
+            protocolVersion: "v2"
+        )
     }
 
-    static func dualBatteryHeadphones() -> HeadphonesState {
-        var state = HeadphonesState()
-        state.connected = true
-        state.deviceName = "WF-1000XM5"
-        state.hasDualBattery = true
-        state.batteryLeft = 80
-        state.batteryRight = 75
-        state.batteryCase = 50
-        state.batteryLevel = -1
-        state.codec = "AAC"
+    static func dualBatteryHeadphones() -> SonyHeadphones {
+        let state = SonyHeadphones(
+            connected: true,
+            deviceModel: .left(.wf1000Xm5),
+            batteryLevel: -1,
+            hasDualBattery: true,
+            batteryLeft: 80,
+            batteryRight: 75,
+            batteryCase: 50,
+            codec: "AAC"
+        )
         return state
     }
 
@@ -98,7 +99,11 @@ enum SnapshotFixtures {
     }
 
     static func connectingStore() -> StoreOf<DisconnectedReducer> {
-        Store(initialState: DisconnectedReducer.State(connecting: true)) {
+        Store(
+            initialState: DisconnectedReducer.State(
+                uiState: HeadphonesUIState(connecting: true)
+            )
+        ) {
             DisconnectedReducer()
         }
     }
@@ -117,22 +122,32 @@ enum SnapshotFixtures {
     }
 
     static func errorStore() -> StoreOf<DisconnectedReducer> {
-        Store(initialState: DisconnectedReducer.State(errorMessage: "Could not connect.")) {
+        Store(
+            initialState: DisconnectedReducer.State(
+                uiState: HeadphonesUIState(errorMessage: "Could not connect.")
+            )
+        ) {
             DisconnectedReducer()
         }
     }
 
     static func ambientStore(
         mode: SHCAmbientMode,
-        focusOnVoiceAvailable: Bool = false
+        focusOnVoiceAvailable: Bool = false,
+        focusOnVoiceLoading: Bool
     ) -> StoreOf<AmbientReducer> {
         Store(
             initialState: AmbientReducer.State(
-                mode: mode,
-                ambientLevel: 10,
-                maxAmbientLevel: 20,
-                focusOnVoice: false,
-                focusOnVoiceAvailable: focusOnVoiceAvailable
+                uiState: Shared(
+                    value: HeadphonesUIState(
+                        focusOnVoiceLoading: focusOnVoiceLoading,
+                        maxAmbientLevel: 20,
+                        mode: mode,
+                        ambientLevel: 10,
+                        focusOnVoice: false,
+                        focusOnVoiceAvailable: focusOnVoiceAvailable
+                    )
+                )
             )
         ) {
             AmbientReducer()
@@ -142,68 +157,100 @@ enum SnapshotFixtures {
     static func equalizerStore(preset: EqPreset) -> StoreOf<EqualizerReducer> {
         Store(
             initialState: EqualizerReducer.State(
-                eqPreset: preset.rawValue,
-                eqBands: [2, -1, 0, 3, -2],
-                clearBass: 5
+                uiState: Shared(
+                    value: HeadphonesUIState(
+                        eqPreset: preset.rawValue,
+                        eqBands: [2, -1, 0, 3, -2],
+                        clearBass: 5
+                    )
+                )
             )
         ) {
             EqualizerReducer()
         }
     }
 
-    static func settingsStore() -> StoreOf<SettingsReducer> {
+    static func tenBandEqualizerStore() -> StoreOf<EqualizerReducer> {
         Store(
-            initialState: SettingsReducer.State(
-                hasAdaptiveVolume: true,
-                adaptiveVolume: true,
-                hasSpeakToChat: true,
-                speakToChat: false,
-                hasAutoPowerOff: true,
-                autoPowerOff: .thirtyMinutes
+            initialState: EqualizerReducer.State(
+                uiState: Shared(
+                    value: HeadphonesUIState(
+                        eqPreset: EqPreset.manual.rawValue,
+                        eqBands: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                        tenBandEqualizer: true
+                    )
+                )
             )
         ) {
-            SettingsReducer()
+            EqualizerReducer()
         }
+    }
+
+    static func dseeStore(dseeLoading: Bool) -> StoreOf<DseeReducer> {
+        Store(
+            initialState: DseeReducer.State(
+                uiState: .init(value: HeadphonesUIState(dsee: dseeLoading))
+            ),
+            reducer: DseeReducer.init
+        )
+    }
+
+    static func settingsStore(
+        autoPowerOffLoading: Bool,
+        adaptiveVolumeLoading: Bool
+    ) -> StoreOf<SettingsReducer> {
+        Store(
+            initialState: SettingsReducer.State(
+                uiState: .init(
+                    value: HeadphonesUIState(
+                        adaptiveVolumeLoading: adaptiveVolumeLoading,
+                        autoPowerOffLoading: autoPowerOffLoading,
+                        hasAutoPowerOff: true,
+                        autoPowerOff: AutoPowerOffOption.thirtyMinutes.rawValue,
+                        hasSpeakToChat: true,
+                        speakToChat: false,
+                        hasAdaptiveVolume: true,
+                        adaptiveVolume: true
+                    )
+                )
+            ),
+            reducer: SettingsReducer.init
+        )
     }
 
     static func deviceHeroStore(
-        headphones: HeadphonesState
+        headphones: SonyHeadphones
     ) -> StoreOf<DeviceHeroReducer> {
-        Store(initialState: DeviceHeroReducer.State(headphones: headphones)) {
-            DeviceHeroReducer()
-        }
+        Store(
+            initialState: DeviceHeroReducer.State(
+                uiState: .init(value: HeadphonesUIState(headphones))
+            ),
+            reducer: DeviceHeroReducer.init
+        )
     }
 
     static func connectedStore(
-        headphones: HeadphonesState
+        headphones: SonyHeadphones
     ) -> StoreOf<ConnectedReducer> {
         Store(
             initialState: ConnectedReducer.State(
                 headphones: headphones,
-                deviceHero: DeviceHeroReducer.State(headphones: headphones)
-            )
+                showAbout: false
+            ),
+            reducer: ConnectedReducer.init
         ) {
-            ConnectedReducer()
-        } withDependencies: {
             $0.continuousClock = TestClock<Duration>()
             $0.headphonesClient = HeadphonesTestClient(state: headphones)
         }
     }
 
     static func mainScreenStore(
-        state: MainScreenFeature.State
+        state: MainScreenFeature.State,
+        snapshot: SonyHeadphones = SonyHeadphones()
     ) -> StoreOf<MainScreenFeature> {
-        let headphones: HeadphonesState
-        if case let .connected(connected) = state {
-            headphones = connected.headphones
-        } else {
-            headphones = HeadphonesState()
-        }
-        return Store(initialState: state) {
-            MainScreenFeature()
-        } withDependencies: {
+        Store(initialState: state, reducer: MainScreenFeature.init) {
             $0.continuousClock = TestClock<Duration>()
-            $0.headphonesClient = HeadphonesTestClient(state: headphones)
+            $0.headphonesClient = HeadphonesTestClient(state: snapshot)
         }
     }
 }

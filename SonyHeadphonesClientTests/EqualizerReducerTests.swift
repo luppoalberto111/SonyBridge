@@ -4,60 +4,56 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct EqualizerReducerTests {
-    @Test func setEqualizerUpdatesPresetAndDelegates() async {
-        let store = TestStore(initialState: EqualizerReducer.State()) {
+    private func state(_ uiState: HeadphonesUIState = .init()) -> EqualizerReducer.State {
+        .init(uiState: Shared(value: uiState))
+    }
+
+    @Test func setEqualizerDelegates() async {
+        let store = TestStore(initialState: state()) {
             EqualizerReducer()
         }
 
-        await store.send(.setEqualizer(EqPreset.excited.rawValue)) {
-            $0.eqPreset = EqPreset.excited.rawValue
-        }
+        await store.send(.setEqualizer(EqPreset.excited.rawValue))
         await store.receive(\.delegate)
     }
 
-    @Test func setBandSwitchesToManualPreset() async {
-        let store = TestStore(initialState: EqualizerReducer.State()) {
+    @Test func setBandDelegates() async {
+        let store = TestStore(initialState: state()) {
             EqualizerReducer()
         }
 
-        await store.send(.setBand(2, 4)) {
-            $0.eqBands[2] = 4
-            $0.eqPreset = EqPreset.manual.rawValue
-        }
+        await store.send(.setBand(2, 4))
         await store.receive(\.delegate)
     }
 
     @Test func setBandIgnoresOutOfRangeIndex() async {
-        let store = TestStore(initialState: EqualizerReducer.State()) {
+        let store = TestStore(initialState: state()) {
             EqualizerReducer()
         }
 
         await store.send(.setBand(9, 4))
     }
 
-    @Test func setClearBassSwitchesToManualPreset() async {
-        let store = TestStore(initialState: EqualizerReducer.State()) {
+    @Test func setClearBassDelegates() async {
+        let store = TestStore(initialState: state()) {
             EqualizerReducer()
         }
 
-        await store.send(.setClearBass(6)) {
-            $0.clearBass = 6
-            $0.eqPreset = EqPreset.manual.rawValue
-        }
+        await store.send(.setClearBass(6))
         await store.receive(\.delegate)
     }
 
-    @Test func syncCopiesEqualizerFieldsFromHeadphones() {
-        var headphones = HeadphonesState()
-        headphones.eqPreset = EqPreset.manual.rawValue
+    @Test func initMapsEqualizerFieldsFromSnapshot() {
+        var headphones = SonyHeadphones(eqPreset: EqPreset.manual.rawValue)
         headphones.eqBands = [1, -2, 3, 0, 5]
         headphones.clearBass = 7
 
-        var state = EqualizerReducer.State()
-        state.sync(from: headphones)
+        let state = EqualizerReducer.State(
+            uiState: Shared(value: HeadphonesUIState(headphones))
+        )
 
-        #expect(state.eqPreset == EqPreset.manual.rawValue)
-        #expect(state.eqBands == [1, -2, 3, 0, 5])
-        #expect(state.clearBass == 7)
+        #expect(state.uiState.eqPreset == EqPreset.manual.rawValue)
+        #expect(state.uiState.eqBands == [1, -2, 3, 0, 5])
+        #expect(state.uiState.clearBass == 7)
     }
 }

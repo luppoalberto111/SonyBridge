@@ -5,7 +5,7 @@ import Testing
 @Suite(.serialized)
 @MainActor struct LaunchAtLoginFeatureTests {
     private func initialState(promptResolved: Bool) -> LaunchAtLoginFeature.State {
-        var state = LaunchAtLoginFeature.State()
+        let state = LaunchAtLoginFeature.State()
         state.$promptResolved.withLock { $0 = promptResolved }
         return state
     }

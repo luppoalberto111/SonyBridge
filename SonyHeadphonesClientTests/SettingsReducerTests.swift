@@ -4,56 +4,58 @@ import ComposableArchitecture
 import Testing
 
 @MainActor struct SettingsReducerTests {
-    @Test func setAdaptiveVolumeUpdatesStateAndDelegates() async {
-        let store = TestStore(initialState: SettingsReducer.State()) {
-            SettingsReducer()
-        }
+    private func state(_ uiState: HeadphonesUIState = .init()) -> SettingsReducer.State {
+        .init(uiState: Shared(value: uiState))
+    }
 
-        await store.send(.setAdaptiveVolume(true)) {
-            $0.adaptiveVolume = true
-        }
+    @Test func setAdaptiveVolumeDelegates() async {
+        let store = TestStore(
+            initialState: state(),
+            reducer: SettingsReducer.init
+        )
+
+        await store.send(.setAdaptiveVolume(true))
         await store.receive(\.delegate)
     }
 
-    @Test func setSpeakToChatUpdatesStateAndDelegates() async {
-        let store = TestStore(initialState: SettingsReducer.State()) {
-            SettingsReducer()
-        }
+    @Test func setSpeakToChatDelegates() async {
+        let store = TestStore(
+            initialState: state(),
+            reducer: SettingsReducer.init
+        )
 
-        await store.send(.setSpeakToChat(true)) {
-            $0.speakToChat = true
-        }
+        await store.send(.setSpeakToChat(true))
         await store.receive(\.delegate)
     }
 
-    @Test func setAutoPowerOffUpdatesStateAndDelegates() async {
-        let store = TestStore(initialState: SettingsReducer.State()) {
+    @Test func setAutoPowerOffDelegates() async {
+        let store = TestStore(initialState: state()) {
             SettingsReducer()
         }
 
-        await store.send(.setAutoPowerOff(.thirtyMinutes)) {
-            $0.autoPowerOff = .thirtyMinutes
-        }
+        await store.send(.setAutoPowerOff(.thirtyMinutes))
         await store.receive(\.delegate)
     }
 
-    @Test func syncCopiesCapabilitiesAndFallsBackToOffForUnknownRawValue() {
-        var headphones = HeadphonesState()
-        headphones.hasAdaptiveVolume = true
-        headphones.adaptiveVolume = true
-        headphones.hasSpeakToChat = true
-        headphones.speakToChat = true
-        headphones.hasAutoPowerOff = true
-        headphones.autoPowerOff = 99
+    @Test func initMapsCapabilitiesFromSnapshot() {
+        let headphones = SonyHeadphones(
+            hasAutoPowerOff: true,
+            autoPowerOff: 99,
+            hasSpeakToChat: true,
+            speakToChat: true,
+            hasAdaptiveVolume: true,
+            adaptiveVolume: true
+        )
 
-        var state = SettingsReducer.State()
-        state.sync(from: headphones)
+        let state = SettingsReducer.State(
+            uiState: Shared(value: HeadphonesUIState(headphones))
+        )
 
-        #expect(state.hasAdaptiveVolume)
-        #expect(state.adaptiveVolume)
-        #expect(state.hasSpeakToChat)
-        #expect(state.speakToChat)
-        #expect(state.hasAutoPowerOff)
-        #expect(state.autoPowerOff == .off)
+        #expect(state.uiState.hasAdaptiveVolume)
+        #expect(state.uiState.adaptiveVolume)
+        #expect(state.uiState.hasSpeakToChat)
+        #expect(state.uiState.speakToChat)
+        #expect(state.uiState.hasAutoPowerOff)
+        #expect(state.uiState.autoPowerOff == 99)
     }
 }

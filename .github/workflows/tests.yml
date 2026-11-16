@@ -13,6 +13,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  protocol-tests:
+    name: Protocol Tests
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Run C++ protocol tests
+        working-directory: SonyBTKit
+        run: swift run CoreProtocolTests
+
   unit-tests:
     name: Unit Tests
     runs-on: macos-latest

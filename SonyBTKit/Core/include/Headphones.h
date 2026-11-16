@@ -93,23 +93,39 @@ public:
 	/// @return A `VPT_PRESET_ID` value, 0 when off.
 	int getVptType();
 
-	// Handshake the device expects before it answers inquiry (GET) commands on the v2 protocol.
-	/// Runs the v2 init handshake, after which the device answers GET inquiries.
+	// Handshake the device expects before it answers inquiry (GET) commands.
+	/// Runs the init handshake, after which the device answers GET inquiries.
 	///
 	/// Best-effort: the reply payload is ignored, we only need the device to enter its ready state.
-	/// Must not be called on v1 devices.
+	/// Both protocol generations expect it, and both use the same opcodes for it.
 	/// @throws RecoverableException If the device never replies.
 	void initDevice();
 
+	/// Sets the connected headset's advertised name (e.g. "WH-1000XM5").
+	///
+	/// The name picks the protocol dialect for the few models that need one (the per-earbud battery
+	/// layouts, the WH-1000XM6's equalizer). A name the app doesn't recognise still works - the
+	/// model-specific handling then falls back to probing.
+	///
+	/// @param name The device name as advertised over Bluetooth; an empty name is allowed.
+	void setDeviceName(const std::string& name);
+
 	// Battery (v2 inquiry). getBatteryLevel() returns -1 until requestBattery() succeeds.
 	// For TWS earbuds requestBattery() also fills the per-earbud + case levels (hasDualBattery()).
-	/// Queries the battery; v2 only.
+	/// Queries the battery.
 	///
-	/// Tries the single-battery type first, then the TWS dual-earbud and charging-case types. Every
-	/// query is best-effort: an unsupported type is skipped, and known values are never cleared, so
-	/// calling this again after a missed read is always safe.
+	/// The probe order depends on the model: earbuds (`WF-*`, `LinkBuds`) are asked for the per-earbud
+	/// layout first, because some of them also answer the single-battery inquiry - and taking that
+	/// answer would hide the per-earbud levels. Every query is best-effort: an unsupported type is
+	/// skipped, and known values are never cleared, so calling this again after a missed read is
+	/// always safe.
 	/// @throws RecoverableException Never escapes - failures are swallowed internally.
 	void requestBattery();
+
+	/// Whether a battery inquiry ever succeeded.
+	///
+	/// @return True once the device reported a battery level.
+	bool hasBattery();
 
 	/// The overall battery percentage from the last successful inquiry.
 	///
@@ -141,17 +157,37 @@ public:
 	/// @return 0..100, or -1 if not applicable/unknown.
 	int getBatteryCase();
 
-	// Equalizer (v2). requestEqualizer() reads current state; setEqualizerPreset() pushes a preset immediately.
-	/// Reads the current equalizer state (preset, clear bass and bands); v2 only.
+	/// Whether the left earbud reported itself as charging.
+	///
+	/// @return True when charging; false when unknown or on battery.
+	bool isBatteryLeftCharging();
+
+	/// Whether the right earbud reported itself as charging.
+	///
+	/// @return True when charging; false when unknown or on battery.
+	bool isBatteryRightCharging();
+
+	/// Whether the charging case reported itself as charging.
+	///
+	/// @return True when charging; false when unknown or on battery.
+	bool isBatteryCaseCharging();
+
+	// Equalizer. requestEqualizer() reads current state; setEqualizerPreset() pushes a preset immediately.
+	/// Reads the current equalizer state (preset, clear bass and bands).
 	/// @throws RecoverableException If the device doesn't answer.
 	void requestEqualizer();
+
+	/// Whether the device answered the equalizer inquiry.
+	///
+	/// @return True when the equalizer may be shown and written.
+	bool hasEqualizer();
 
 	/// The equalizer preset confirmed on the device.
 	///
 	/// @return An `EQ_PRESET` value (`OFF` when never read or unsupported).
 	EQ_PRESET getEqualizerPreset();
 
-	/// Pushes an equalizer preset to the device immediately (no staging); v2 only.
+	/// Pushes an equalizer preset to the device immediately (no staging).
 	///
 	/// @param preset An `EQ_PRESET` value; `MANUAL` (0xA0) only makes sense together with
 	///               ``setEqualizerCustom``.
@@ -159,13 +195,13 @@ public:
 	void setEqualizerPreset(EQ_PRESET preset);
 
 	// Custom (manual) EQ: 5 band values + clear bass, each in [-10, 10]. Selects the MANUAL preset.
-	/// Pushes a custom (manual) equalizer curve immediately (no staging); v2 only.
+	/// Pushes a custom (manual) equalizer curve immediately (no staging).
 	///
 	/// Values are clamped to [-10, 10] before being sent; missing bands are sent as 0.
 	/// Selects the `MANUAL` preset on the device.
 	///
 	/// @param clearBass Bass boost in [-10, 10].
-	/// @param bands    The 5 frequency-band gains in [-10, 10] (fewer than 5 entries are padded with 0).
+	/// @param bands    The frequency-band gains in [-10, 10] (fewer entries are padded with 0).
 	/// @throws RecoverableException If the device doesn't ACK the command.
 	void setEqualizerCustom(int clearBass, const std::vector<int>& bands);
 
@@ -180,17 +216,35 @@ public:
 	/// @return The band gain in -10..10, or 0 for an out-of-range index.
 	int getEqualizerBand(int index); // 0..4
 
-	// DSEE / audio upsampling (v2).
-	/// Reads the DSEE (audio upsampling) switch; v2 only.
+	/// How many equalizer bands the connected device exposes.
+	///
+	/// @return 5 for the standard layout, 10 on the WH-1000XM6's ten-band layout.
+	int getEqualizerBandCount();
+
+	/// Whether the connected device uses the ten-band equalizer layout.
+	///
+	/// On that layout the bands are raw device steps in 0..12 (no dB mapping is known) and the
+	/// device has no clear-bass slot.
+	///
+	/// @return True on the WH-1000XM6 (v2 only).
+	bool isTenBandEqualizer();
+
+	// DSEE / audio upsampling.
+	/// Reads the DSEE (audio upsampling) switch.
 	/// @throws RecoverableException If the device doesn't answer.
 	void requestDsee();
+
+	/// Whether the device answered the DSEE inquiry.
+	///
+	/// @return True when the toggle may be shown and written.
+	bool hasDsee();
 
 	/// Whether DSEE is currently enabled on the device.
 	///
 	/// @return True when enabled (also reflects the last successful ``setDsee``).
 	bool getDsee();
 
-	/// Pushes the DSEE switch to the device immediately; v2 only.
+	/// Pushes the DSEE switch to the device immediately.
 	///
 	/// @param enabled True to enable audio upsampling, false to disable it.
 	/// @throws RecoverableException If the device doesn't ACK the command.
@@ -198,7 +252,8 @@ public:
 
 	// Reads the device's current ambient/NC state into the *current* properties (for live polling so
 	// changes made with the headphone's own button are reflected in the app).
-	/// Reads the current NC/ambient state back from the device (protocol-aware: v2 `66 17`, v1 `66 02`).
+	/// Reads the current NC/ambient state back from the device (protocol-aware: v2 `66 17`
+	/// — `66 19` on the WH-1000XM6 — and v1 `66 02`).
 	///
 	/// Called on a timer by the app so that pressing the headphone's own button updates the UI. On v1
 	/// the reply is drained but deliberately not parsed (the layout is unverified and a mis-parse would
@@ -304,22 +359,57 @@ private:
 	Property<SOUND_POSITION_PRESET> _surroundPosition = { SOUND_POSITION_PRESET::OUT_OF_RANGE, SOUND_POSITION_PRESET::OFF };
 	Property<int> _vptType = { 0 };
 
+	/// The connected device's advertised name; used to pick the model-specific protocol dialect.
+	std::string _deviceName;
+
 	int _batteryLevel = -1;
 	bool _batteryCharging = false;
+	bool _hasBattery = false;
 	bool _hasDualBattery = false;
 	int _batteryLeft = -1;
 	int _batteryRight = -1;
 	int _batteryCase = -1;
+	bool _batteryLeftCharging = false;
+	bool _batteryRightCharging = false;
+	bool _batteryCaseCharging = false;
 	EQ_PRESET _eqPreset = EQ_PRESET::OFF;
+	bool _hasEqualizer = false;
 	std::vector<int> _eqBands = { 0, 0, 0, 0, 0 };
 	int _eqClearBass = 0;
 	bool _dsee = false;
+	bool _hasDsee = false;
 
 	bool _hasAutoPowerOff = false; int _autoPowerOff = 0;
 	bool _hasFirmware = false; std::string _firmware;
 	bool _hasCodec = false; std::string _codec;
 	bool _hasSpeakToChat = false; bool _speakToChat = false;
 	bool _hasAdaptiveVolume = false; bool _adaptiveVolume = false;
+
+	/// Whether the connected device is one of Sony's true-wireless earbuds.
+	///
+	/// Only used to pick the battery probe order - an unrecognised name still finds both layouts,
+	/// just one timed-out inquiry slower.
+	bool _looksLikeEarbuds();
+
+	/// Whether the connected device is a WH-1000XM6.
+	///
+	/// The XM6 speaks a different dialect of the v2 protocol for two commands: it reads its noise
+	/// control through inquired type 0x19 and its equalizer through type 0x04 with ten raw bands.
+	bool _isWh1000Xm6();
+
+	/// Reads the per-earbud levels (and charging flags) of a TWS device.
+	///
+	/// @param subType The battery sub-type to ask for (`BATTERY_SUB_DUAL` or `BATTERY_SUB_DUAL2`).
+	/// @return False when the device didn't answer that sub-type, so the caller can try the other one.
+	bool _requestDualBattery(unsigned char subType);
+
+	/// Reads a single battery level (and charging flag).
+	///
+	/// @param subType       The battery sub-type to ask for (e.g. `BATTERY_SUB_SINGLE`).
+	/// @param levelOut      Receives the level, or -1 when the device didn't answer.
+	/// @param chargingOut   Receives the charging flag; untouched when the device didn't answer.
+	/// @return False when the device didn't answer that sub-type.
+	bool _requestSingleBattery(unsigned char subType, int& levelOut, bool& chargingOut);
 
 	std::mutex _propertyMtx;
 

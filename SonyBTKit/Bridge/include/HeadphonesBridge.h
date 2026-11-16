@@ -77,15 +77,37 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 /// Charging-case percentage, or -1 if not applicable/unknown.
 @property (nonatomic, readonly) NSInteger batteryCase;
 
+/// Whether the left earbud reported itself as charging.
+@property (nonatomic, readonly) BOOL batteryLeftCharging;
+
+/// Whether the right earbud reported itself as charging.
+@property (nonatomic, readonly) BOOL batteryRightCharging;
+
+/// Whether the charging case reported itself as charging.
+@property (nonatomic, readonly) BOOL batteryCaseCharging;
+
 // Equalizer, mirrored from the last read/write (v2 only).
 /// The raw equalizer preset byte (an `EQ_PRESET` value, e.g. 0x00 = Off, 0xA0 = Manual).
 @property (nonatomic, readonly) NSInteger eqPreset;       // raw preset byte (EQ_PRESET)
 
-/// Whether this device exposes the equalizer (v2 protocol only).
-@property (nonatomic, readonly) BOOL supportsEqualizer;   // v2 devices only
+/// Whether this device exposes the equalizer.
+/// YES once the device answered the equalizer inquiry - both protocol generations speak it, but
+/// not every model has one.
+@property (nonatomic, readonly) BOOL supportsEqualizer;
+
+/// Whether this device exposes DSEE (audio upsampling).
+/// YES once the device answered the DSEE inquiry.
+@property (nonatomic, readonly) BOOL supportsDsee;
 
 /// Clear-bass boost from the last EQ read/write, in -10..10.
 @property (nonatomic, readonly) NSInteger clearBass;      // -10..10
+
+/// How many equalizer bands this device exposes.
+@property (nonatomic, readonly) NSInteger equalizerBandCount; // 5, or 10 on the ten-band layout
+
+/// Whether this device uses the ten-band equalizer layout (WH-1000XM6).
+/// Its bands are raw device steps in 0..12 and it has no clear-bass slot.
+@property (nonatomic, readonly) BOOL tenBandEqualizer;
 
 /// Whether DSEE (audio upsampling) is enabled on the device.
 @property (nonatomic, readonly) BOOL dsee;                // DSEE / audio upsampling
@@ -125,8 +147,8 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 // Synchronous and safe off the main thread; never shows any UI.
 /// Lists the paired headsets that look like supported Sony models, for the manual device picker.
 ///
-/// Filters the system's paired devices by name prefixes (WH-, WF-, WI-, MDR-, XB, LinkBuds); paired
-/// status is enough, the RFCOMM link is opened later on demand by
+/// Filters the system's paired devices by name prefixes (WH-, WF-, WI-, MDR-, XB, LinkBuds, ULT);
+/// paired status is enough, the RFCOMM link is opened later on demand by
 /// `-connectToDeviceWithAddress:completion:`.
 ///
 /// @return An array of dictionaries with exactly two `NSString` keys, `name` and `address`
@@ -137,6 +159,9 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 // completion is called on the main thread; a nil error with ok=NO means
 // "nothing found" (not a failure) so the caller can offer a device list.
 /// Connects to the Sony headset that macOS already considers connected ("My Device" behaviour).
+///
+/// When no headset reports itself as connected, any paired Sony-looking device is used instead -
+/// headsets that are only connected for audio (or over BLE) are reported as disconnected by macOS.
 ///
 /// @param completion Called on the main thread with `(ok, error)`. `ok == NO` with a nil `error`
 ///                   means no Sony-looking device was found — not a failure, so the caller should
@@ -172,10 +197,10 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
        completion:(void (^)(BOOL ok, NSString * _Nullable error))completion;
 
 // Runs the init handshake (once) then reads battery + equalizer on a background thread; completion on main.
-/// Runs the first-stage status read after connecting: init handshake (v2, once), battery, equalizer and DSEE.
+/// Runs the first-stage status read after connecting: init handshake (once), battery, equalizer and DSEE.
 ///
-/// On v1 devices this intentionally only issues the read-only ambient-state query, because the v2
-/// battery opcode would power the headphones off there.
+/// The inquiries are protocol-aware, so v1 devices (e.g. the WH-1000XM4) are read with their own
+/// sub-types instead of being skipped.
 ///
 /// @param completion Called on the main thread when the reads finished (errors are swallowed — the
 ///                   properties simply keep their previous values).
@@ -187,7 +212,8 @@ typedef NS_ENUM(NSInteger, SHCAmbientMode) {
 /// Runs the second-stage capability probe (firmware, codec, auto power off, adaptive volume, speak-to-chat).
 ///
 /// Each probe can take seconds to time out on devices that don't support the feature, so this is
-/// deliberately separate from `-refreshStatusWithCompletion:` and must be called after it. v2 only.
+/// deliberately separate from `-refreshStatusWithCompletion:` and must be called after it. The
+/// probes are protocol-aware, so v1 devices are asked with their own opcodes.
 ///
 /// @param completion Called on the main thread when every probe settled (errors are swallowed; the
 ///                   `has…` properties simply stay NO for unsupported features).
